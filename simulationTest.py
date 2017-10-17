@@ -15,7 +15,7 @@ import matplotlib
 from matplotlib import animation
 matplotlib.rcParams.update({'font.size': 16})
 
-ttttt 
+
 
 HOURS_TO_DAY = 1 / 24
 # %% We load the forecast files
