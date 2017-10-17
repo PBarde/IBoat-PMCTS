@@ -92,7 +92,7 @@ class Weather:
         return Cropped
 
     @classmethod
-    def download(cls, url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81], ens=False):
+    def download(cls, url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
         """
         .. method :: download
 
@@ -103,8 +103,6 @@ class Weather:
             * **other params** : same as load method.
 
         """
-        if ens == True and timeSteps == [0, 81]:
-            timeSteps = [0, 65]
 
         file = netCDF4.Dataset(url)
         lat = file.variables['lat'][:]
@@ -128,12 +126,10 @@ class Weather:
         lonui = np.argmin(np.abs(lon - lonBound[1]))
         lat = lat[latli:latui]
         lon = lon[lonli:lonui]
-        if ens == True:
-            u = file.variables['ugrd10m'][0, timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
-            v = file.variables['vgrd10m'][0, timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
-        else:
-            u = file.variables['ugrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
-            v = file.variables['vgrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+        
+        u = file.variables['ugrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+        v = file.variables['vgrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+        
         #
         #            u=file.variables['ugrd10m'][1,:,:]
         #            v=file.variables['vgrd10m'][1,:,:]
