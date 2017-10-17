@@ -18,7 +18,7 @@ import pickle
 import sys
 from math import sqrt
 #%%
-
+#test des familles
 heading=235
 budget=15000
 nDays=2.0
