@@ -24,12 +24,6 @@ FIT_VELOCITY=((-0.0310198207067136,-0.0600881995286002,0.0286695485969272, -0.00
           (-2.91900968067076e-08, -1.67287818401469e-09,0,0,0,0),\
           (6.34463723894578e-11,0,0,0,0,0))
 
-FIT_PHI = ((-1.45853032453996 , 4.93261306678728, 2.11068745908768,-0.146421823552765 , 0.00571577488236430,-3.86548180668075e-05 ),\
-          ( 0.0450146899230347,-0.265143346808179 , -0.0158879828373159, -6.98702298810359e-05, -2.23691346349847e-05,0 ),\
-          ( -6.92983512351375e-05,0.00438845837953799 , 0.000149659040461729, 4.59832959915573e-06, 0,0 ),\
-          ( -8.07833836390101e-06, -3.22527331822989e-05,-7.32725492793235e-07 , 0, 0, 0),\
-          ( 9.32065359630392e-08, 8.58978734563361e-08, 0, 0, 0, 0),\
-          ( -2.99522066048220e-10, 0, 0, 0, 0, 0))
 
 POLAR_MAX_WIND_MAG = 19.1
 POLAR_MIN_POFSAIL = 35
@@ -51,7 +45,7 @@ DESTINATION_RADIUS=0.025*pi/180*EARTH_RADIUS
                         
 class Simulator : 
     
-            def __init__(self,times,lats,lons,WeatherAvg,WeatherEns,stateInit) :
+            def __init__(self,times,lats,lons,WeatherAvg,stateInit) :
                 
                 self.times=times
                 self.lats=lats
@@ -61,10 +55,6 @@ class Simulator :
                 WeatherAvg.Interpolators()
                 self.uWindAvg=WeatherAvg.uInterpolator
                 self.vWindAvg=WeatherAvg.vInterpolator
-                
-                WeatherEns.Interpolators()
-                self.uWindSpr=WeatherEns.uInterpolator
-                self.vWindSpr=WeatherEns.vInterpolator
              
             def reset(self,stateInit):
                 
@@ -117,13 +107,7 @@ class Simulator :
                 uAvg=self.uWindAvg([self.times[self.state[0]],self.state[1],self.state[2]])
                 vAvg=self.vWindAvg([self.times[self.state[0]],self.state[1],self.state[2]])
                 
-                uSpr=self.uWindSpr([self.times[self.state[0]],self.state[1],self.state[2]])
-                vSpr=self.vWindSpr([self.times[self.state[0]],self.state[1],self.state[2]])
-                
-                uWind=rand.gauss(uAvg,uSpr)
-                vWind=rand.gauss(vAvg,vSpr)
-                
-                return uWind,vWind
+                return uAvg,vAvg
             
             """ CAREFULLL : ONLY VALID FOR SMALL TIME STEPS (1HOUR) 
             else Dlat and Dlon might be wrong and we need to use the getPolarVel and getDestination method""" 
@@ -137,28 +121,19 @@ class Simulator :
                 
                 #We get speed from wind on sail
                 pOfSail=abs((windAng+180)%360-action)
-                boatSpeed=Boat.getDeterDyn(pOfSail,windMag,FIT_VELOCITY)
-                uBoat,vBoat = Boat.addUncertainty(action,boatSpeed)
+                boatSpeedDet=Boat.getDeterDyn(pOfSail,windMag,FIT_VELOCITY)
+                boatSpeed = Boat.addUncertainty(boatSpeedDet)
                 
-                #We get speed from current
-                uBoat,vBoat=Current.addSpeed(uBoat,vBoat,uWind,vWind)
-#                print('(uBoat,vBoat)=(' + str(uBoat)+', '+ str(vBoat)+')\n')
                 #We integrate it
                 Dt=(self.times[self.state[0]+1]-self.times[self.state[0]])*DAY_TO_SEC
-#                print('Dt=' + str(Dt) +'\n')
+
                 """ This is correct for big timeSteps"""
-                vMag,vAng=Weather.returnPolarVel(uBoat,vBoat)
-                DL=vMag*Dt
-                newLat,newLon=self.getDestination(DL,vAng,[self.state[1],self.state[2]])
+               
+                DL=boatSpeed*Dt
+                newLat,newLon=self.getDestination(DL,action,[self.state[1],self.state[2]])
                 
-#                DLon=uBoat*Dt/(EARTH_RADIUS*math.cos(self.state[1]*math.pi/180))*180/math.pi
-#                DLat=vBoat*Dt/EARTH_RADIUS*180/math.pi
-#                
-#                newLat=self.state[1]+DLat
-#                newLon=self.state[2]+DLon
-                                 
                 self.state[0],self.state[1],self.state[2]=self.state[0]+1,newLat,newLon
-#                print('state=' + str(self.state) +'\n')
+                
                 return self.state
                 
             @staticmethod
@@ -316,28 +291,11 @@ class Boat :
                 return np.polynomial.polynomial.polyval2d(pOfSail,windMag,fitCoeffs)
             
         @staticmethod
-        def addUncertainty(heading,boatSpeed):
-            uBoat=boatSpeed*math.sin(heading*math.pi/180)
-            vBoat=boatSpeed*math.cos(heading*math.pi/180)
-            uBoat=rand.gauss(uBoat,boatSpeed*BOAT_UNCERTAINTY_COEFF)
-            vBoat=rand.gauss(vBoat,boatSpeed*BOAT_UNCERTAINTY_COEFF)
+        def addUncertainty(boatSpeed):
             
-            return uBoat,vBoat
-            
-            
-             
-                
-            
-CURRENT_SCALING_FROM_WIND = 0.03
-#CURRENT_SCALING_FROM_WIND = 0.
+            boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*BOAT_UNCERTAINTY_COEFF)
 
-class Current :
-    
-        @staticmethod
-        def addSpeed(uBoat,vBoat,uWind,vWind) :
-            uBoat=uBoat+uWind*CURRENT_SCALING_FROM_WIND
-            vBoat=vBoat+vWind*CURRENT_SCALING_FROM_WIND
-            return uBoat,vBoat      
+            return boatSpeedNoisy
 
 
                 

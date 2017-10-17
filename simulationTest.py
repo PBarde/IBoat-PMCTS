@@ -24,35 +24,26 @@ modelcycle = '00'
 pathToSaveObj = './data/' + mydate + '_' + modelcycle + '.obj'
 Wavg = Weather.load(pathToSaveObj)
 
-
-pathToSaveObj = './data/' + mydate + '_' + modelcycle + 'ens.obj'
-Wspr = Weather.load(pathToSaveObj)
-# we crop the Nan values
-Wspr = Wspr.crop(timeSteps=[1, 64])
 # %% We shift the times so that all times are in the correct bounds for interpolations
 
-Tini = max([Wavg.time[0], Wspr.time[0]])
-Wspr.time = Wspr.time - Tini
-Wavg.time = Wavg.time - Tini
+Tini = Wavg.time[0]
 
-#""" We remove wind stochasticity"""
-#Wspr.u=np.full(np.shape(Wspr.u),0)
-#Wspr.v=Wspr.u
+Wavg.time = Wavg.time - Tini
 
 # %% We set up the parameters of the simulation
 # times=np.arange(0,min([Wavg.time[-1],Wspr.time[-1]]),1*HOURS_TO_DAY)
 # Tf=len(times)
-Tf = 24 * 6
+Tf = 24 * 5
 times = np.arange(0, Tf * HOURS_TO_DAY, 1 * HOURS_TO_DAY)
-lats = np.arange(max([Wavg.lat[0], Wspr.lat[0]]), min([Wavg.lat[-1], Wspr.lat[-1]]), 0.05)
-lons = np.arange(max([Wavg.lon[0], Wspr.lon[0]]), max([Wavg.lon[-1], Wspr.lon[-1]]), 0.05)
+lats = np.arange(Wavg.lat[0],Wavg.lat[-1], 0.05)
+lons = np.arange(Wavg.lon[0], Wavg.lon[-1], 0.05)
 
 stateInit = [0, 47.5, -3.5 + 360]
 
-Sim = Simulator(times, lats, lons, Wavg, Wspr, stateInit)
+Sim = Simulator(times, lats, lons, Wavg, stateInit)
 
 #%%
-#map=Sim.praparePlotTraj(Dline=10)
+
 map2=Sim.praparePlotTraj2(stateInit,Dline=10)
 traj=1
 
