@@ -6,16 +6,24 @@ Created on Wed May 31 11:36:10 2017
 @author: paul
 """
 
+
 import MyTree as mt
-import numpy as np
+
+
+
+import pickle
+import sys
 from WeatherClass import Weather
 import numpy as np
+import SimulatorClass as SimC
 from SimulatorClass import Simulator
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
-import SimulatorClass as SimC
-import pickle
-import sys
+import matplotlib
+from matplotlib import animation
+matplotlib.rcParams.update({'font.size': 16})
+
+
 
 HOURS_TO_DAY = 1 / 24
 # %% We load the forecast files
@@ -24,35 +32,35 @@ modelcycle = '00'
 pathToSaveObj = './data/' + mydate + '_' + modelcycle + '.obj'
 Wavg = Weather.load(pathToSaveObj)
 
-
-pathToSaveObj = './data/' + mydate + '_' + modelcycle + 'ens.obj'
-Wspr = Weather.load(pathToSaveObj)
-# we crop the Nan values
-Wspr = Wspr.crop(timeSteps=[1, 64])
 # %% We shift the times so that all times are in the correct bounds for interpolations
 
-Tini = max([Wavg.time[0], Wspr.time[0]])
-Wspr.time = Wspr.time - Tini
+Tini = Wavg.time[0]
+
 Wavg.time = Wavg.time - Tini
-Tf = 24 * 2
-#SimC.DESTINATION_RADIUS=SimC.DESTINATION_RADIUS*3
+
+# %% We set up the parameters of the simulation
+# times=np.arange(0,min([Wavg.time[-1],Wspr.time[-1]]),1*HOURS_TO_DAY)
+# Tf=len(times)
+Tf = 24 * 5
 times = np.arange(0, Tf * HOURS_TO_DAY, 1 * HOURS_TO_DAY)
-lats = np.arange(max([Wavg.lat[0], Wspr.lat[0]]), min([Wavg.lat[-1], Wspr.lat[-1]]), 0.05)
-lons = np.arange(max([Wavg.lon[0], Wspr.lon[0]]), max([Wavg.lon[-1], Wspr.lon[-1]]), 0.05)
+lats = np.arange(Wavg.lat[0],Wavg.lat[-1], 0.05)
+lons = np.arange(Wavg.lon[0], Wavg.lon[-1], 0.05)
 
 stateInit = [0, 47.5, -3.5 + 360]
+
+Sim = Simulator(times, lats, lons, Wavg, stateInit)
 
 
 # %% We set up the parameters of the simulation
 # times=np.arange(0,min([Wavg.time[-1],Wspr.time[-1]]),1*HOURS_TO_DAY)
 # Tf=len(times)
 
-Sim = Simulator(times, lats, lons,  Wavg, Wspr, stateInit)
 heading = 235
 dests = []
 dists = []
-dists2 = []
+
 ntra = 50
+
 
 for traj in range(ntra):
     Sim.reset(stateInit)
@@ -63,9 +71,11 @@ for traj in range(ntra):
     d, dump = Sim.getDistAndBearing(Sim.state[1:],[stateInit[1], stateInit[2]])
     dists.append(d)
 
-# dmean=np.mean(dists)
-dmean = min(dists)*3/4
-destination = Sim.getDestination(dmean, heading, [stateInit[1], stateInit[2]])
+dmean=np.mean(dists)
+dests=np.array(dests)
+latDest=np.mean(dests[:,1])
+lonDest=np.mean(dests[:,2])
+destination = [latDest,lonDest]
 Times = []
 
 for traj in range(ntra):
@@ -81,17 +91,24 @@ for traj in range(ntra):
     if d < SimC.DESTINATION_RADIUS :
         Times.append(Sim.times[t])
 
-Tmin = min(Times)
+Tmean = np.mean(Times)
 print('Number of Boat that arrived : ' + str(len(Times)))
 #%%
 #plt.figure()
-m = Sim.praparePlotTraj2(stateInit,dl=0.35,dh=0.25)
+m = Sim.praparePlotTraj2(stateInit,proj='aeqd')
+# Azimuthal Equidistant Projection
+#The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
+#projection. So, for the specified point, all points that lie on a circle around this point are equidistant
+#on the surface of the earth on this projection.
+
 x1, y1 = m(stateInit[2], stateInit[1])
 x2, y2 = m(destination[1], destination[0])
 m.scatter([x1, x2], [y1, y2])
 Sim.plotTraj(dests, m,scatter=True)
-Sim.plotTraj(tra, m,quiv=True,line=True,heading=235)
-Sim.plotTraj(tra2, m)
+Sim.plotTraj(tra, m)
+Sim.plotTraj(tra2, m, color='red')
+#xline,yline=m([tra[0][2],tra[-1][2]],[tra[0][1],tra[-1][1]])
+#m.plot(xline,yline,color='blue')
 m.fillcontinents()
 # %%
 
