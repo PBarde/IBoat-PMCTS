@@ -6,17 +6,17 @@ Created on Wed May 31 10:06:46 2017
 @author: paul
 """
 import matplotlib.pyplot as plt
-from typing import *
+from typing import List
 import math
-from math import exp
+from math import exp,sqrt,asin
 import SimulatorClass as SimC
-from collections import OrderedDict
 import random as rand
 from timeit import default_timer as timer
 import numpy as np
 
 refNode = str
 refTree = str
+refFigure = str
 Simulator = SimC.Simulator
 Nodes = List[refNode]
 State = List[float]
@@ -111,7 +111,7 @@ class Tree:
 
         return node
 
-    def expand(self, node: Node) -> [Node, int]:
+    def expand(self, node: Node) -> Node:
         action = node.actions.pop()
         newNode = Node(parent=node, origin=action, depth=node.depth + 1)
         self.depth = max(self.depth, newNode.depth)
@@ -135,14 +135,16 @@ class Tree:
         self.getSimToEstimateState(node)
 
         dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:],self.destination)
-
-        while (not self.isStateAtDest(self.Simulator.state)) \
-                and (not self.isStateTerminal(self.Simulator.state)):
+        atDest,frac =Tree.isStateAtDest(self.destination,self.Simulator.prevState,self.Simulator.state)
+              
+        while (not atDest) \
+                and (not Tree.isStateTerminal(self.Simulator,self.Simulator.state)):
             self.Simulator.doStep(action)
             dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:],self.destination)
+            atDest,frac =Tree.isStateAtDest(self.destination,self.Simulator.prevState,self.Simulator.state)
 
-        if dist < SimC.DESTINATION_RADIUS:
-            finalTime = self.Simulator.times[self.Simulator.state[0]]
+        if atDest:
+            finalTime = self.Simulator.times[self.Simulator.state[0]]-(1-frac)
             reward = (exp((self.TimeMax*1.001 - finalTime) / (self.TimeMax*1.001 - self.TimeMin)) - 1) / (exp(1) - 1)
 #            reward=(self.TimeMax*1.001 - finalTime) / (self.TimeMax*1.001 - self.TimeMin)
         else:
@@ -163,24 +165,43 @@ class Tree:
 
         self.Simulator.reset(self.rootNode.state)
 
-        while listOfActions and not self.isStateTerminal(self.Simulator.state)\
-                            and not self.isStateAtDest(self.Simulator.state) :
+        while listOfActions and not Tree.isStateTerminal(self.Simulator,self.Simulator.state)\
+                            and not Tree.isStateAtDest(self.destination,self.Simulator.prevState,self.Simulator.state) :
             action = listOfActions.pop()
             self.Simulator.doStep(action)
-
-    def isStateAtDest(self, state: State) -> bool:
-        dist,dump=self.Simulator.getDistAndBearing(state[1:],self.destination)
-        return dist < SimC.DESTINATION_RADIUS
+            
+    @staticmethod
+    def isStateAtDest(destination: List, stateA: State, stateB : State) -> [bool,int]:
+        [xa,ya,za]=SimC.Simulator.fromGeoToCartesian(stateA[1:])
+        [xb,yb,zb]=SimC.Simulator.fromGeoToCartesian(stateB[1:])
+        [xd,yd,zd]=SimC.Simulator.fromGeoToCartesian(destination)
+        c=(yb/ya*xa-xb)/(zb-yb/ya*za)
+        b=-(xa+c*za)/ya
+        d=abs(xd+b*yd+c*zd)/sqrt(1+b**2+c**2)
+        alpha=asin(d)
+        
+        if alpha>SimC.DESTINATION_ANGLE : return [False,None]
+        
+        else : 
+          vad=np.array([xd,yd,zd])-np.array([xa,ya,za])
+          vdb=np.array([xb,yb,zb])-np.array([xd,yd,zd])
+          vab=np.array([xb,yb,zb])-np.array([xa,ya,za])
+          
+          p=np.dot(vad,vdb)
+          
+          if p<0 : return [False,None]
+      
+          else : return [True,np.dot(vad,vab)/np.dot(vab,vab)]
     
-
-    def isStateTerminal(self, state: State) -> bool:
-        if self.Simulator.times[state[0]] == self.TimeMax:
+    @staticmethod
+    def isStateTerminal(simulator : Simulator, state: State) -> bool:
+        if simulator.times[state[0]] == simulator.times[-1]:
             return True
 
-        elif state[1] < self.Simulator.lats[0] or state[1] > self.Simulator.lats[-1]:
+        elif state[1] < simulator.lats[0] or state[1] > simulator.lats[-1]:
             return True
 
-        elif state[2] < self.Simulator.lons[0] or state[2] > self.Simulator.lons[-1]:
+        elif state[2] < simulator.lons[0] or state[2] > simulator.lons[-1]:
             return True
         else:
             return False
@@ -197,7 +218,7 @@ class Tree:
             node.parent.N = node.parent.N + Q[1]
             node = node.parent
 
-    def plotTree(self):
+    def plotTree(self) -> refFigure :
         x0 = 0
         y0 = 0
         l = 1
@@ -210,7 +231,7 @@ class Tree:
         fig.show()
         return fig
 
-    def plotGreyTree(self):
+    def plotGreyTree(self) -> refFigure:
         x0 = 0
         y0 = 0
         l = 1

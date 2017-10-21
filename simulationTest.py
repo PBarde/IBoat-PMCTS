@@ -23,9 +23,7 @@ mydate = '20170519'
 modelcycle = '00'
 pathToSaveObj = './data/' + mydate + '_' + modelcycle + '.obj'
 Wavg = Weather.load(pathToSaveObj)
-
 # %% We shift the times so that all times are in the correct bounds for interpolations
-
 Tini = Wavg.time[0]
 
 Wavg.time = Wavg.time - Tini
@@ -44,7 +42,7 @@ Sim = Simulator(times, lats, lons, Wavg, stateInit)
 
 #%%
 
-map2=Sim.praparePlotTraj2(stateInit,Dline=10)
+map2=Sim.preparePlotTraj2(stateInit,Dline=10)
 traj=1
 
 for tj in range(traj):
@@ -64,7 +62,7 @@ for tj in range(traj):
         
 #     
 #    Sim.plotTraj(states,map)
-    Sim.plotTraj(states,map2,quiv=True,scatter=True,line=True)
+    Sim.plotTraj(states,map2,quiv=True,scatter=True)
 #    Sim.plotTraj(states,map2)
 plt.show()
 plt.title('Trajectories after ' + str(round(Sim.times[Sim.state[0]]))+ ' days with constant heading of '+ str(action)+ ' deg')
@@ -72,5 +70,5 @@ plt.title('Trajectories after ' + str(round(Sim.times[Sim.state[0]]))+ ' days wi
 #%%
 #writer=animation.FFMpegWriter(bitrate=500)
 anim=Sim.animateTraj(Wavg,states,trajSteps=1)
-anim.save('trajAnim2.mp4', fps=5, bitrate=5000, dpi=500)
+#anim.save('trajAnim2.mp4', fps=5, bitrate=5000, dpi=500)
 

@@ -21,6 +21,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import matplotlib
 from matplotlib import animation
+from MyTree import Tree
 matplotlib.rcParams.update({'font.size': 16})
 
 
@@ -77,36 +78,72 @@ latDest=np.mean(dests[:,1])
 lonDest=np.mean(dests[:,2])
 destination = [latDest,lonDest]
 Times = []
-
+dests2=[]
 for traj in range(ntra):
     Sim.reset(stateInit)
     tra2 = []
     d = dmean
-    t=0
-    while t < len(Sim.times)-1 and d > SimC.DESTINATION_RADIUS:
-        d, dump = Sim.getDistAndBearing(Sim.state[1:],destination)
-        tra2.append(list(Sim.doStep(dump)))
-        t=t+1
-        
-    if d < SimC.DESTINATION_RADIUS :
-        Times.append(Sim.times[t])
-
+    dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
+    tra2.append(list(Sim.doStep(action)))
+    atDest,frac =Tree.isStateAtDest(destination,Sim.prevState,Sim.state)
+    dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
+    
+    while (not atDest) \
+                and (not Tree.isStateTerminal(Sim,Sim.state)):
+            tra2.append(list(Sim.doStep(action)))
+            dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
+            atDest,frac =Tree.isStateAtDest(destination,Sim.prevState,Sim.state)
+            
+    if atDest:
+      finalTime = Sim.times[Sim.state[0]]-(1-frac)
+      Times.append(finalTime)
+      dests2.append(list(Sim.state))
+      
+      
+dests2=np.array(dests2)
 Tmean = np.mean(Times)
 print('Number of Boat that arrived : ' + str(len(Times)))
 #%%
-#plt.figure()
-m = Sim.praparePlotTraj2(stateInit,proj='aeqd')
+m = Sim.preparePlotTraj2(stateInit,proj='aeqd')
 # Azimuthal Equidistant Projection
 #The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
 #projection. So, for the specified point, all points that lie on a circle around this point are equidistant
 #on the surface of the earth on this projection.
+rgba_colors = np.zeros((len(dests2),4))
+rgba_colors[:, 3] = np.exp(min(Times)-np.array(Times))
+
 
 x1, y1 = m(stateInit[2], stateInit[1])
 x2, y2 = m(destination[1], destination[0])
 m.scatter([x1, x2], [y1, y2])
-Sim.plotTraj(dests, m,scatter=True)
-Sim.plotTraj(tra, m)
-Sim.plotTraj(tra2, m, color='red')
+#Sim.plotTraj(dests, m,scatter=True)
+#Sim.plotTraj(tra, m)
+#Sim.plotTraj(tra2, m, color='red')
+Sim.plotTraj(dests2, m, scatter=True,color=rgba_colors)
+
+
+#%%
+n=len(Times)
+
+m = Sim.preparePlotTraj2([0]+destination,proj='aeqd',dl=.005,dh=.005)
+# Azimuthal Equidistant Projection
+#The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
+#projection. So, for the specified point, all points that lie on a circle around this point are equidistant
+#on the surface of the earth on this projection.
+rgba_colors = np.zeros((len(dests2[:n]),4))
+rgba_colors[:, 3] = np.exp(min(Times[:n])-np.array(Times[:n]))
+
+
+x1, y1 = m(stateInit[2], stateInit[1])
+x2, y2 = m(destination[1], destination[0])
+m.scatter([x1, x2], [y1, y2])
+
+
+xi,yi=m(dests2[:n,2],dests2[:n,1])
+m.scatter(xi,yi,c=rgba_colors)
+for i in range(len(Times[:n])):
+    plt.text(xi[i],yi[i],'t=' + "%.2f"%Times[i])
+#    plt.text(xi[i],yi[i], "%.2f"%rgba_colors[i, 3])
 #xline,yline=m([tra[0][2],tra[-1][2]],[tra[0][1],tra[-1][1]])
 #m.plot(xline,yline,color='blue')
 m.fillcontinents()
