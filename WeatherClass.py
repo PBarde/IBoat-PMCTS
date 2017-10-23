@@ -17,9 +17,7 @@ from scipy.interpolate import RegularGridInterpolator as rgi
 
 
 class Weather:
-    """
-    .. class::    Weather
-    
+    """   
         This class is supposed to be used on GrAD's server files. No warranty however.
         class constructor,by default sets all attributes to None.
         lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.
@@ -73,17 +71,23 @@ class Weather:
     @classmethod
     def load(cls, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
         """
-        .. method :: load
-
-            **class method**, takes a file path where an Weather object is saved and loads it into the script.
-            If no lat or lon boundaries are defined it takes the whole span present in the saved object.
-            If no number of time step is defined it takes the whole span present if the saved object
-            (but not more than 81 the value for GrAD files)
-
-            * **path** - *string* : path to file of saved Weather object\n
-            * **latBound** - *list of int* : [minlat, maxlat], the largest span is [-90,90]\n
-            * **lonBound** - *list of int* : [minlon, maxlon], the largest span is [0,360]\n
-            * **nbTimes** - *int* : number of frames to load
+        Takes a file path where a Weather object is saved and loads it into the script.
+        
+        If no lat or lon boundaries are defined, it takes the whole span present in the saved object.
+        
+        If no number of time step is defined it takes the whole span present if the saved object
+        (but not more than 81 the value for GrAD files)
+        
+        Parameters
+        ----------
+        path : string :
+            path to file of saved Weather object
+        latBound : list of int:
+            [minlat, maxlat], the largest span is [-90,90]
+        lonBound : list of int:
+            [minlon, maxlon], the largest span is [0,360]
+        nbTimes : int :
+            number of frames to load
         """
         filehandler = open(path, 'rb')
         obj = pickle.load(filehandler)
@@ -94,13 +98,14 @@ class Weather:
     @classmethod
     def download(cls, url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
         """
-        .. method :: download
-
-            **class method**, downloads Weather object from url server and writes it into path file.
-
-
-            * **url** - *string* : url to server (designed for GrAD server)\n
-            * **other params** : same as load method.
+        downloads Weather object from url server and writes it into path file.
+        
+        Parameters
+        ----------
+        url : string:
+            url to server (designed for GrAD server)
+        other parameters :
+            same as load method.
 
         """
 
@@ -239,6 +244,40 @@ class Weather:
         plt.show()
 
         return plt
+    
+    def plotMultipleQuiver(self, otherWeather,proj='mill', res='i', instant=0, Dline=5, density=1):
+        """
+        to plot whole earth params should be close to res='c',Dline=100,density=10
+        """
+        # Plot the field using Basemap.  Start with setting the map
+        # projection using the limits of the lat/lon data itself:
+        plt.figure()
+
+        m = Basemap(projection=proj, lat_ts=10, llcrnrlon=self.lon.min(), \
+                    urcrnrlon=self.lon.max(), llcrnrlat=self.lat.min(), urcrnrlat=self.lat.max(), \
+                    resolution=res)
+
+        x, y = m(*np.meshgrid(self.lon, self.lat))
+
+        # m.pcolormesh(x,y,self.wMag[instant],shading='flat',cmap=plt.cm.jet)
+        m.quiver(x[0::density, 0::density], y[0::density, 0::density], self.u[instant, 0::density, 0::density],
+                 self.v[instant, 0::density, 0::density],color='black')
+        
+        x, y = m(*np.meshgrid(otherWeather.lon, otherWeather.lat))
+        m.quiver(x[0::density, 0::density], y[0::density, 0::density], otherWeather.u[instant, 0::density, 0::density],
+                 otherWeather.v[instant, 0::density, 0::density], color = 'red')
+        # m.colorbar(location='right')
+        m.drawcoastlines()
+        m.fillcontinents()
+        m.drawmapboundary()
+        m.drawparallels(self.lat[0::Dline], labels=[1, 0, 0, 0])
+        m.drawmeridians(self.lon[0::Dline], labels=[0, 0, 0, 1])
+        #        m.drawparallels(self.latGrid[0::Dline],labels=[1,0,0,0])
+        #        m.drawmeridians(self.lonGrid[0::Dline],labels=[0,0,0,1])
+        plt.title('Wind amplitude and direction in [m/s] at time : ' + str(self.time[instant]) + ' days')
+        plt.show()
+
+        return plt
 
     def plotColorQuiver(self, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
@@ -259,7 +298,6 @@ class Weather:
                     resolution=res)
 
         x, y = m(*np.meshgrid(self.lon, self.lat))
-
         m.pcolormesh(x, y, self.wMag[instant], shading='flat', cmap=plt.cm.jet)
         m.quiver(x[0::density, 0::density], y[0::density, 0::density], self.u[instant, 0::density, 0::density],
                  self.v[instant, 0::density, 0::density])
