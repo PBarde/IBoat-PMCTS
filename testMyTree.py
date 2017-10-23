@@ -44,8 +44,8 @@ Wavg.time = Wavg.time - Tini
 # Tf=len(times)
 Tf = 24 * 5
 times = np.arange(0, Tf * HOURS_TO_DAY, 1 * HOURS_TO_DAY)
-lats = np.arange(Wavg.lat[0],Wavg.lat[-1], 0.05)
-lons = np.arange(Wavg.lon[0], Wavg.lon[-1], 0.05)
+lats = np.arange(Wavg.lat[0],Wavg.lat[-1], 1.05)
+lons = np.arange(Wavg.lon[0], Wavg.lon[-1], 1.05)
 
 stateInit = [0, 47.5, -3.5 + 360]
 
@@ -104,7 +104,7 @@ dests2=np.array(dests2)
 Tmean = np.mean(Times)
 print('Number of Boat that arrived : ' + str(len(Times)))
 #%%
-m = Sim.preparePlotTraj2(stateInit,proj='aeqd')
+m = Sim.prepareBaseMap(centerOfMap=stateInit[1:],proj='aeqd')
 # Azimuthal Equidistant Projection
 #The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
 #projection. So, for the specified point, all points that lie on a circle around this point are equidistant
@@ -125,7 +125,7 @@ Sim.plotTraj(dests2, m, scatter=True,color=rgba_colors)
 #%%
 n=len(Times)
 
-m = Sim.preparePlotTraj2([0]+destination,proj='aeqd',dl=.005,dh=.005)
+m = Sim.prepareBaseMap(centerOfMap=destination,proj='aeqd',dl=.005,dh=.005)
 # Azimuthal Equidistant Projection
 #The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
 #projection. So, for the specified point, all points that lie on a circle around this point are equidistant

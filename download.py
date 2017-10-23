@@ -9,8 +9,8 @@ Created on Mon May 22 14:33:38 2017
 from WeatherClass import Weather
 
 
-mydate='20170519'
-website='http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20170923/gfs_0p25_00z'
+mydate='20171015'
+website='http://nomads.ncep.noaa.gov:9090/dods/gfs_0p25/gfs20171015/gfs_0p25_00z'
 #modelcycle='00'
 #resolution='0p25'
 url=website
@@ -30,4 +30,4 @@ url=website
 #+mydate+'/gespr_'+modelcycle+'z'
 pathToSaveObj='./data/'+ 'test2'
 #mydate+'_'+modelcycle+'ens.obj'
-Weather.download(url,pathToSaveObj,latBound=latBound,lonBound=lonBound,ens=True)
+Weather.download(url,pathToSaveObj,latBound=latBound,lonBound=lonBound)

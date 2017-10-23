@@ -42,7 +42,7 @@ Sim = Simulator(times, lats, lons, Wavg, stateInit)
 
 #%%
 
-map2=Sim.preparePlotTraj2(stateInit,Dline=10)
+map2=Sim.prepareBaseMap(proj='aeqd',centerOfMap=stateInit[1:],Dline=10)
 traj=1
 
 for tj in range(traj):

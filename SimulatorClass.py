@@ -14,28 +14,12 @@ from mpl_toolkits.basemap import Basemap
 from matplotlib import animation
 from math import sin,cos,asin,atan2,acos,pi
 from math import radians as rad
-from bisect import bisect_left
 
-# boat dynamic parameters
-FIT_VELOCITY=((-0.0310198207067136,-0.0600881995286002,0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), \
-          (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07,0), \
-          (-0.000370260554113750, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08,0,0),\
-          (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08,0,0,0),\
-          (-2.91900968067076e-08, -1.67287818401469e-09,0,0,0,0),\
-          (6.34463723894578e-11,0,0,0,0,0))
-POLAR_MAX_WIND_MAG = 19.1
-POLAR_MIN_POFSAIL = 35
-POLAR_MAX_POFSAIL = 160
-BOAT_UNCERTAINTY_COEFF = 0.2
-#BOAT_UNCERTAINTY_COEFF = 0
-#BOAT_MAX_SPEED = 2.5 #m/s
-#BOAT_UNCERTAINTY_COEFF = 0.
 
 """MUST BE SORTED"""
 ACTIONS = np.arange(0,360,45) 
 ACTIONS=tuple(ACTIONS)
 ACTIONS_DP=tuple(np.arange(0,360,1))
-
 
 DAY_TO_SEC=24*60*60
 EARTH_RADIUS = 6371e3
@@ -43,69 +27,70 @@ DESTINATION_ANGLE=rad(0.005)
                         
 class Simulator :
         """
-    .. class::    Simulator
+      Class emboding the boat and weather interactions with also the tools required\
+      to do projection on earth surface. For now, only used by the MCTS tree search. 
     
-        Description of the class
-        
-        * .. attribute :: times : 
-                    
-            time of the simulation in days: array
-                
-        * .. attribute :: lons :
-            
-            longitudes in degree : array or list comprised in [0 : 360]. 
-            
-        * .. attribute :: lats :
-            
-            latitudes in degree : array or list comprised in [-90 : 90]. 
-            
-        * .. attribute :: state :
-            
-            current state of the boat : array [time, lat, lon]
-        
-        * .. attribute :: prevState :
-            
-            previous state of the boat : array [time, lat, lon]
-            
-        * .. attribute :: uWindAvg :
-            
-            east wind velocity interpolator
 
-        * .. attribute :: vWindAvg :
-            
-            north wind velocity interpolator    
-            
-        * .. method :: reset(stateInit = [time, lat, lon])
-            
-            reset the boat to a specific state
+      Attributes
+      ----------
         
-        * .. method :: getDistAndBearing(position = [lat, lon], destination = [lat, lon])
+      times : numpy array :
+          Vector of the instants used for the simulation in days. 
+      
+      lons : numpy array :
+          Longitudes in degree in [0 , 360].
             
-            returns the distance and the bearing to get from 'position' to 'destination'
+      lats : numpy array :
+          Latitudes in degree in [-90 : 90]. 
             
-        * .. method :: getDestination(distance, bearing, departure = [lat, lon])
+      state : list :
+          Current state [time, lat, lon] of the boat in (days,degree,degree)
+
+      prevState : list :
+          Previous state [time, lat, lon] of the boat in (days,degree,degree)
         
-            returns the destination point, when the departure, the distance and
-            the bearing is given. 
+      uWindAvg : scipy.interpolate.interpolate.RegularGridInterpolator :
+          Interpolator for the wind velocity blowing toward West.\
+          Generated at initialisation. 
+          
+      vWindAvg : scipy.interpolate.interpolate.RegularGridInterpolator :
+          Interpolator for the wind velocity blowing toward North.
+          Generated at initialisation. 
+          
+      Methods
+      ---------
+      
+      reset : 
+        Resets the boat to a specific state.
             
-        * .. method :: getWind 
-        
-            returns the wind [uAvg, vAvg] at the actual state (time and position)
-        
-        * .. method :: doStep(action) 
-        
-            Does one iteration of the simulation (one time step) taking into
-            account the given 'action'.  Updates and returns the new boat state.
+      getDistAndBearing : 
+        Returns the distance and the initial bearing to follow to go to\
+        a destination following a great circle trajectory (orthodrome). Link to\
+        documentation http://www.movable-type.co.uk/scripts/latlong.html
             
-        * .. method :: preparePlotTraj
-        
-            prepares the figure to plot a trajectory. Based on basemap.
-            Default: Miller Projection
+      getDestination :
+        Returns the destination point following a orthodrome trajectory for a given\
+        bearing and distance. Link to\
+        documentation http://www.movable-type.co.uk/scripts/latlong.html
             
-        * .. method :: preparePlotTraj2(action) 
+      getWind :
+        Returns the wind at the current simulator state.
         
-            prepares the figure to plot a trajectory. Based on basemap.
-            Default: Miller Projection
+      doStep : 
+        Does one iteration of the simulation (one time step) following a provided action.\
+        Updates and returns the new boat state.
+        
+      fromGeoToCartesian :
+        Transforms geographic coordinates to cartesian coordinates. 
+            
+      prepareBaseMap :
+        Prepares a figure and a BaseMap projection to plot a trajectory. Based on mpl_toolkits.basemap.
+        
+      plotTraj :
+        Projects and plot a trajectory.
+        
+      animateTraj : 
+        Animates a trajectory on a map with the corresponding wind. 
     """
     
         def __init__(self,times,lats,lons,WeatherAvg,stateInit) :
@@ -205,7 +190,7 @@ class Simulator :
             
             #We get speed from wind on sail
             pOfSail=abs((windAng+180)%360-action)
-            boatSpeedDet=Boat.getDeterDyn(pOfSail,windMag,FIT_VELOCITY)
+            boatSpeedDet=Boat.getDeterDyn(pOfSail,windMag,Boat.FIT_VELOCITY)
             boatSpeed = Boat.addUncertainty(boatSpeedDet)
             
             # We integrate it
@@ -219,25 +204,6 @@ class Simulator :
             self.state[0],self.state[1],self.state[2]=self.state[0]+1,newLat,newLon
             
             return self.state
-            
-        @staticmethod
-        def takeClosest(myList, myNumber):
-            """
-            Assumes myList is sorted. Returns closest value to myNumber.
-        
-            If two numbers are equally close, return the smallest number.
-            """
-            pos = bisect_left(myList, myNumber)
-            if pos == 0:
-                return myList[0]
-            if pos == len(myList):
-                return myList[-1]
-            before = myList[pos - 1]
-            after = myList[pos]
-            if after - myNumber < myNumber - before:
-               return after
-            else:
-               return before
         
         
         @staticmethod
@@ -250,7 +216,7 @@ class Simulator :
           return [x,y,z]
           
         
-        def preparePlotTraj(self,proj='mill',res='i',Dline=5) :
+        def prepareBaseMap(self,proj='mill',res='i',Dline=5,dl=1.5,dh=1,centerOfMap=None) :
             """
             Prepares the figure to plot a trajectory. Based on basemap.
             
@@ -263,51 +229,31 @@ class Simulator :
             Dline : int:
                 sampling size for the lats and lons arrays (reduce dimensions) 
             """
-            plt.figure()
-            map=Basemap(projection=proj,llcrnrlon=self.lons.min(), \
-              urcrnrlon=self.lons.max(),llcrnrlat=self.lats.min(),urcrnrlat=self.lats.max(), \
-              resolution=res)
-            map.drawcoastlines()
-#                map.fillcontinents()
-            map.drawmapboundary()
-            map.drawparallels(self.lats[0::Dline],labels=[1,0,0,0])
-            map.drawmeridians(self.lons[0::2*Dline],labels=[0,0,0,1])
-            return map
+            if proj == 'mill' : 
+              plt.figure()
+              basemap=Basemap(projection=proj,llcrnrlon=self.lons.min(), \
+                urcrnrlon=self.lons.max(),llcrnrlat=self.lats.min(),urcrnrlat=self.lats.max(), \
+                resolution=res)
+              basemap.drawcoastlines()
+              basemap.fillcontinents()
+              basemap.drawmapboundary()
+              basemap.drawparallels(self.lats[0::Dline],labels=[1,0,0,0])
+              basemap.drawmeridians(self.lons[0::2*Dline],labels=[0,0,0,1])
+              
+            elif proj=='aeqd' : 
+              plt.figure()
+              wdth = (self.lons[-1]-self.lons[0])*dh*math.pi/180*EARTH_RADIUS
+              hght = (self.lats[-1]-self.lats[0])*dl*math.pi/180*EARTH_RADIUS
+              basemap = Basemap(width=wdth,height=hght,projection='aeqd',lat_0=centerOfMap[0],lon_0=centerOfMap[1],resolution=res)
+              basemap.drawcoastlines()
+              basemap.fillcontinents()
+              basemap.drawmapboundary()
+              basemap.drawparallels(self.lats[0::Dline],labels=[1,0,0,0])
+              basemap.drawmeridians(self.lons[0::2*Dline],labels=[0,0,0,1])
+              
+            return basemap
         
-        def preparePlotTraj2(self,stateInit,proj='aeqd',res='i',Dline=5,dl=1.5,dh=1) : 
-            """
-            Prepares the figure to plot a trajectory. Based on basemap.
-            
-            Parameters
-            ----------
-            stateInit : array or list:
-                The map is based on this position.
-            proj : str:
-                Name of the projection (default Azimuthal Equidistant)
-            res : str:
-                Resolution (see Basemap doc)
-            Dline : int:
-                sampling size for the lats and lons arrays (reduce dimensions)
-            dl : float:
-                ???
-            dh : float:
-                ???
-                        
-            """
-            
-            plt.figure()
-            wdth = (self.lons[-1]-self.lons[0])*dh*math.pi/180*EARTH_RADIUS
-            hght = (self.lats[-1]-self.lats[0])*dl*math.pi/180*EARTH_RADIUS
-            map = Basemap(width=wdth,height=hght,projection='aeqd',lat_0=stateInit[1],lon_0=stateInit[2],resolution=res)
-
-            map.drawcoastlines()
-#                map.fillcontinents()
-            map.drawmapboundary()
-            map.drawparallels(self.lats[0::Dline],labels=[1,0,0,0])
-            map.drawmeridians(self.lons[0::2*Dline],labels=[0,0,0,1])
-            return map
-        
-        def plotTraj(self,states,map,quiv=False,heading=225,scatter=False,color='black'):
+        def plotTraj(self,states,basemap,quiv=False,heading=225,scatter=False,color='black'):
             """
             Draw the states on the map
             
@@ -332,14 +278,14 @@ class Simulator :
             posLat=states[:,1]
             posLon=states[:,2]
             times=self.times[states[:,0].astype(int)]
-            x,y=map(posLon,posLat)
+            x,y=basemap(posLon,posLat)
             
             if scatter :
-                map.scatter(x[0:-1:2],y[0:-1:2],zorder=0,c=color,s=100)
+                basemap.scatter(x,y,zorder=0,c=color,s=100)
                 
             else:
-                map.plot(x,y,markersize=4,zorder=0,color=color)
-                map.scatter(x[-1],y[-1],zorder=1,color=color)
+                basemap.plot(x,y,markersize=4,zorder=0,color=color)
+                basemap.scatter(x[-1],y[-1],zorder=1,color=color)
                 
             
             if quiv : 
@@ -350,7 +296,7 @@ class Simulator :
                 
                 print('u= ' + str(u) + '\n')
                 print('v= ' + str(v) + '\n')
-                map.quiver(x,y,u,v,zorder=2,width=0.004,color='teal')
+                basemap.quiver(x,y,u,v,zorder=2,width=0.004,color='teal')
                 
             if quiv : 
                 return u,v
@@ -393,10 +339,7 @@ class Simulator :
                 """
                 Q.set_UVC(windAvg.u[instant+t,0::density,0::density*2],windAvg.v[instant+t,0::density,0::density*2])
                 T.set_data(x[0:instant+t*3],y[0:instant+t*3])
-#                    S.set_data(x[instant+t*trajSteps],y[instant+t*trajSteps])
                 plt.title('time : ' + str(windAvg.time[instant+t]-windAvg.time[0]) + ' days')       
-#                    plt.T.remove()
-#                    plt.S.remove()
                 return plt
             
             anim = animation.FuncAnimation(fig, update_quiver, frames=range(int(len(states)/3)),fargs=(Q,T,windAvg))
@@ -407,27 +350,63 @@ class Simulator :
             return anim
 
 class Boat : 
+  """
+  Class defining the boat's dynamics. 
+  
+  Constants
+  ---------
+    FIT_VELOCITY : tuple with shape (6,6)
+      Coefficients of the polar fitted with a 5th order two dimensionnal polynomial.
+    
+    POLAR_MAX_WIND_MAG : int
+      Maximal wind magnitude acceptable by the polar fit. If experienced  magnitude is greater,\
+      the wind magnitude is set to POLAR_MAX_WIND_MAG. 
+    
+    POLAR_MIN_POFSAIL : int
+      Minimal point of sail where the boat can sail without tacking.
+    
+    POLAR_MAX_POFSAIL : int
+      Maximal point of sail where the boat can sail without tacking.
       
-#        """ 
-#        CAREFULL ! if pOfSail>180 we must use pOfSail = 360-pOfSail
-#        """
+    UNCERTAINTY_COEFF : int
+      Caracterizes the uncertainty on the boat's dynamics. 
+      
+  Methods
+  -------
+    getDeterDyn : 
+      Returns the deterministic boat velocity for a given wind magnitude and point of sail. 
+    
+  """
+       # boat dynamic parameters
+    FIT_VELOCITY=((-0.0310198207067136,-0.0600881995286002,0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), \
+              (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07,0), \
+              (-0.000370260554113750, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08,0,0),\
+              (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08,0,0,0),\
+              (-2.91900968067076e-08, -1.67287818401469e-09,0,0,0,0),\
+              (6.34463723894578e-11,0,0,0,0,0))
+    POLAR_MAX_WIND_MAG = 19.1
+    POLAR_MIN_POFSAIL = 35
+    POLAR_MAX_POFSAIL = 160
+    UNCERTAINTY_COEFF = 0.2
+    
     @staticmethod
     def getDeterDyn(pOfSail,windMag,fitCoeffs) :
+      """ bla bla"""
         
         if pOfSail > 180 : 
             pOfSail = 360-pOfSail
             
-        if windMag > POLAR_MAX_WIND_MAG :
-            windMag=POLAR_MAX_WIND_MAG
+        if windMag > Boat.POLAR_MAX_WIND_MAG :
+            windMag=Boat.POLAR_MAX_WIND_MAG
             
-        if pOfSail < POLAR_MIN_POFSAIL :
-            speedAtMinPofSail=math.cos(math.pi*POLAR_MIN_POFSAIL/180)* \
-                                      np.polynomial.polynomial.polyval2d(POLAR_MIN_POFSAIL,windMag,fitCoeffs)
+        if pOfSail < Boat.POLAR_MIN_POFSAIL :
+            speedAtMinPofSail=math.cos(math.pi*Boat.POLAR_MIN_POFSAIL/180)* \
+                                      np.polynomial.polynomial.polyval2d(Boat.POLAR_MIN_POFSAIL,windMag,fitCoeffs)
             return speedAtMinPofSail/(math.cos(math.pi*pOfSail/180))
         
-        elif pOfSail>POLAR_MAX_POFSAIL : 
-            speedAtMaxPofSail=math.cos(math.pi*POLAR_MAX_POFSAIL/180)* \
-                                      np.polynomial.polynomial.polyval2d(POLAR_MAX_POFSAIL,windMag,fitCoeffs)
+        elif pOfSail>Boat.POLAR_MAX_POFSAIL : 
+            speedAtMaxPofSail=math.cos(math.pi*Boat.POLAR_MAX_POFSAIL/180)* \
+                                      np.polynomial.polynomial.polyval2d(Boat.POLAR_MAX_POFSAIL,windMag,fitCoeffs)
             return speedAtMaxPofSail/(math.cos(math.pi*pOfSail/180))
         
         else : 
@@ -436,7 +415,7 @@ class Boat :
     @staticmethod
     def addUncertainty(boatSpeed):
         
-        boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*BOAT_UNCERTAINTY_COEFF)
+        boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*Boat.UNCERTAINTY_COEFF)
 
         return boatSpeedNoisy
 
