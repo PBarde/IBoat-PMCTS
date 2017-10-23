@@ -11,10 +11,10 @@ from decimal import Decimal
 V_MAX_BOAT = 3  #""" in m/s """
 EARTH_RADIUS = 6371e3 #""" in m """
 #GRID_RES=0.25 * math.pi/180  #""" in deg """
-GRID_RES=0.05 * math.pi/180  #""" in deg """
-HORIZON = 10 #""" in days """
+GRID_RES=1 * math.pi/180  #""" in deg """
+HORIZON = 6 #""" in days """
 #MDP_TIME_STEP = 3*60*60 #in s
-MDP_TIME_STEP = 60*60 #in s
+MDP_TIME_STEP = 6*60*60 #in s
 
 MtoNM=1/1852
 MpStoKnots=1.943844
