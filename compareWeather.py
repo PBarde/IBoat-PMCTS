@@ -10,7 +10,9 @@ from SimulatorClass import Simulator
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
-from matplotlib import animation
+from mpl_toolkits.basemap import Basemap
+
+
 matplotlib.rcParams.update({'font.size': 16})
 
 #%%
@@ -34,14 +36,59 @@ for i in range(2):
 #Weather.download(url[1],pathToSaveObj[1],latBound=latBound,lonBound=lonBound,timeSteps=[0,81])
 
 # %%
-weathers = []
-for i in range(2):
-    # We load the forecast files
-    weathers.append(Weather.load(pathToSaveObj[i]))
+weather025 = Weather.load(pathToSaveObj[0])
+weather1 = Weather.load(pathToSaveObj[1])
 
-weathers[0].plotMultipleQuiver(otherWeather = weathers[1])
+instant = 40
+#weather025.plotMultipleQuiver(otherWeather = weather1)
+time = weather025.time[instant]
+weather1.Interpolators()
+error = np.zeros((len(weather025.lat), len(weather025.lon)))
+interp_u = np.zeros((len(weather025.lat), len(weather025.lon)))
+interp_v = np.zeros((len(weather025.lat), len(weather025.lon)))
 
+for i, lat in enumerate(weather025.lat):
+    for j, lon in enumerate(weather025.lon):
+        if lat>=min(weather1.lat) and lat<=max(weather1.lat) and lon>=min(weather1.lon) and lon<=max(weather1.lon):
+            query_pt = [time, lat, lon]
+            interp_u[i][j] = weather1.uInterpolator(query_pt)
+            interp_v[i][j] = weather1.vInterpolator(query_pt)
+            error[i][j] = np.sqrt((interp_u[i][j] - weather025.u[instant][i][j])**2 + (interp_v[i][j] - weather025.v[instant][i][j])**2)
 
+        else:
+            error[i][j] = float('NaN')
+            
+#error = np.sqrt((interp_u - weather025.u[instant])**2 + (interp_v - weather025.v[instant])**2)
+
+# %% PLOT
+font = {'family': 'normal',
+        'weight': 'bold',
+        'size': 22}
+proj='mill'
+res='i'
+Dline=5
+density=1
+matplotlib.rc('font', **font)
+plt.figure()
+
+m = Basemap(projection=proj, lat_ts=10, llcrnrlon=weather025.lon.min(), \
+            urcrnrlon=weather025.lon.max(), llcrnrlat=weather025.lat.min(), urcrnrlat=weather025.lat.max(), \
+            resolution=res)
+
+x, y = m(*np.meshgrid(weather025.lon, weather025.lat))
+m.pcolormesh(x, y, error, shading='flat', cmap=plt.cm.jet)
+scale = 600/21 * weather025.u[instant].max()
+m.quiver(x, y, weather025.u[instant], weather025.v[instant], scale = scale)
+m.quiver(x,y,interp_u, interp_v, color = 'red', scale = scale)
+
+cbar = m.colorbar(location='right')
+cbar.ax.set_ylabel('Magnitude error m/s')
+m.drawcoastlines()
+m.fillcontinents()
+m.drawmapboundary()
+m.drawparallels(weather025.lat[0::Dline], labels=[1, 0, 0, 0])
+m.drawmeridians(weather025.lon[0::Dline], labels=[0, 0, 0, 1])
+plt.show()
 
 # %% Initialize the two simulators
 simulators = []
