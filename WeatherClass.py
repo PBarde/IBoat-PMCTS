@@ -42,22 +42,6 @@ class Weather:
         * .. attribute :: v :
             
             velocity toward north.
-            
-        * .. method :: load 
-            
-            loads a Weather object (see doc)
-        
-        * .. method :: download
-            
-            downloads data from server and writes it to Weather object (see doc)
-            
-        * .. method :: crop
-            
-            returns a cropped Weather object's data to the selected range of lon,lat and time steps (see doc)
-            
-        * .. method :: getPolarVel 
-        
-            computes wind magnitude and direction and adds it to the object's attribute
         
     """
 
@@ -78,35 +62,38 @@ class Weather:
         If no number of time step is defined it takes the whole span present if the saved object
         (but not more than 81 the value for GrAD files)
         
-        Parameters
-        ----------
-        path : string :
-            path to file of saved Weather object
-        latBound : list of int:
-            [minlat, maxlat], the largest span is [-90,90]
-        lonBound : list of int:
-            [minlon, maxlon], the largest span is [0,360]
-        nbTimes : int :
-            number of frames to load
+        :param string path: path to file of saved Weather object
+        
+        :param latBound: [minlat, maxlat], the largest span is [-90,90]
+        :type latBound: list of int
+        
+        :param lonBound: [minlon, maxlon], the largest span is [0,360]
+        :type lonBound: list of int
+        
+        :param int nbTimes: number of frames to load
+        
+        :return: loaded object
+        :rtype: WeatherClass
+            
         """
         filehandler = open(path, 'rb')
         obj = pickle.load(filehandler)
         filehandler.close()
         Cropped = obj.crop(latBound, lonBound, timeSteps)
         return Cropped
-
+    
     @classmethod
     def download(cls, url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
         """
         downloads Weather object from url server and writes it into path file.
         
-        Parameters
-        ----------
-        url : string:
-            url to server (designed for GrAD server)
-        other parameters :
-            same as load method.
-
+        :param string url: url to server (designed for GrAD server)    
+        
+        :param other : same as load method.
+        
+        :return: the object corresponding to the downloaded weather
+        :rtype: WeatherClass
+        
         """
 
         file = netCDF4.Dataset(url)
@@ -147,9 +134,7 @@ class Weather:
 
     def getPolarVel(self):
         """
-                 .. method :: getPolarVel 
-        
-            computes wind magnitude and direction and adds it to the object's attribute
+        Computes wind magnitude and direction and adds it to the object's attribute
         """
         self.wMag = np.empty(np.shape(self.u))
         self.wAng = np.empty(np.shape(self.u))
@@ -161,6 +146,16 @@ class Weather:
 
     @staticmethod
     def returnPolarVel(u, v):
+        """
+        Computes wind magnitude and direction from the velocities u and v
+        
+        :param float u: velocity toward east
+        
+        :param float v: velocity toward north
+        
+        :return: (magnitude, direction)
+        :rtype: (float, float)
+        """
 
         mag = (u ** 2 + v ** 2) ** 0.5
         ang = (180 / math.pi * math.atan2(u, v)) % 360
@@ -168,16 +163,22 @@ class Weather:
 
     def crop(self, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
         """
-        .. method :: crop
+        Returns a cropped Weather object's data to the selected range of lon,lat and time steps.
+        If no lat or lon boundaries are defined it takes the whole span present in the object.
+        If no number of time step is defined it takes the whole span present if the object
+        (but not more than 81 the value for GrAD files)
 
-            Returns a cropped Weather object's data to the selected range of lon,lat and time steps.
-            If no lat or lon boundaries are defined it takes the whole span present in the object.
-            If no number of time step is defined it takes the whole span present if the object
-            (but not more than 81 the value for GrAD files)
-
-            * **latBound** - *list of int* : [minlat, maxlat], the largest span is [-90,90]\n
-            * **lonBound** - *list of int* : [minlon, maxlon], the largest span is [0,360]\n
-            * **nbTimes** - *int* : number of frames to load
+        :param latBound: [minlat, maxlat], the largest span is [-90,90]
+        :type latBound: list of int
+        
+        :param lonBound: [minlon, maxlon], the largest span is [0,360]
+        :type lonBound: list of int
+        
+        :param int nbTimes: number of frames to load
+        
+        :return: the cropped object
+        :rtype: WeatherClass
+        
         """
 
         if (latBound != [-90, 90] or lonBound != [0, 360]):
@@ -356,6 +357,10 @@ class Weather:
         return anim
 
     def Interpolators(self):
+        """ Add the u and v interpolators to the object (two new attributes : 
+            uInterpolator and vInterpolator)
+        
+        """
         self.uInterpolator = rgi((self.time, self.lat, self.lon), self.u)
         self.vInterpolator = rgi((self.time, self.lat, self.lon), self.v)
 
