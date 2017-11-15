@@ -1,0 +1,591 @@
+
+
+<!doctype html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Package Model &#8212; IBOAT MCTS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Package Solver" href="package2.html" />
+    <link rel="prev" title="Welcome to IBOAT MCTS’s documentation!" href="index.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="package2.html" title="Package Solver"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to IBOAT MCTS’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IBOAT MCTS 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/IBOAT_logo1.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Package Model</a><ul>
+<li><a class="reference internal" href="#module-WeatherClass">Weather</a></li>
+<li><a class="reference internal" href="#module-SimulatorClass">Simulator</a><ul>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to IBOAT MCTS’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="package2.html"
+                        title="next chapter">Package Solver</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/package1.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="package-model">
+<h1>Package Model<a class="headerlink" href="#package-model" title="Permalink to this headline">¶</a></h1>
+<p>This package contains blabla.</p>
+<div class="section" id="module-WeatherClass">
+<span id="weather"></span><h2>Weather<a class="headerlink" href="#module-WeatherClass" title="Permalink to this headline">¶</a></h2>
+<p>Created on Thu Apr 27 18:11:08 2017</p>
+<p>&#64;author: paul</p>
+<dl class="class">
+<dt id="WeatherClass.Weather">
+<em class="property">class </em><code class="descclassname">WeatherClass.</code><code class="descname">Weather</code><span class="sig-paren">(</span><em>lat=None</em>, <em>lon=None</em>, <em>time=None</em>, <em>u=None</em>, <em>v=None</em>, <em>wMag=None</em>, <em>wAng=None</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class is supposed to be used on GrAD’s server files. No warranty however.
+class constructor,by default sets all attributes to None.
+lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lat</strong> (<em>numpy.array</em>) – latitude in degree: array or list comprised in [-90 : 90]</li>
+<li><strong>lon</strong> (<em>numpy.array</em>) – longitude in degree : array or list comprised in [0 : 360]</li>
+<li><strong>time</strong> (<em>numy.array</em>) – in days : array or list. Time is given in days (GrADS gives 81 times steps of 3hours so 
+it is 10.125 days with time steps of 0.125 days)</li>
+<li><strong>u</strong> – velocity toward east in m/s. Must be of shape (ntime, nlat, nlon)</li>
+<li><strong>v</strong> – velocity toward north.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="WeatherClass.Weather.Interpolators">
+<code class="descname">Interpolators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.Interpolators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the u and v interpolators to the object (two new attributes : 
+uInterpolator and vInterpolator)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.animateQuiver">
+<code class="descname">animateQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em>, <em>interval=50</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.animateQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>to plot whole earth params should be close to res=’c’,Dline=100,density=10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.crop">
+<code class="descname">crop</code><span class="sig-paren">(</span><em>latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a cropped Weather object’s data to the selected range of lon,lat and time steps.
+If no lat or lon boundaries are defined it takes the whole span present in the object.
+If no number of time step is defined it takes the whole span present if the object
+(but not more than 81 the value for GrAD files)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>latBound</strong> (<em>list of int</em>) – [minlat, maxlat], the largest span is [-90,90]</li>
+<li><strong>lonBound</strong> (<em>list of int</em>) – [minlon, maxlon], the largest span is [0,360]</li>
+<li><strong>nbTimes</strong> (<em>int</em>) – number of frames to load</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the cropped object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#module-WeatherClass" title="WeatherClass">WeatherClass</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="WeatherClass.Weather.download">
+<em class="property">classmethod </em><code class="descname">download</code><span class="sig-paren">(</span><em>url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.download" title="Permalink to this definition">¶</a></dt>
+<dd><p>downloads Weather object from url server and writes it into path file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>url</strong> (<em>string</em>) – url to server (designed for GrAD server)</td>
+</tr>
+</tbody>
+</table>
+<p>:param other : same as load method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the object corresponding to the downloaded weather</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="#module-WeatherClass" title="WeatherClass">WeatherClass</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.getPolarVel">
+<code class="descname">getPolarVel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.getPolarVel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes wind magnitude and direction and adds it to the object’s attribute</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="WeatherClass.Weather.load">
+<em class="property">classmethod </em><code class="descname">load</code><span class="sig-paren">(</span><em>path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes a file path where a Weather object is saved and loads it into the script.</p>
+<p>If no lat or lon boundaries are defined, it takes the whole span present in the saved object.</p>
+<p>If no number of time step is defined it takes the whole span present if the saved object
+(but not more than 81 the value for GrAD files)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>path</strong> (<em>string</em>) – path to file of saved Weather object</li>
+<li><strong>latBound</strong> (<em>list of int</em>) – [minlat, maxlat], the largest span is [-90,90]</li>
+<li><strong>lonBound</strong> (<em>list of int</em>) – [minlon, maxlon], the largest span is [0,360]</li>
+<li><strong>nbTimes</strong> (<em>int</em>) – number of frames to load</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">loaded object</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#module-WeatherClass" title="WeatherClass">WeatherClass</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.plotColorQuiver">
+<code class="descname">plotColorQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.plotColorQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>to plot whole earth params should be close to res=’c’,Dline=100,density=10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.plotMultipleQuiver">
+<code class="descname">plotMultipleQuiver</code><span class="sig-paren">(</span><em>otherWeather</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.plotMultipleQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>to plot whole earth params should be close to res=’c’,Dline=100,density=10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="WeatherClass.Weather.plotQuiver">
+<code class="descname">plotQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.plotQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>to plot whole earth params should be close to res=’c’,Dline=100,density=10</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="WeatherClass.Weather.returnPolarVel">
+<em class="property">static </em><code class="descname">returnPolarVel</code><span class="sig-paren">(</span><em>u</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherClass.Weather.returnPolarVel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes wind magnitude and direction from the velocities u and v</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>u</strong> (<em>float</em>) – velocity toward east</li>
+<li><strong>v</strong> (<em>float</em>) – velocity toward north</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">(magnitude, direction)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float, float)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-SimulatorClass">
+<span id="simulator"></span><h2>Simulator<a class="headerlink" href="#module-SimulatorClass" title="Permalink to this headline">¶</a></h2>
+<p>Created on Tue May 16 16:24:21 2017</p>
+<p>&#64;author: paul</p>
+<p>Module encapsulating all the classes required to run a simulation.</p>
+<div class="section" id="constants">
+<h3>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h3>
+<dl class="docutils">
+<dt>ACTIONS <span class="classifier-delimiter">:</span> <span class="classifier">np.array()</span> <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
+<dd>Actions that are autorized i.e. headings the boat can follow.</dd>
+<dt>DAY_TO_SEC </dt>
+<dd>_</dd>
+<dt>EARTH_RADIUS </dt>
+<dd>_</dd>
+<dt>DESTINATION_ANGLE <span class="classifier-delimiter">:</span> <span class="classifier">float</span> <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
+<dd>Angle in radians defining the destination’s zone.</dd>
+</dl>
+<dl class="class">
+<dt id="SimulatorClass.Boat">
+<em class="property">class </em><code class="descclassname">SimulatorClass.</code><code class="descname">Boat</code><a class="headerlink" href="#SimulatorClass.Boat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class defining the boat’s dynamics.</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>FIT_VELOCITY <span class="classifier-delimiter">:</span> <span class="classifier">tuple with shape (6,6)</span></dt>
+<dd>Coefficients of the polar fitted with a 5th order two dimensionnal polynomial.</dd>
+<dt>POLAR_MAX_WIND_MAG <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Maximal wind magnitude acceptable by the polar fit. If experienced  magnitude is greater,      the wind magnitude is set to POLAR_MAX_WIND_MAG.</dd>
+<dt>POLAR_MIN_POFSAIL <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Minimal point of sail where the boat can sail without tacking.</dd>
+<dt>POLAR_MAX_POFSAIL <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Maximal point of sail where the boat can sail without tacking.</dd>
+<dt>UNCERTAINTY_COEFF <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
+<dd>Caracterizes the uncertainty on the boat’s dynamics.</dd>
+</dl>
+</div></blockquote>
+<blockquote>
+<div><dl class="docutils">
+<dt>getDeterDyn <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
+<dd>Returns the deterministic boat velocity for a given wind magnitude and point of sail.</dd>
+<dt>addUncertainty <span class="classifier-delimiter">:</span> <span class="classifier"></span></dt>
+<dd>Returns the noisy boat velocity.</dd>
+</dl>
+</div></blockquote>
+<dl class="attribute">
+<dt id="SimulatorClass.Boat.FIT_VELOCITY">
+<code class="descname">FIT_VELOCITY</code><em class="property"> = ((-0.0310198207067136, -0.0600881995286002, 0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07, 0), (-0.00037026055411375, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08, 0, 0), (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08, 0, 0, 0), (-2.91900968067076e-08, -1.67287818401469e-09, 0, 0, 0, 0), (6.34463723894578e-11, 0, 0, 0, 0, 0))</em><a class="headerlink" href="#SimulatorClass.Boat.FIT_VELOCITY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="SimulatorClass.Boat.POLAR_MAX_POFSAIL">
+<code class="descname">POLAR_MAX_POFSAIL</code><em class="property"> = 160</em><a class="headerlink" href="#SimulatorClass.Boat.POLAR_MAX_POFSAIL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="SimulatorClass.Boat.POLAR_MAX_WIND_MAG">
+<code class="descname">POLAR_MAX_WIND_MAG</code><em class="property"> = 19.1</em><a class="headerlink" href="#SimulatorClass.Boat.POLAR_MAX_WIND_MAG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="SimulatorClass.Boat.POLAR_MIN_POFSAIL">
+<code class="descname">POLAR_MIN_POFSAIL</code><em class="property"> = 35</em><a class="headerlink" href="#SimulatorClass.Boat.POLAR_MIN_POFSAIL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="SimulatorClass.Boat.UNCERTAINTY_COEFF">
+<code class="descname">UNCERTAINTY_COEFF</code><em class="property"> = 0.2</em><a class="headerlink" href="#SimulatorClass.Boat.UNCERTAINTY_COEFF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="SimulatorClass.Boat.addUncertainty">
+<em class="property">static </em><code class="descname">addUncertainty</code><span class="sig-paren">(</span><em>boatSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Boat.addUncertainty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="SimulatorClass.Boat.getDeterDyn">
+<em class="property">static </em><code class="descname">getDeterDyn</code><span class="sig-paren">(</span><em>pOfSail</em>, <em>windMag</em>, <em>fitCoeffs</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Boat.getDeterDyn" title="Permalink to this definition">¶</a></dt>
+<dd><p>bla bla</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="SimulatorClass.Simulator">
+<em class="property">class </em><code class="descclassname">SimulatorClass.</code><code class="descname">Simulator</code><span class="sig-paren">(</span><em>times</em>, <em>lats</em>, <em>lons</em>, <em>WeatherAvg</em>, <em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class emboding the boat and weather interactions with also the tools required    to do projection on earth surface. For now, only used by the MCTS tree search.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>times</strong> (<em>numpy.array</em>) – Vector of the instants used for the simulation         in days.</li>
+<li><strong>array lons</strong> (<em>numpy</em>) – Longitudes in degree in [0 , 360].</li>
+<li><strong>lats</strong> (<em>numpy.array</em>) – Latitudes in degree in [-90 : 90].</li>
+<li><strong>state</strong> (<em>list</em>) – Current state [time, lat, lon] of the boat in         (days,degree,degree).</li>
+<li><strong>prevState</strong> (<em>list</em>) – Previous state [time, lat, lon] of the boat in         (days,degree,degree).</li>
+<li><strong>uWindAvg</strong> (<em>scipy.interpolate.interpolate.RegularGridInterpolator</em>) – Interpolator for the wind velocity blowing toward West.        Generated at initialisation.</li>
+<li><strong>vWindAvg</strong> (<em>scipy.interpolate.interpolate.RegularGridInterpolator</em>) – Interpolator for the wind velocity blowing toward North.        Generated at initialisation.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="SimulatorClass.Simulator.animateTraj">
+<code class="descname">animateTraj</code><span class="sig-paren">(</span><em>windAvg</em>, <em>states</em>, <em>trajSteps=3</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em>, <em>interval=1</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.animateTraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>A FAIRE
+Animate the Trajectory</p>
+<p>to plot whole earth params should be close to res=’c’,Dline=100,density=10</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.doStep">
+<code class="descname">doStep</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.doStep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does one iteration of the simulation (one time step) following a provided action.        Updates and returns the new boat state. Supposes constant wind during a time step. Also        constant boat speed. Assumes that the boat moves following orthodomes trajectories. This         is correct if the distances covered during the time step is relatively small (and we        are not close to the poles): the orthodrome’s headings do not vary much.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>action</strong> (<em>float</em>) – Boat’s heading in degree.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Reference toward the updated simulator’s state.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">self.state</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="SimulatorClass.Simulator.fromGeoToCartesian">
+<em class="property">static </em><code class="descname">fromGeoToCartesian</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.fromGeoToCartesian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transforms geographic coordinates to cartesian coordinates. The cartesian frame       has its origin at the center of the earth. Its orientation and so on is not explicitely given      since the function is only used to create a plane.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coordinates</strong> (<em>list</em><em>(</em><em>float : lat</em><em>, </em><em>float : lon</em><em>)</em>) – Coordinates in geographical frame.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">x,y,z coordinates.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list(float, float, float)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.getDestination">
+<code class="descname">getDestination</code><span class="sig-paren">(</span><em>distance</em>, <em>bearing</em>, <em>departure</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.getDestination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the destination point following a orthodrome trajectory for a
+given bearing and distance. Link to        documentation <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">http://www.movable-type.co.uk/scripts/latlong.html</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>distance</strong> (<em>float</em>) – Distance in meters to the destination.</li>
+<li><strong>bearing</strong> (<em>float</em>) – Initial bearing of the orthodrome trajectory            starting at departure and ending at destination. In degrees.</li>
+<li><strong>departure</strong> (<em>list</em><em>(</em><em>float : lat</em><em>, </em><em>float : lon</em><em>)</em>) – Departure point of the trajectory.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Destination reached following the othodrome trajectory.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list(float : lat, float : lon)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.getDistAndBearing">
+<code class="descname">getDistAndBearing</code><span class="sig-paren">(</span><em>position</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.getDistAndBearing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the distance and the initial bearing to follow to go to        a destination following a great circle trajectory (orthodrome). Link to        documentation <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">http://www.movable-type.co.uk/scripts/latlong.html</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>position</strong> (<em>list</em><em>(</em><em>float : lat</em><em>, </em><em>float : lon</em><em>)</em>) – Current position of the boat.</li>
+<li><strong>destination</strong> (<em>list</em><em>(</em><em>float : lat</em><em>, </em><em>float : lon</em><em>)</em>) – Point toward which the distance and initial bearing            are computed.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Shortest distance between the two points in meters, and             initial bearing of the orthodrome trajectory in degrees.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float: distance, float: bearing)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.getWind">
+<code class="descname">getWind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.getWind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the wind at the current simulator state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wind toward the East in m/s and wind toward the North in m/s.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(float : uAvg, float : vAvg)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.plotTraj">
+<code class="descname">plotTraj</code><span class="sig-paren">(</span><em>states</em>, <em>basemap</em>, <em>quiv=False</em>, <em>heading=225</em>, <em>scatter=False</em>, <em>color='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.plotTraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the states on the map</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>states</strong> (<em>array</em><em> or </em><em>list</em>) – List of all the state (state is an array)</li>
+<li><strong>basemap</strong> (<em>mpl_toolkits.basemap.Basemap</em>) – Basemap object on which the trajectory will be drawn</li>
+<li><strong>quiv</strong> (<em>boolean</em>) – If True, shows the wind at each time step</li>
+<li><strong>heading</strong> (<em>int</em>) – PAS UTILISE??</li>
+<li><strong>scatter</strong> (<em>boolean</em>) – If True, plots the positions of the beat at            each time step as scatter only</li>
+<li><strong>color</strong> (<em>str</em>) – Color of the trajectory points</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.prepareBaseMap">
+<code class="descname">prepareBaseMap</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>Dline=5</em>, <em>dl=1.5</em>, <em>dh=1</em>, <em>centerOfMap=None</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.prepareBaseMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepares the figure to plot a trajectory. Based on basemap.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>proj</strong> (<em>str</em>) – Name of the projection (default Miller)</li>
+<li><strong>res</strong> (<em>str</em>) – Resolution (see Basemap doc)</li>
+<li><strong>Dline</strong> (<em>int</em>) – sampling size for the lats and lons arrays (reduce dimensions)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The initialized basemap.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mpl_toolkits.basemap.Basemap</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="SimulatorClass.Simulator.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorClass.Simulator.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reset the simulated boat to a specific state.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>stateInit</strong> (<em>list</em>) – State to which the simulator is reinitialized.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pour mettre une jolie note.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="package2.html" title="Package Solver"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to IBOAT MCTS’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">IBOAT MCTS 1.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Fabien Brulport, Paul Barde, Jean-Michel Bellay.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+    </div>
+  </body>
+</html>
