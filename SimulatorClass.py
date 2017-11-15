@@ -48,14 +48,8 @@ class Simulator :
     """
     Class emboding the boat and weather interactions with also the tools required\
     to do projection on earth surface. For now, only used by the MCTS tree search. 
-  
-  
-    Attributes
-    ----------
-      
-    times : numpy array :
-        Vector of the instants used for the simulation in days. 
-    
+
+    :ivar numpy.array times: Vector of the instants used for the simulation in days.
     lons : numpy array :
         Longitudes in degree in [0 , 360].
           
@@ -131,10 +125,9 @@ class Simulator :
         """
         Reset the simulated boat to a specific state.
         
-        Parameters
-        ----------
+        :param list state : State to which the simulator is reinitialized.
         state : list : 
-          State to which the simulator is reinitialized. 
+
         """
         
         self.state=list(stateInit)
