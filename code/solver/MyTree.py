@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from typing import List
 import math
 from math import exp,sqrt,asin
-import SimulatorClass as SimC
+import SimulatorTLKT as SimC
 import random as rand
 from timeit import default_timer as timer
 import numpy as np

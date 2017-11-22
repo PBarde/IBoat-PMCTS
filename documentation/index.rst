@@ -38,9 +38,9 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-   model <package1.rst>
+   model <model.rst>
 
-   solver <package2.rst>
+   solver <solver.rst>
 
 
 Tutorial

@@ -5,8 +5,8 @@ Created on Mon Oct 23 14:28:21 2017
 
 @author: fabien
 """
-from WeatherClass import Weather
-from SimulatorClass import Simulator
+from WeatherTLKT import Weather
+from SimulatorTLKT import Simulator
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib

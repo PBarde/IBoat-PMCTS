@@ -4,18 +4,18 @@ Package Model
 This package contains blabla.
 
 
-Weather
+WeatherTLKT
 ------------------------------
 
-.. automodule:: WeatherClass
+.. automodule:: WeatherTLKT
 	:members:
 	:undoc-members:
 	:show-inheritance: 
 
-Simulator
+SimulatorTLKT
 ------------------------------
 
-.. automodule:: SimulatorClass
+.. automodule:: SimulatorTLKT
 	:members:
 	:undoc-members:
 	:show-inheritance: 

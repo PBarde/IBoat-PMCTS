@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
 import os
-from WeatherClass import Weather
+from WeatherTLKT import Weather
 import pickle
 import math
 import scipy.sparse as sparse

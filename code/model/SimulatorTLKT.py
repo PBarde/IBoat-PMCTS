@@ -7,29 +7,12 @@ Created on Tue May 16 16:24:21 2017
 
 Module encapsulating all the classes required to run a simulation. 
 
-Constants
----------
-
-ACTIONS : np.array() : 
-  Actions that are autorized i.e. headings the boat can follow. 
-  
-DAY_TO_SEC 
-  _
-  
-
-EARTH_RADIUS 
-  _
-  
-DESTINATION_ANGLE : float : 
-  Angle in radians defining the destination's zone. 
-
-
-  
 """
+
 import numpy as np
 import math
 import random as rand 
-from WeatherClass import Weather
+from WeatherTLKT import Weather
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib import animation
@@ -37,43 +20,48 @@ from math import sin,cos,asin,atan2,acos,pi
 from math import radians as rad
 
 
-"""MUST BE SORTED"""
-ACTIONS = np.arange(0,360,45) 
-ACTIONS=tuple(ACTIONS)
+#: Actions that are authorized i.e. headings the boat can follow. Must be sorted.
+ACTIONS = tuple(np.arange(0,360,45))
+
+#: Constant to convert days in seconds.
 DAY_TO_SEC=24*60*60
+
+#: Earth radius in meters.
 EARTH_RADIUS = 6371e3
+
+#: Angular margin that characterizes the destination point.
 DESTINATION_ANGLE=rad(0.005)
                         
 class Simulator :
     """
     Class emboding the boat and weather interactions with also the tools required\
-    to do projection on earth surface. For now, only used by the MCTS tree search. 
+    to do projection on earth surface. For now, only used by the MCTS tree search.
 
     :ivar numpy.array times: Vector of the instants used for the simulation \
         in days.
-    
+
     :ivar numpy array lons: Longitudes in degree in [0 , 360].
-    
+
     :ivar numpy.array lats: Latitudes in degree in [-90 : 90].
-    
-    :ivar list state: Current state [time, lat, lon] of the boat in \
-        (days,degree,degree).
-    
-    :ivar list prevState: Previous state [time, lat, lon] of the boat in \
-        (days,degree,degree).
+
+    :ivar list state: Current state [time index, lat, lon] of the boat in \
+        (int,degree,degree).
+
+    :ivar list prevState: Previous state [time index, lat, lon] of the boat in \
+        (int,degree,degree).
 
     :ivar scipy.interpolate.interpolate.RegularGridInterpolator uWindAvg: \
         Interpolator for the wind velocity blowing toward West.\
-        Generated at initialisation. 
-        
+        Generated at initialisation.
+
     :ivar scipy.interpolate.interpolate.RegularGridInterpolator vWindAvg: \
         Interpolator for the wind velocity blowing toward North.\
-        Generated at initialisation. 
+        Generated at initialisation.
     """
   
     def __init__(self,times,lats,lons,WeatherAvg,stateInit) : 
         """
-        Class constructor.
+        Class constructor
         """
       
         self.times=times
@@ -326,14 +314,22 @@ class Simulator :
         if quiv : 
             return u,v
         
-    def animateTraj(self,windAvg, states, trajSteps=3, proj='mill', res='i', instant=0, Dline=5, density=1, interval=1): 
+    def animateTraj(self,windAvg, states, trajSteps=3, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
-        A FAIRE
-        Animate the Trajectory
-        
-        
-        to plot whole earth params should be close to res='c',Dline=100,density=10
+        Animates the trajectory corresponding to the list of states.
+
+        :param Weather windAvg:
+        :param states:
+        :param trajSteps:
+        :param proj:
+        :param res:
+        :param instant:
+        :param Dline:
+        :param density:
+        :return:
+
         """
+        # to plot whole earth params should be close to res='c',Dline=100,density=10
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
         fig=plt.figure()
@@ -351,7 +347,6 @@ class Simulator :
         x,y=m(posLon,posLat)
         
         T=m.plot(x[0:instant*3],y[0:instant*3],linewidth=4)[0]
-  #                S=m.scatter(x[instant*trajSteps],y[instant*trajSteps])[0]
         
         m.drawcoastlines()
         m.fillcontinents()
@@ -368,7 +363,7 @@ class Simulator :
             plt.title('time : ' + str(windAvg.time[instant+t]-windAvg.time[0]) + ' days')       
             return plt
         
-        anim = animation.FuncAnimation(fig, update_quiver, frames=range(int(len(states)/3)),fargs=(Q,T,windAvg))
+        anim = animation.FuncAnimation(fig, update_quiver, frames=range(int(len(states)/trajSteps)),fargs=(Q,T,windAvg))
   
         plt.show()
   
@@ -377,76 +372,69 @@ class Simulator :
 
 class Boat : 
     """
-  Class defining the boat's dynamics. 
-  
-  Constants
-  ---------
-    FIT_VELOCITY : tuple with shape (6,6)
-      Coefficients of the polar fitted with a 5th order two dimensionnal polynomial.
-    
-    POLAR_MAX_WIND_MAG : int
-      Maximal wind magnitude acceptable by the polar fit. If experienced  magnitude is greater,\
-      the wind magnitude is set to POLAR_MAX_WIND_MAG. 
-    
-    POLAR_MIN_POFSAIL : int
-      Minimal point of sail where the boat can sail without tacking.
-    
-    POLAR_MAX_POFSAIL : int
-      Maximal point of sail where the boat can sail without tacking.
-      
-    UNCERTAINTY_COEFF : int
-      Caracterizes the uncertainty on the boat's dynamics. 
-      
-  Methods
-  -------
-    getDeterDyn : 
-      Returns the deterministic boat velocity for a given wind magnitude and point of sail. 
-      
-    addUncertainty : 
-      Returns the noisy boat velocity.
+  Class defining the boat's dynamics.
     
     """
-       # boat dynamic parameters
+
+    #:Coefficients of the polar fitted with a 5th order two dimensionnal polynomial.
     FIT_VELOCITY=((-0.0310198207067136,-0.0600881995286002,0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), \
                 (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07,0), \
                 (-0.000370260554113750, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08,0,0),\
                 (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08,0,0,0),\
                 (-2.91900968067076e-08, -1.67287818401469e-09,0,0,0,0),\
                 (6.34463723894578e-11,0,0,0,0,0))
+    #: Maximal wind magnitude acceptable by the polar fit. If experienced magnitude is greater the wind magnitude is
+    #: set to POLAR_MAX_WIND_MAG.
     POLAR_MAX_WIND_MAG = 19.1
+    #: Minimal point of sail where the boat can sail without tacking.
     POLAR_MIN_POFSAIL = 35
+    #: Maximal point of sail where the boat can sail without tacking.
     POLAR_MAX_POFSAIL = 160
+    #: Characterizes the uncertainty on the boat's dynamics.
     UNCERTAINTY_COEFF = 0.2
-      
+
     @staticmethod
     def getDeterDyn(pOfSail,windMag,fitCoeffs) :
-      """ bla bla"""
-        
-      if pOfSail > 180 : 
+        """
+        Returns the deterministic boat velocity for a given wind magnitude and point of sail.
+
+        :param float pOfSail: point of sail of the boat (in degree).
+        :param float windMag: magnitude of the winf in m/s.
+        :param tuple fitCoeffs: coefficients of the fitted velocity polar cf: :any:`FIT_VELOCITY`.
+        :return: deterministic boat's speed in m/s (in direction of heading).
+        """
+
+        if pOfSail > 180 :
           pOfSail = 360-pOfSail
-          
-      if windMag > Boat.POLAR_MAX_WIND_MAG :
+
+        if windMag > Boat.POLAR_MAX_WIND_MAG :
           windMag=Boat.POLAR_MAX_WIND_MAG
-          
-      if pOfSail < Boat.POLAR_MIN_POFSAIL :
+
+        if pOfSail < Boat.POLAR_MIN_POFSAIL :
           speedAtMinPofSail=math.cos(math.pi*Boat.POLAR_MIN_POFSAIL/180)* \
                                     np.polynomial.polynomial.polyval2d(Boat.POLAR_MIN_POFSAIL,windMag,fitCoeffs)
           return speedAtMinPofSail/(math.cos(math.pi*pOfSail/180))
-      
-      elif pOfSail>Boat.POLAR_MAX_POFSAIL : 
+
+        elif pOfSail>Boat.POLAR_MAX_POFSAIL :
           speedAtMaxPofSail=math.cos(math.pi*Boat.POLAR_MAX_POFSAIL/180)* \
                                     np.polynomial.polynomial.polyval2d(Boat.POLAR_MAX_POFSAIL,windMag,fitCoeffs)
           return speedAtMaxPofSail/(math.cos(math.pi*pOfSail/180))
-      
-      else : 
+
+        else :
           return np.polynomial.polynomial.polyval2d(pOfSail,windMag,fitCoeffs)
-        
+
     @staticmethod
     def addUncertainty(boatSpeed):
-        
-      boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*Boat.UNCERTAINTY_COEFF)
+
+        """
+        Returns the noisy boat velocity.
+
+        :param float boatSpeed: deterministic boat velocity in m/s.
+        :return: Stochastic boat speed in m/s.
+        """
+        boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*Boat.UNCERTAINTY_COEFF)
   
-      return boatSpeedNoisy
+        return boatSpeedNoisy
 
 
                 

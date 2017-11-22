@@ -7,8 +7,8 @@ Created on Tue Jun 13 18:03:27 2017
 """
 
  
-from SimulatorClass import Boat
-from SimulatorClass import FIT_VELOCITY
+from SimulatorTLKT import Boat
+from SimulatorTLKT import FIT_VELOCITY
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt

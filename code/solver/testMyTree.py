@@ -7,21 +7,16 @@ Created on Wed May 31 11:36:10 2017
 """
 
 
-import MyTree as mt
-
-
 import sys
+import MyTree as mt
 sys.path.append("../model")
 import pickle
 import sys
-from WeatherClass import Weather
+from WeatherTLKT import Weather
 import numpy as np
-import SimulatorClass as SimC
-from SimulatorClass import Simulator
+from SimulatorTLKT import Simulator
 import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 import matplotlib
-from matplotlib import animation
 from MyTree import Tree
 matplotlib.rcParams.update({'font.size': 16})
 

@@ -36,6 +36,17 @@ class Weather:
     """
 
     def __init__(self, lat=None, lon=None, time=None, u=None, v=None, wMag=None, wAng=None):
+        """
+        class constructor,by default sets all attributes to None.
+        lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.
+        :param lat:
+        :param lon:
+        :param time:
+        :param u:
+        :param v:
+        :param wMag:
+        :param wAng:
+        """
         self.lat = lat
         self.lon = lon
         self.time = time

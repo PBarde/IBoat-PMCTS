@@ -6,7 +6,7 @@ Created on Mon May 22 14:33:38 2017
 @author: paul
 """
 
-from WeatherClass import Weather
+from WeatherTLKT import Weather
 
 
 mydate='20171015'

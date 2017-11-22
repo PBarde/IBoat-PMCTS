@@ -6,10 +6,9 @@ Created on Tue May 23 09:47:01 2017
 @author: paul
 """
 
-from WeatherClass import Weather
+from WeatherTLKT import Weather
 import numpy as np
-import SimulatorClass as SimC
-from SimulatorClass import Simulator
+from SimulatorTLKT import Simulator
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 import matplotlib

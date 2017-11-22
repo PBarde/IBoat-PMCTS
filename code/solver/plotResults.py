@@ -7,16 +7,9 @@ Created on Thu Jun 22 18:34:50 2017
 """
 import sys
 sys.path.append("../model")
-import MyTree as mt
 import numpy as np
-from WeatherClass import Weather
-import numpy as np
-from SimulatorClass import Simulator
-import SimulatorClass as SimC
 import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
 import pickle
-import sys
 from math import sqrt
 #%%
 #test des familles
