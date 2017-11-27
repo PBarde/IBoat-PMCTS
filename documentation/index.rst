@@ -43,44 +43,44 @@ Contents
    solver <solver.rst>
 
 
-Tutorial
----------------
+.. ~ Tutorial
+.. ~ ---------------
 
-To visualize how a simulation can be generated we provide a file MDPmain.py that creates a simulation where the heading is first increase and then decrease.
+.. ~ To visualize how a simulation can be generated we provide a file MDPmain.py that creates a simulation where the heading is first increase and then decrease.
 
-.. code-block:: python
-   :emphasize-lines: 13
+.. ~ .. code-block:: python
+.. ~    :emphasize-lines: 13
 
-   SIMULATION_TIME = 100
-   i = np.ones(0)
-   vmg = np.ones(0)
-   wind_heading = np.ones(0)
-   for time in range(SIMULATION_TIME):
-       print('t = {0} s'.format(time))
-       action = 0
-       WH = np.random.uniform(mean - std, mean + std, size=10)
-       if time < SIMULATION_TIME / 2:
-          action = 0
-       else:
-          action = 1
-       next_state, reward = mdp.transition(action, WH)
-       next_state = state
-       i = np.concatenate([i, mdp.extractSimulationData()[0, :]])
-       vmg = np.concatenate([vmg, mdp.extractSimulationData()[1, :]])
-       wind_heading = np.concatenate([wind_heading, WH])
+.. ~    SIMULATION_TIME = 100
+.. ~    i = np.ones(0)
+.. ~    vmg = np.ones(0)
+.. ~    wind_heading = np.ones(0)
+.. ~    for time in range(SIMULATION_TIME):
+.. ~        print('t = {0} s'.format(time))
+.. ~        action = 0
+.. ~        WH = np.random.uniform(mean - std, mean + std, size=10)
+.. ~        if time < SIMULATION_TIME / 2:
+.. ~           action = 0
+.. ~        else:
+.. ~           action = 1
+.. ~        next_state, reward = mdp.transition(action, WH)
+.. ~        next_state = state
+.. ~        i = np.concatenate([i, mdp.extractSimulationData()[0, :]])
+.. ~        vmg = np.concatenate([vmg, mdp.extractSimulationData()[1, :]])
+.. ~        wind_heading = np.concatenate([wind_heading, WH])
 
-   time_vec = np.linspace(0, SIMULATION_TIME, int((SIMULATION_TIME) / time_step))
-   hdg = i - wind_heading - SP
+.. ~    time_vec = np.linspace(0, SIMULATION_TIME, int((SIMULATION_TIME) / time_step))
+.. ~    hdg = i - wind_heading - SP
 
 
-This results in the following value for the velocity, angle of attack and heading.
+.. ~ This results in the following value for the velocity, angle of attack and heading.
 
-.. image:: Figure_1.png
-   :width: 200px
-   :height: 200px
-   :scale: 200 %
-   :alt: alternate text
-   :align: center
+.. ~ .. image:: Figure_1.png
+.. ~    :width: 200px
+.. ~    :height: 200px
+.. ~    :scale: 200 %
+.. ~    :alt: alternate text
+.. ~    :align: center
 
 
 Indices and tables
