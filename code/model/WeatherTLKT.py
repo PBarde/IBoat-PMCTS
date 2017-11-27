@@ -84,7 +84,7 @@ class Weather:
         return Cropped
     
     @classmethod
-    def download(cls, url, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
+    def download(cls, url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
         """
         downloads Weather object from url server and writes it into path file.
         
@@ -119,9 +119,13 @@ class Weather:
         lonui = np.argmin(np.abs(lon - lonBound[1]))
         lat = lat[latli:latui]
         lon = lon[lonli:lonui]
-        
-        u = file.variables['ugrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
-        v = file.variables['vgrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+        if ens : 
+          u = file.variables['ugrd10m'][0,timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+          v = file.variables['vgrd10m'][0,timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]          
+          
+        else : 
+          u = file.variables['ugrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
+          v = file.variables['vgrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
         
         #
         #            u=file.variables['ugrd10m'][1,:,:]
