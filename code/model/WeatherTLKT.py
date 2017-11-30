@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Apr 27 18:11:08 2017
 
-@author: paul
+.. note:
+
+    :Autors: Paul Barde & Fabien Brulport
+    *Module handeling weather forecasts.*
+
+
 """
 import netCDF4
 import pickle
@@ -19,14 +23,13 @@ from scipy.interpolate import RegularGridInterpolator as rgi
 class Weather:
     """   
         This class is supposed to be used on GrAD's server files. No warranty however.
-        class constructor,by default sets all attributes to None.
-        lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.
+
         
-        :ivar numpy.array lat: latitude in degree: array or list comprised in [-90 : 90]
+        :ivar numpy.array lat: latitude in degree, comprised in [-90 : 90]
                     
-        :ivar numpy.array lon: longitude in degree : array or list comprised in [0 : 360]
+        :ivar numpy.array lon: longitude in degree, comprised in [0 : 360]
            
-        :ivar numy.array time: in days : array or list. Time is given in days (GrADS gives 81 times steps of 3hours so 
+        :ivar numpy.array time: in days. Time is given in days (GrADS gives 81 times steps of 3hours so
             it is 10.125 days with time steps of 0.125 days)
             
         :ivar u: velocity toward east in m/s. Must be of shape (ntime, nlat, nlon) 
@@ -162,7 +165,7 @@ class Weather:
 
     def crop(self, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
         """
-        Returns a cropped Weather object's data to the selected range of lon,lat and time steps.
+        Returns a cropped Weather object's data to the selected range of lon, lat and time steps.
         If no lat or lon boundaries are defined it takes the whole span present in the object.
         If no number of time step is defined it takes the whole span present if the object
         (but not more than 81 the value for GrAD files)
@@ -223,7 +226,7 @@ class Weather:
         :param str proj: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ projection method.
         :param str res: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ resolution.
         :param int instant: Time index at which the wind should be displayed.
-        :param int Dline: Lat and lon steps to plot parallels and meridians
+        :param int Dline: Lat and lon steps to plot parallels and meridians.
         :param int density: Lat and lon steps to plot quiver.
 
         :return: Plot framework.
@@ -259,7 +262,7 @@ class Weather:
         """
         Pretty much the same than :func:`plotQuiver` but to superimpose two quivers.
 
-        :param Weather otherWeather: Second forecasts to be ploted with the one calling the method.
+        :param Weather otherWeather: Second forecasts to be plotted with the one calling the method.
         """
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
@@ -365,7 +368,7 @@ class Weather:
         return anim
 
     def Interpolators(self):
-        """ Add the u and v interpolators to the object (two new attributes : 
+        """ Add the u and v `Interpolator <https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html>`_ objects to the weather object (two new attributes :
             self.uInterpolator and self.vInterpolator).
             ::
 

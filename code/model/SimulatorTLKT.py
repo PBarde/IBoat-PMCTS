@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue May 16 16:24:21 2017
 
-@author: paul
+:Autors: Paul Barde & Fabien Brulport
 
 Module encapsulating all the classes required to run a simulation. 
 
@@ -50,13 +49,12 @@ class Simulator :
     :ivar list prevState: Previous state [time index, lat, lon] of the boat in \
         (int,degree,degree).
 
-    :ivar scipy.interpolate.interpolate.RegularGridInterpolator uWindAvg: \
-        Interpolator for the wind velocity blowing toward West.\
-        Generated at initialisation.
+    :ivar uWindAvg: Interpolator for the wind velocity blowing toward West. Generated at initialisation with :py:meth:`WeatherTLKT.Weather.Interpolators`.
+    :vartype uWindAvg: `Interpolator`_
 
-    :ivar scipy.interpolate.interpolate.RegularGridInterpolator vWindAvg: \
-        Interpolator for the wind velocity blowing toward North.\
-        Generated at initialisation.
+    :ivar vWindAvg: Interpolator for the wind velocity blowing toward North. Generated at initialisation with :py:meth:`WeatherTLKT.Weather.Interpolators`.
+    :vartype vWindAvg: `Interpolator`_
+
     """
   
     def __init__(self,times,lats,lons,WeatherAvg,stateInit) : 
@@ -81,15 +79,14 @@ class Simulator :
         :param list stateInit: State to which the simulator is reinitialized.
         """
         
-        self.state=list(stateInit)
-        self.prevState=list(stateInit)
+        self.state = list(stateInit)
+        self.prevState = list(stateInit)
         
     
     def getDistAndBearing(self,position,destination):
         """
         Returns the distance and the initial bearing to follow to go to\
-        a destination following a great circle trajectory (orthodrome). Link to\
-        documentation http://www.movable-type.co.uk/scripts/latlong.html.
+        a destination following a great circle trajectory (orthodrome). `Link to documentation`_
         
         :param position: Current position of the boat.
         :type position: list(float : lat, float : lon)
@@ -101,7 +98,7 @@ class Simulator :
           
         :return: Shortest distance between the two points in meters, and \
             initial bearing of the orthodrome trajectory in degrees. 
-        :rtype: (float: distance, float: bearing)
+        :rtype: float: distance, float: bearing
         """
         latDest,lonDest = [rad(destination[0]), rad(destination[1])]
         latPos, lonPos = [rad(position[0]), rad(position[1])]
@@ -122,8 +119,8 @@ class Simulator :
     def getDestination(self,distance,bearing,departure):
         """
         Returns the destination point following a orthodrome trajectory for a\ 
-        given bearing and distance. Link to\
-        documentation http://www.movable-type.co.uk/scripts/latlong.html.
+        given bearing and distance. `Link to
+        documentation <http://www.movable-type.co.uk/scripts/latlong.html>`_.
         
         :param float distance: Distance in meters to the destination. 
 
@@ -135,7 +132,7 @@ class Simulator :
            
           
         :return: Destination reached following the othodrome trajectory. 
-        :rtype: list(float : lat, float : lon)
+        :rtype: [float : lat, float : lon]
           
         """
         
@@ -160,7 +157,7 @@ class Simulator :
         Returns the wind at the current simulator state.
         
         :return: Wind toward the East in m/s and wind toward the North in m/s.
-        :rtype: (float : uAvg, float : vAvg)
+        :rtype: float : uAvg, float : vAvg
 
         """
         uAvg=self.uWindAvg([self.times[self.state[0]],self.state[1],self.state[2]])
@@ -215,10 +212,10 @@ class Simulator :
       since the function is only used to create a plane. 
       
       :param coordinates: Coordinates in geographical frame.
-      :type coordinates: list(float : lat, float : lon)
+      :type coordinates: [float : lat, float : lon]
         
       :return: x,y,z coordinates.
-      :rtype: list(float, float, float)
+      :rtype: [float, float, float]
          
       """
       
@@ -234,14 +231,14 @@ class Simulator :
         """
         Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap.
         
-        :param str proj: Name of the projection (default Miller).
+        :param str proj: Name of the projection (default Miller) (see `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ doc).
         
-        :param str res: Resolution (see Basemap doc)
+        :param str res: Resolution (see `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ doc)
         
         :param int Dline: sampling size for the lats and lons arrays (reduce dimensions)            
         
         :return: The initialized basemap.
-        :rtype: mpl_toolkits.basemap.Basemap
+        :rtype: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
         """
         if proj == 'mill' : 
           plt.figure()
@@ -267,23 +264,25 @@ class Simulator :
           
         return basemap
     
-    def plotTraj(self,states,basemap,quiv=False,heading=225,scatter=False,color='black'):
+    def plotTraj(self,states,basemap,quiv=False,scatter=False,color='black'):
         """
-        Draw the states on the map
+        Draw the states on the map either as a trajectory and/or scatter of points. Can also plot mean wind
+        for each state and return it.
         
         :param states: List of all the state (state is an array)
         :type states: array or list
         
         :param basemap: Basemap object on which the trajectory will be drawn
         :type basemap: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
-        :param boolean quiv: If True, shows the wind at each time step
-
-        :param int heading: PAS UTILISE??      
+        :param boolean quiv: If True, shows the wind at each time step and returns it.
         
-        :param boolean scatter: If True, plots the positions of the beat at\
+        :param boolean scatter: If True, plots the positions of the boat at\
             each time step as scatter only
         
         :param str color: Color of the trajectory points
+
+        :return: u,v if quiver is true
+        :rtype: float,float
 
         """
         states=np.array(states)
@@ -320,12 +319,13 @@ class Simulator :
         :param Weather windAvg: The weather object corresponding to the trajectory.
         :param list states: List of boat states along its trajectory.
         :param int trajSteps: State step for the animation (a plot update corresponds to trajSteps covered states)
-        :param str proj: Projection to be used. Refer to
-        :param res:
-        :param instant:
-        :param Dline:
-        :param density:
-        :return:
+        :param str proj: Projection to be used. Refer to `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
+        :param str res: Plot resolution. Refer to `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
+        :param int instant: Initial instant of the animation.
+        :param int Dline: Lat and lon steps to plot parallels and meridians.
+        :param int density: Lat and lon steps to plot quiver.
+        :return: Animation function.
+        :rtype: `FuncAnimation <https://matplotlib.org/api/_as_gen/matplotlib.animation.FuncAnimation.html>`_
 
         """
         # to plot whole earth params should be close to res='c',Dline=100,density=10
@@ -382,6 +382,7 @@ class Boat :
                 (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08,0,0,0),\
                 (-2.91900968067076e-08, -1.67287818401469e-09,0,0,0,0),\
                 (6.34463723894578e-11,0,0,0,0,0))
+
     #: Maximal wind magnitude acceptable by the polar fit. If experienced magnitude is greater the wind magnitude is
     #: set to POLAR_MAX_WIND_MAG.
     POLAR_MAX_WIND_MAG = 19.1
@@ -401,6 +402,7 @@ class Boat :
         :param float windMag: magnitude of the winf in m/s.
         :param tuple fitCoeffs: coefficients of the fitted velocity polar cf: :any:`FIT_VELOCITY`.
         :return: deterministic boat's speed in m/s (in direction of heading).
+        :rtype: float
         """
 
         if pOfSail > 180 :
@@ -430,6 +432,8 @@ class Boat :
 
         :param float boatSpeed: deterministic boat velocity in m/s.
         :return: Stochastic boat speed in m/s.
+        :rtype: float
+
         """
         boatSpeedNoisy=rand.gauss(boatSpeed,boatSpeed*Boat.UNCERTAINTY_COEFF)
   

@@ -2,7 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="b835223c-a49b-44f3-8e3e-6c96039ec19f" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/_build/doctrees/environment.pickle" afterPath="$PROJECT_DIR$/documentation/_build/doctrees/environment.pickle" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/_build/doctrees/model.doctree" afterPath="$PROJECT_DIR$/documentation/_build/doctrees/model.doctree" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/model/SimulatorTLKT.py" afterPath="$PROJECT_DIR$/code/model/SimulatorTLKT.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/model/WeatherTLKT.py" afterPath="$PROJECT_DIR$/code/model/WeatherTLKT.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/_build/html/model.html" afterPath="$PROJECT_DIR$/documentation/_build/html/model.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/documentation/_build/html/searchindex.js" afterPath="$PROJECT_DIR$/documentation/_build/html/searchindex.js" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,13 +33,13 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="SimulatorTLKT.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="SimulatorTLKT.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/model/SimulatorTLKT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2400">
-              <caret line="225" column="31" lean-forward="true" selection-start-line="225" selection-start-column="31" selection-end-line="225" selection-end-column="31" />
+            <state relative-caret-position="527">
+              <caret line="159" column="42" lean-forward="true" selection-start-line="159" selection-start-column="42" selection-end-line="159" selection-end-column="42" />
               <folding>
-                <element signature="e#177#195#0" expanded="true" />
+                <element signature="e#165#183#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -49,13 +55,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="WeatherTLKT.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="WeatherTLKT.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/model/WeatherTLKT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="608">
-              <caret line="154" column="37" lean-forward="false" selection-start-line="154" selection-start-column="37" selection-end-line="154" selection-end-column="37" />
+            <state relative-caret-position="1359">
+              <caret line="264" column="64" lean-forward="false" selection-start-line="264" selection-start-column="64" selection-end-line="264" selection-end-column="64" />
               <folding>
-                <element signature="e#106#120#0" expanded="true" />
+                <element signature="e#152#166#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -108,30 +114,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding>
-                <marker date="1511785855675" expanded="true" signature="2982:3403" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="3437:3560" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="3693:4017" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="3698:4016" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4020:4180" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4200:4296" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4206:4293" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4300:4487" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4501:4578" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4507:4576" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4582:4814" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4836:4980" ph="..." />
-                <marker date="1511785855675" expanded="true" signature="4842:4977" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.rst" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/documentation/index.rst">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1344">
-              <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
               <folding />
             </state>
           </provider>
@@ -145,7 +127,12 @@
       <find>animate</find>
       <find>getdeter</find>
       <find>animat</find>
+      <find>Dline</find>
+      <find>inter</find>
       <find>plotT</find>
+      <find>crop</find>
+      <find>plotm</find>
+      <find>addun</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -166,8 +153,8 @@
         <option value="$PROJECT_DIR$/code/solver/testResults.py" />
         <option value="$PROJECT_DIR$/documentation/index.rst" />
         <option value="$PROJECT_DIR$/documentation/package1.rst" />
-        <option value="$PROJECT_DIR$/code/model/SimulatorTLKT.py" />
         <option value="$PROJECT_DIR$/code/model/WeatherTLKT.py" />
+        <option value="$PROJECT_DIR$/code/model/SimulatorTLKT.py" />
       </list>
     </option>
   </component>
@@ -546,7 +533,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#177#195#0" expanded="true" />
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -564,7 +551,7 @@
         <state relative-caret-position="1024">
           <caret line="40" column="92" lean-forward="false" selection-start-line="40" selection-start-column="92" selection-end-line="40" selection-end-column="92" />
           <folding>
-            <element signature="e#106#120#0" expanded="true" />
+            <element signature="e#152#166#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -607,21 +594,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1511785855675" expanded="true" signature="2982:3403" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3437:3560" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3693:4017" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3698:4016" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4020:4180" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4200:4296" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4206:4293" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4300:4487" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4501:4578" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4507:4576" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4582:4814" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4836:4980" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4842:4977" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -646,7 +619,7 @@
         <state relative-caret-position="1344">
           <caret line="42" column="19" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
           <folding>
-            <element signature="e#177#195#0" expanded="true" />
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -671,7 +644,7 @@
         <state relative-caret-position="96">
           <caret line="3" column="35" lean-forward="false" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
           <folding>
-            <element signature="e#106#120#0" expanded="true" />
+            <element signature="e#152#166#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -681,7 +654,7 @@
         <state relative-caret-position="1344">
           <caret line="42" column="19" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
           <folding>
-            <element signature="e#177#195#0" expanded="true" />
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -706,7 +679,7 @@
         <state relative-caret-position="192">
           <caret line="6" column="3" lean-forward="true" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
           <folding>
-            <element signature="e#106#120#0" expanded="true" />
+            <element signature="e#152#166#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -716,7 +689,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#177#195#0" expanded="true" />
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -726,7 +699,7 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#177#195#0" expanded="true" />
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -768,14 +741,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/solver/MyTree.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="416">
@@ -810,36 +775,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1511785855675" expanded="true" signature="2982:3403" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3437:3560" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3693:4017" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="3698:4016" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4020:4180" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4200:4296" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4206:4293" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4300:4487" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4501:4578" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4507:4576" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4582:4814" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4836:4980" ph="..." />
-            <marker date="1511785855675" expanded="true" signature="4842:4977" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/index.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/documentation/package1.rst">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="448">
@@ -848,22 +783,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/SimulatorTLKT.py">
+    <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2400">
-          <caret line="225" column="31" lean-forward="true" selection-start-line="225" selection-start-column="31" selection-end-line="225" selection-end-column="31" />
-          <folding>
-            <element signature="e#177#195#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="480">
+          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/documentation/index.rst">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="632">
+          <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/model/WeatherTLKT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="608">
-          <caret line="154" column="37" lean-forward="false" selection-start-line="154" selection-start-column="37" selection-end-line="154" selection-end-column="37" />
+        <state relative-caret-position="1359">
+          <caret line="264" column="64" lean-forward="false" selection-start-line="264" selection-start-column="64" selection-end-line="264" selection-end-column="64" />
           <folding>
-            <element signature="e#106#120#0" expanded="true" />
+            <element signature="e#152#166#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/model/SimulatorTLKT.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="159" column="42" lean-forward="true" selection-start-line="159" selection-start-column="42" selection-end-line="159" selection-end-column="42" />
+          <folding>
+            <element signature="e#165#183#0" expanded="true" />
           </folding>
         </state>
       </provider>

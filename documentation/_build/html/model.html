@@ -45,23 +45,19 @@
 <p>This package contains blabla.</p>
 <div class="section" id="module-WeatherTLKT">
 <span id="weathertlkt"></span><h2>WeatherTLKT<a class="headerlink" href="#module-WeatherTLKT" title="Permalink to this headline">¶</a></h2>
-<p>Created on Thu Apr 27 18:11:08 2017</p>
-<p>&#64;author: paul</p>
 <dl class="class">
 <dt id="WeatherTLKT.Weather">
 <em class="property">class </em><code class="descclassname">WeatherTLKT.</code><code class="descname">Weather</code><span class="sig-paren">(</span><em>lat=None</em>, <em>lon=None</em>, <em>time=None</em>, <em>u=None</em>, <em>v=None</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>This class is supposed to be used on GrAD’s server files. No warranty however.
-class constructor,by default sets all attributes to None.
-lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.</p>
+<p>This class is supposed to be used on GrAD’s server files. No warranty however.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>lat</strong> (<em>numpy.array</em>) – latitude in degree: array or list comprised in [-90 : 90]</li>
-<li><strong>lon</strong> (<em>numpy.array</em>) – longitude in degree : array or list comprised in [0 : 360]</li>
-<li><strong>time</strong> (<em>numy.array</em>) – in days : array or list. Time is given in days (GrADS gives 81 times steps of 3hours so 
+<li><strong>lat</strong> (<em>numpy.array</em>) – latitude in degree, comprised in [-90 : 90]</li>
+<li><strong>lon</strong> (<em>numpy.array</em>) – longitude in degree, comprised in [0 : 360]</li>
+<li><strong>time</strong> (<em>numpy.array</em>) – in days. Time is given in days (GrADS gives 81 times steps of 3hours so
 it is 10.125 days with time steps of 0.125 days)</li>
 <li><strong>u</strong> – velocity toward east in m/s. Must be of shape (ntime, nlat, nlon)</li>
 <li><strong>v</strong> – velocity toward north.</li>
@@ -73,7 +69,7 @@ it is 10.125 days with time steps of 0.125 days)</li>
 <dl class="method">
 <dt id="WeatherTLKT.Weather.Interpolators">
 <code class="descname">Interpolators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.Interpolators" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the u and v interpolators to the object (two new attributes : 
+<dd><p>Add the u and v <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a> objects to the weather object (two new attributes :
 self.uInterpolator and self.vInterpolator).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uInterpolator</span><span class="p">([</span><span class="n">t</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">])</span>
 <span class="c1">#with u in m/s, t in days, lat and lon in degrees.</span>
@@ -91,7 +87,7 @@ starting at instant.</p>
 <dl class="method">
 <dt id="WeatherTLKT.Weather.crop">
 <code class="descname">crop</code><span class="sig-paren">(</span><em>latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.crop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a cropped Weather object’s data to the selected range of lon,lat and time steps.
+<dd><p>Returns a cropped Weather object’s data to the selected range of lon, lat and time steps.
 If no lat or lon boundaries are defined it takes the whole span present in the object.
 If no number of time step is defined it takes the whole span present if the object
 (but not more than 81 the value for GrAD files)</p>
@@ -194,7 +190,7 @@ If no number of time step is defined it takes the whole span present if the save
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>otherWeather</strong> (<a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><em>Weather</em></a>) – Second forecasts to be ploted with the one calling the method.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>otherWeather</strong> (<a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><em>Weather</em></a>) – Second forecasts to be plotted with the one calling the method.</td>
 </tr>
 </tbody>
 </table>
@@ -213,7 +209,7 @@ If no number of time step is defined it takes the whole span present if the save
 <li><strong>res</strong> (<em>str</em>) – <p><a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a> resolution.</p>
 </li>
 <li><strong>instant</strong> (<em>int</em>) – Time index at which the wind should be displayed.</li>
-<li><strong>Dline</strong> (<em>int</em>) – Lat and lon steps to plot parallels and meridians</li>
+<li><strong>Dline</strong> (<em>int</em>) – Lat and lon steps to plot parallels and meridians.</li>
 <li><strong>density</strong> (<em>int</em>) – Lat and lon steps to plot quiver.</li>
 </ul>
 </td>
@@ -257,8 +253,14 @@ If no number of time step is defined it takes the whole span present if the save
 </div>
 <div class="section" id="module-SimulatorTLKT">
 <span id="simulatortlkt"></span><h2>SimulatorTLKT<a class="headerlink" href="#module-SimulatorTLKT" title="Permalink to this headline">¶</a></h2>
-<p>Created on Tue May 16 16:24:21 2017</p>
-<p>&#64;author: paul</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Autors:</th><td class="field-body">Paul Barde &amp; Fabien Brulport</td>
+</tr>
+</tbody>
+</table>
 <p>Module encapsulating all the classes required to run a simulation.</p>
 <dl class="data">
 <dt id="SimulatorTLKT.ACTIONS">
@@ -314,6 +316,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Stochastic boat speed in m/s.</td>
 </tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">float</td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -333,7 +337,10 @@ set to POLAR_MAX_WIND_MAG.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">deterministic boat’s speed in m/s (in direction of heading).</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">deterministic boat’s speed in m/s (in direction of heading).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
 </td>
 </tr>
 </tbody>
@@ -375,8 +382,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 <li><strong>lats</strong> (<em>numpy.array</em>) – Latitudes in degree in [-90 : 90].</li>
 <li><strong>state</strong> (<em>list</em>) – Current state [time index, lat, lon] of the boat in         (int,degree,degree).</li>
 <li><strong>prevState</strong> (<em>list</em>) – Previous state [time index, lat, lon] of the boat in         (int,degree,degree).</li>
-<li><strong>uWindAvg</strong> (<em>scipy.interpolate.interpolate.RegularGridInterpolator</em>) – Interpolator for the wind velocity blowing toward West.        Generated at initialisation.</li>
-<li><strong>vWindAvg</strong> (<em>scipy.interpolate.interpolate.RegularGridInterpolator</em>) – Interpolator for the wind velocity blowing toward North.        Generated at initialisation.</li>
+<li><strong>uWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward West. Generated at initialisation with <a class="reference internal" href="#WeatherTLKT.Weather.Interpolators" title="WeatherTLKT.Weather.Interpolators"><code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code></a>.</li>
+<li><strong>vWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward North. Generated at initialisation with <a class="reference internal" href="#WeatherTLKT.Weather.Interpolators" title="WeatherTLKT.Weather.Interpolators"><code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -394,15 +401,20 @@ set to POLAR_MAX_WIND_MAG.</p>
 <li><strong>windAvg</strong> (<a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><em>Weather</em></a>) – The weather object corresponding to the trajectory.</li>
 <li><strong>states</strong> (<em>list</em>) – List of boat states along its trajectory.</li>
 <li><strong>trajSteps</strong> (<em>int</em>) – State step for the animation (a plot update corresponds to trajSteps covered states)</li>
-<li><strong>proj</strong> (<em>str</em>) – Projection to be used. Refer to</li>
-<li><strong>res</strong> – </li>
-<li><strong>instant</strong> – </li>
-<li><strong>Dline</strong> – </li>
-<li><strong>density</strong> – </li>
+<li><strong>proj</strong> (<em>str</em>) – <p>Projection to be used. Refer to <a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a></p>
+</li>
+<li><strong>res</strong> (<em>str</em>) – <p>Plot resolution. Refer to <a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a></p>
+</li>
+<li><strong>instant</strong> (<em>int</em>) – Initial instant of the animation.</li>
+<li><strong>Dline</strong> (<em>int</em>) – Lat and lon steps to plot parallels and meridians.</li>
+<li><strong>density</strong> (<em>int</em>) – Lat and lon steps to plot quiver.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Animation function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.animation.FuncAnimation.html">FuncAnimation</a></p>
 </td>
 </tr>
 </tbody>
@@ -435,11 +447,11 @@ set to POLAR_MAX_WIND_MAG.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coordinates</strong> (<em>list</em><em>(</em><em>float : lat</em><em>, </em><em>float : lon</em><em>)</em>) – Coordinates in geographical frame.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coordinates</strong> (<em>[</em><em>float : lat</em><em>, </em><em>float : lon</em><em>]</em>) – Coordinates in geographical frame.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">x,y,z coordinates.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list(float, float, float)</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">[float, float, float]</td>
 </tr>
 </tbody>
 </table>
@@ -449,7 +461,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 <dt id="SimulatorTLKT.Simulator.getDestination">
 <code class="descname">getDestination</code><span class="sig-paren">(</span><em>distance</em>, <em>bearing</em>, <em>departure</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.getDestination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the destination point following a orthodrome trajectory for a
-given bearing and distance. Link to        documentation <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">http://www.movable-type.co.uk/scripts/latlong.html</a>.</p>
+given bearing and distance. <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">Link to
+documentation</a>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -464,7 +477,7 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Destination reached following the othodrome trajectory.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list(float : lat, float : lon)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">[float : lat, float : lon]</p>
 </td>
 </tr>
 </tbody>
@@ -474,7 +487,7 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <dl class="method">
 <dt id="SimulatorTLKT.Simulator.getDistAndBearing">
 <code class="descname">getDistAndBearing</code><span class="sig-paren">(</span><em>position</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.getDistAndBearing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the distance and the initial bearing to follow to go to        a destination following a great circle trajectory (orthodrome). Link to        documentation <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">http://www.movable-type.co.uk/scripts/latlong.html</a>.</p>
+<dd><p>Returns the distance and the initial bearing to follow to go to        a destination following a great circle trajectory (orthodrome). <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">Link to documentation</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -488,7 +501,7 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Shortest distance between the two points in meters, and             initial bearing of the orthodrome trajectory in degrees.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(float: distance, float: bearing)</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float: distance, float: bearing</p>
 </td>
 </tr>
 </tbody>
@@ -505,7 +518,7 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Wind toward the East in m/s and wind toward the North in m/s.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(float : uAvg, float : vAvg)</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">float : uAvg, float : vAvg</td>
 </tr>
 </tbody>
 </table>
@@ -513,20 +526,26 @@ given bearing and distance. Link to        documentation <a class="reference ext
 
 <dl class="method">
 <dt id="SimulatorTLKT.Simulator.plotTraj">
-<code class="descname">plotTraj</code><span class="sig-paren">(</span><em>states</em>, <em>basemap</em>, <em>quiv=False</em>, <em>heading=225</em>, <em>scatter=False</em>, <em>color='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.plotTraj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the states on the map</p>
+<code class="descname">plotTraj</code><span class="sig-paren">(</span><em>states</em>, <em>basemap</em>, <em>quiv=False</em>, <em>scatter=False</em>, <em>color='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.plotTraj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw the states on the map either as a trajectory and/or scatter of points. Can also plot mean wind
+for each state and return it.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>states</strong> (<em>array</em><em> or </em><em>list</em>) – List of all the state (state is an array)</li>
 <li><strong>basemap</strong> – Basemap object on which the trajectory will be drawn</li>
-<li><strong>quiv</strong> (<em>boolean</em>) – If True, shows the wind at each time step</li>
-<li><strong>heading</strong> (<em>int</em>) – PAS UTILISE??</li>
-<li><strong>scatter</strong> (<em>boolean</em>) – If True, plots the positions of the beat at            each time step as scatter only</li>
+<li><strong>quiv</strong> (<em>boolean</em>) – If True, shows the wind at each time step and returns it.</li>
+<li><strong>scatter</strong> (<em>boolean</em>) – If True, plots the positions of the boat at            each time step as scatter only</li>
 <li><strong>color</strong> (<em>str</em>) – Color of the trajectory points</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">u,v if quiver is true</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float,float</p>
 </td>
 </tr>
 </tbody>
@@ -542,8 +561,10 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>proj</strong> (<em>str</em>) – Name of the projection (default Miller).</li>
-<li><strong>res</strong> (<em>str</em>) – Resolution (see Basemap doc)</li>
+<li><strong>proj</strong> (<em>str</em>) – <p>Name of the projection (default Miller) (see <a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a> doc).</p>
+</li>
+<li><strong>res</strong> (<em>str</em>) – <p>Resolution (see <a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a> doc)</p>
+</li>
 <li><strong>Dline</strong> (<em>int</em>) – sampling size for the lats and lons arrays (reduce dimensions)</li>
 </ul>
 </td>
@@ -551,7 +572,8 @@ given bearing and distance. Link to        documentation <a class="reference ext
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The initialized basemap.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">mpl_toolkits.basemap.Basemap</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><p><a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a></p>
+</p>
 </td>
 </tr>
 </tbody>
