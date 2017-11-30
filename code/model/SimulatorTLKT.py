@@ -232,9 +232,9 @@ class Simulator :
     
     def prepareBaseMap(self,proj='mill',res='i',Dline=5,dl=1.5,dh=1,centerOfMap=None) :
         """
-        Prepares the figure to plot a trajectory. Based on basemap.
+        Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap.
         
-        :param str proj: Name of the projection (default Miller)
+        :param str proj: Name of the projection (default Miller).
         
         :param str res: Resolution (see Basemap doc)
         
@@ -275,8 +275,7 @@ class Simulator :
         :type states: array or list
         
         :param basemap: Basemap object on which the trajectory will be drawn
-        :type basemap: mpl_toolkits.basemap.Basemap
-
+        :type basemap: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
         :param boolean quiv: If True, shows the wind at each time step
 
         :param int heading: PAS UTILISE??      
@@ -318,10 +317,10 @@ class Simulator :
         """
         Animates the trajectory corresponding to the list of states.
 
-        :param Weather windAvg:
-        :param states:
-        :param trajSteps:
-        :param proj:
+        :param Weather windAvg: The weather object corresponding to the trajectory.
+        :param list states: List of boat states along its trajectory.
+        :param int trajSteps: State step for the animation (a plot update corresponds to trajSteps covered states)
+        :param str proj: Projection to be used. Refer to
         :param res:
         :param instant:
         :param Dline:

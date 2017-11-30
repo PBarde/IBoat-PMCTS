@@ -35,17 +35,10 @@ class Weather:
 
     """
 
-    def __init__(self, lat=None, lon=None, time=None, u=None, v=None, wMag=None, wAng=None):
+    def __init__(self, lat=None, lon=None, time=None, u=None, v=None):
         """
         class constructor,by default sets all attributes to None.
         lat, lon, time u and v must have same definition as in netCDF4 file of GrADS server.
-        :param lat:
-        :param lon:
-        :param time:
-        :param u:
-        :param v:
-        :param wMag:
-        :param wAng:
         """
         self.lat = lat
         self.lon = lon
@@ -57,24 +50,23 @@ class Weather:
     def load(cls, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
         """
         Takes a file path where a Weather object is saved and loads it into the script.
-        
         If no lat or lon boundaries are defined, it takes the whole span present in the saved object.
-        
         If no number of time step is defined it takes the whole span present if the saved object
-        (but not more than 81 the value for GrAD files)
+        (but not more than 81 the value for GrAD files).
         
-        :param string path: path to file of saved Weather object
+        :param str path: path to file of saved Weather object.
         
-        :param latBound: [minlat, maxlat], the largest span is [-90,90]
-        :type latBound: list of int
+        :param latBound: [minlat, maxlat], lat span one wants to consider, the largest span is [-90,90].
+        :type latBound: list of int.
         
-        :param lonBound: [minlon, maxlon], the largest span is [0,360]
-        :type lonBound: list of int
+        :param lonBound: [minlon, maxlon], lon span one wants to consider, the largest span is [0,360].
+        :type lonBound: list of int.
         
-        :param int nbTimes: number of frames to load
+        :param timeSteps: time steps of the forecasts one wants to load.
+        :type timeSteps: list of int.
         
-        :return: loaded object
-        :rtype: WeatherClass
+        :return: loaded object.
+        :rtype: :any:`Weather`
             
         """
         filehandler = open(path, 'rb')
@@ -86,31 +78,35 @@ class Weather:
     @classmethod
     def download(cls, url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
         """
-        downloads Weather object from url server and writes it into path file.
+        Downloads Weather object from url server and writes it into path file.
         
-        :param string url: url to server (designed for GrAD server)    
-        
-        :param other : same as load method.
-        
-        :return: the object corresponding to the downloaded weather
-        :rtype: WeatherClass
-        
+        :param str url: url to server (designed for GrAD server).
+
+        :param str path: path toward where the downloaded object is to be saved.
+
+        :param bool ens: True is the downloaded data corresponds to a GEFS forecast, False for GFS.
+
+        :param latBound: [minlat, maxlat], lat span one wants to consider, the largest span is [-90,90].
+        :type latBound: list of int.
+
+        :param lonBound: [minlon, maxlon], lon span one wants to consider, the largest span is [0,360].
+        :type lonBound: list of int.
+
+        :param timeSteps: time steps of the forecasts one wants to load.
+        :type timeSteps: list of int.
+
+        :return: the object corresponding to the downloaded weather.
+        :rtype: :any:`Weather`
+
         """
 
         file = netCDF4.Dataset(url)
         lat = file.variables['lat'][:]
         lon = file.variables['lon'][:]
-        time = file.variables['time'][timeSteps[0]:timeSteps[1]]
         # put time bounds !
-        #            lat_inds = np.where((lat > latBound[0]) & (lat < latBound[1]))
-        #            lon_inds = np.where((lon > lonBound[0]) & (lon < lonBound[1]))
-        #
-        #            lat  = file.variables['lat'][lat_inds]
-        #            lon  = file.variables['lon'][lon_inds]
-        #            u = file.variables['ugrd10m'][time_inds,lat_inds,lon_inds]
-        #            v = file.variables['vgrd10m'][time_inds,lat_inds,lon_inds]
-        # latitude lower and upper index
+        time = file.variables['time'][timeSteps[0]:timeSteps[1]]
 
+        # latitude lower and upper index
         latli = np.argmin(np.abs(lat - latBound[0]))
         latui = np.argmin(np.abs(lat - latBound[1]))
 
@@ -126,10 +122,7 @@ class Weather:
         else : 
           u = file.variables['ugrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
           v = file.variables['vgrd10m'][timeSteps[0]:timeSteps[1], latli:latui, lonli:lonui]
-        
-        #
-        #            u=file.variables['ugrd10m'][1,:,:]
-        #            v=file.variables['vgrd10m'][1,:,:]
+
         toBeSaved = cls(lat, lon, time, u, v)
         file.close()
         filehandler = open(path, 'wb')
@@ -139,7 +132,8 @@ class Weather:
 
     def getPolarVel(self):
         """
-        Computes wind magnitude and direction and adds it to the object's attribute
+        Computes wind magnitude and direction and adds it to the object's attribute as self.wMag (magnitude)
+        and self.wAng (direction toward which the wind is blowing).
         """
         self.wMag = np.empty(np.shape(self.u))
         self.wAng = np.empty(np.shape(self.u))
@@ -152,11 +146,11 @@ class Weather:
     @staticmethod
     def returnPolarVel(u, v):
         """
-        Computes wind magnitude and direction from the velocities u and v
+        Computes wind magnitude and direction from the velocities u and v.
         
-        :param float u: velocity toward east
+        :param float u: velocity toward east.
         
-        :param float v: velocity toward north
+        :param float v: velocity toward north.
         
         :return: (magnitude, direction)
         :rtype: (float, float)
@@ -181,12 +175,12 @@ class Weather:
         
         :param int nbTimes: number of frames to load
         
-        :return: the cropped object
-        :rtype: WeatherClass
-        
+        :return: the cropped object.
+        :rtype: :any:`Weather`
+
         """
 
-        if (latBound != [-90, 90] or lonBound != [0, 360]):
+        if latBound != [-90, 90] or lonBound != [0, 360]:
             Cropped = Weather()
             lat_inds = np.where((self.lat > latBound[0]) & (self.lat < latBound[1]))
             lon_inds = np.where((self.lon > lonBound[0]) & (self.lon < lonBound[1]))
@@ -218,14 +212,26 @@ class Weather:
         else:
             Cropped = self
 
-        #            Cropped.getPolarVel()
+
         return Cropped
 
     def plotQuiver(self, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
-        to plot whole earth params should be close to res='c',Dline=100,density=10
+        Plots a quiver of the :any:`Weather` object's wind for a given instant. Basemap projection using the lat/lon limits of the data itself.
+
+
+        :param str proj: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ projection method.
+        :param str res: `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_ resolution.
+        :param int instant: Time index at which the wind should be displayed.
+        :param int Dline: Lat and lon steps to plot parallels and meridians
+        :param int density: Lat and lon steps to plot quiver.
+
+        :return: Plot framework.
+        :rtype: `pyplot <https://matplotlib.org/api/pyplot_api.html>`_
+
         """
-        # Plot the field using Basemap.  Start with setting the map
+
+        # Start with setting the map.
         # projection using the limits of the lat/lon data itself:
         plt.figure()
 
@@ -235,25 +241,25 @@ class Weather:
 
         x, y = m(*np.meshgrid(self.lon, self.lat))
 
-        # m.pcolormesh(x,y,self.wMag[instant],shading='flat',cmap=plt.cm.jet)
+
         m.quiver(x[0::density, 0::density], y[0::density, 0::density], self.u[instant, 0::density, 0::density],
                  self.v[instant, 0::density, 0::density])
-        # m.colorbar(location='right')
         m.drawcoastlines()
         m.fillcontinents()
         m.drawmapboundary()
         m.drawparallels(self.lat[0::Dline], labels=[1, 0, 0, 0])
         m.drawmeridians(self.lon[0::Dline], labels=[0, 0, 0, 1])
-        #        m.drawparallels(self.latGrid[0::Dline],labels=[1,0,0,0])
-        #        m.drawmeridians(self.lonGrid[0::Dline],labels=[0,0,0,1])
+
         plt.title('Wind amplitude and direction in [m/s] at time : ' + str(self.time[instant]) + ' days')
         plt.show()
 
         return plt
     
-    def plotMultipleQuiver(self, otherWeather,proj='mill', res='i', instant=0, Dline=5, density=1):
+    def plotMultipleQuiver(self, otherWeather, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
-        to plot whole earth params should be close to res='c',Dline=100,density=10
+        Pretty much the same than :func:`plotQuiver` but to superimpose two quivers.
+
+        :param Weather otherWeather: Second forecasts to be ploted with the one calling the method.
         """
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
@@ -265,21 +271,17 @@ class Weather:
 
         x, y = m(*np.meshgrid(self.lon, self.lat))
 
-        # m.pcolormesh(x,y,self.wMag[instant],shading='flat',cmap=plt.cm.jet)
         m.quiver(x[0::density, 0::density], y[0::density, 0::density], self.u[instant, 0::density, 0::density],
                  self.v[instant, 0::density, 0::density],color='black')
         
         x, y = m(*np.meshgrid(otherWeather.lon, otherWeather.lat))
         m.quiver(x[0::density, 0::density], y[0::density, 0::density], otherWeather.u[instant, 0::density, 0::density],
                  otherWeather.v[instant, 0::density, 0::density], color = 'red')
-        # m.colorbar(location='right')
         m.drawcoastlines()
         m.fillcontinents()
         m.drawmapboundary()
         m.drawparallels(self.lat[0::Dline], labels=[1, 0, 0, 0])
         m.drawmeridians(self.lon[0::Dline], labels=[0, 0, 0, 1])
-        #        m.drawparallels(self.latGrid[0::Dline],labels=[1,0,0,0])
-        #        m.drawmeridians(self.lonGrid[0::Dline],labels=[0,0,0,1])
         plt.title('Wind amplitude and direction in [m/s] at time : ' + str(self.time[instant]) + ' days')
         plt.show()
 
@@ -287,7 +289,7 @@ class Weather:
 
     def plotColorQuiver(self, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
-        to plot whole earth params should be close to res='c',Dline=100,density=10
+        Pretty much the same than :func:`plotQuiver` but on a contour plot of wind magnitude.
         """
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
@@ -319,9 +321,10 @@ class Weather:
 
         return plt
 
-    def animateQuiver(self, proj='mill', res='i', instant=0, Dline=5, density=1, interval=50):
+    def animateQuiver(self, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
-        to plot whole earth params should be close to res='c',Dline=100,density=10
+        Pretty much the same than :func:`plotQuiver` but animating the quiver over the different time steps
+        starting at instant.
         """
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
@@ -363,8 +366,11 @@ class Weather:
 
     def Interpolators(self):
         """ Add the u and v interpolators to the object (two new attributes : 
-            uInterpolator and vInterpolator)
-        
+            self.uInterpolator and self.vInterpolator).
+            ::
+
+                u = self.uInterpolator([t,lat,lon])
+                #with u in m/s, t in days, lat and lon in degrees.
         """
         self.uInterpolator = rgi((self.time, self.lat, self.lon), self.u)
         self.vInterpolator = rgi((self.time, self.lat, self.lon), self.v)
