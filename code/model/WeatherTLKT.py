@@ -152,8 +152,8 @@ class Weather:
         
         :param float v: velocity toward north.
         
-        :return: (magnitude, direction)
-        :rtype: (float, float)
+        :return: magnitude, direction
+        :rtype: float, float
         """
 
         mag = (u ** 2 + v ** 2) ** 0.5
