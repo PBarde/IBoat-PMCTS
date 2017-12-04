@@ -1,7 +1,7 @@
 Package Model
 ===============
 
-This package contains blabla.
+This package contains the two classes useful to construct the model.
 
 
 WeatherTLKT

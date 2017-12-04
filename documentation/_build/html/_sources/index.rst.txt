@@ -7,31 +7,19 @@
 Welcome to IBOAT MCTS's documentation!
 ======================================
 
-This is my introduction to this project
+IBOAT MCTS is a python implementation of the MCTS algorithm for the IBOAT trajectory planning.
 
 Requirements
 ---------------
 
 The project depends on the following extensions :
 
-1. NumPy for the data structures (http://www.numpy.org) |pic1|
-2. Matplotlib for the visualisation (https://matplotlib.org) |pic2|
-3. Keras for the convolutional neural network models (https://keras.io) |pic3|
+1. NumPy for the data structures (http://www.numpy.org)
+2. SciPy for interpolation (https://docs.scipy.org/doc/scipy-0.16.1/reference/index.html)
+3. Matplotlib for the visualisation (https://matplotlib.org)
+4. Basemap for map projections (http://matplotlib.org/basemap)
+5. NetCF4 to read and write in netCDF file (https://unidata.github.io/netcdf4-python/)
 
-.. |pic1| image:: numpy.jpeg
-   :width: 200px
-   :height: 70px
-   :scale: 50 %
-
-.. |pic2| image:: matplotlib.jpeg
-   :width: 200px
-   :height: 70px
-   :scale: 50 %
-
-.. |pic3| image:: keras.png
-   :width: 200px
-   :height: 60px
-   :scale: 50 %
 
 Contents
 ---------------
@@ -42,45 +30,6 @@ Contents
 
    solver <solver.rst>
 
-
-.. ~ Tutorial
-.. ~ ---------------
-
-.. ~ To visualize how a simulation can be generated we provide a file MDPmain.py that creates a simulation where the heading is first increase and then decrease.
-
-.. ~ .. code-block:: python
-.. ~    :emphasize-lines: 13
-
-.. ~    SIMULATION_TIME = 100
-.. ~    i = np.ones(0)
-.. ~    vmg = np.ones(0)
-.. ~    wind_heading = np.ones(0)
-.. ~    for time in range(SIMULATION_TIME):
-.. ~        print('t = {0} s'.format(time))
-.. ~        action = 0
-.. ~        WH = np.random.uniform(mean - std, mean + std, size=10)
-.. ~        if time < SIMULATION_TIME / 2:
-.. ~           action = 0
-.. ~        else:
-.. ~           action = 1
-.. ~        next_state, reward = mdp.transition(action, WH)
-.. ~        next_state = state
-.. ~        i = np.concatenate([i, mdp.extractSimulationData()[0, :]])
-.. ~        vmg = np.concatenate([vmg, mdp.extractSimulationData()[1, :]])
-.. ~        wind_heading = np.concatenate([wind_heading, WH])
-
-.. ~    time_vec = np.linspace(0, SIMULATION_TIME, int((SIMULATION_TIME) / time_step))
-.. ~    hdg = i - wind_heading - SP
-
-
-.. ~ This results in the following value for the velocity, angle of attack and heading.
-
-.. ~ .. image:: Figure_1.png
-.. ~    :width: 200px
-.. ~    :height: 200px
-.. ~    :scale: 200 %
-.. ~    :alt: alternate text
-.. ~    :align: center
 
 
 Indices and tables
