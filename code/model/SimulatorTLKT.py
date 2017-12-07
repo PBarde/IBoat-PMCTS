@@ -10,7 +10,7 @@ Module encapsulating all the classes required to run a simulation.
 
 import numpy as np
 import math
-import random as rand 
+import random as rand
 from WeatherTLKT import Weather
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
