@@ -22,6 +22,9 @@ from math import radians as rad
 #: Actions that are authorized i.e. headings the boat can follow. Must be sorted.
 ACTIONS = tuple(np.arange(0,360,45))
 
+A_DICT={}
+for i,a in enumerate(ACTIONS) :
+  A_DICT[a]=i
 #: Constant to convert days in seconds.
 DAY_TO_SEC=24*60*60
 

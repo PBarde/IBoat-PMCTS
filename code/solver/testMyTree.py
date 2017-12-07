@@ -151,7 +151,7 @@ mt.UCT_COEFF=1/2**0.5
 stateInit = [0, 47.5, -3.5 + 360]
 Sim = Simulator(times, lats, lons, Wavg, Wspr, stateInit)
 tree = mt.Tree(destination=destination, simulator=Sim, budget=15000, TimeMin=Tmin)
-tree.UCTSearch(stateInit)
+tree.uct_search(stateInit)
 # tree.plotTree()
 ##%%
 #
