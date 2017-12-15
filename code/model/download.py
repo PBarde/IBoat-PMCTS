@@ -6,7 +6,7 @@ Created on Mon May 22 14:33:38 2017
 @author: paul
 """
 
-from WeatherTLKT import Weather
+from weatherTLKT import Weather
 
 typ='ens'
 

@@ -32,7 +32,7 @@ class Node:
         self.children = list(children)
         self.actions = list(SimC.ACTIONS)
         rand.shuffle(self.actions)
-        self.Values= np.array([Hist() for i in SimC.ACTIONS])
+        self.Values = np.array([Hist() for i in SimC.ACTIONS])
         self.depth = depth
 
 

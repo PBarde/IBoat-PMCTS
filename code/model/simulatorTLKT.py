@@ -11,7 +11,7 @@ Module encapsulating all the classes required to run a simulation.
 import numpy as np
 import math
 import random as rand
-from WeatherTLKT import Weather
+from weatherTLKT import Weather
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib import animation
@@ -34,9 +34,9 @@ EARTH_RADIUS = 6371e3
 #: Angular margin that characterizes the destination point.
 DESTINATION_ANGLE=rad(0.005)
                         
-class Simulator :
+class Simulator:
     """
-    Class emboding the boat and weather interactions with also the tools required\
+    Class embedding the boat and weather interactions with also the tools required\
     to do projection on earth surface. For now, only used by the MCTS tree search.
 
     :ivar numpy.array times: Vector of the instants used for the simulation \
