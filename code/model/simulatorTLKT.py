@@ -42,7 +42,7 @@ class Simulator:
     :ivar numpy.array times: Vector of the instants used for the simulation \
         in days.
 
-    :ivar numpy array lons: Longitudes in degree in [0 , 360].
+    :ivar numpy.array lons: Longitudes in degree in [0 , 360].
 
     :ivar numpy.array lats: Latitudes in degree in [-90 : 90].
 
