@@ -33,17 +33,21 @@ lats = np.arange(wavg.lat[0], wavg.lat[-1], 0.05)
 lons = np.arange(wavg.lon[0], wavg.lon[-1], 0.05)
 stateInit = [0, 47.5, -3.5 + 360]
 
-# TODO a changer !!
-# We create the simulators
+# TODO a changer ici on donne le même simu a tous!!
+# We create N simulators
+N = 1
+frequency = 10  # frequency of the buffer
 sim = Simulator(times, lats, lons, wavg, stateInit)
-sims = []
-for i in range(10):
-    sims.append(sim)
+sims = [sim for _ in range(N)]
 
 stateInit = [0, 47.5, -3.5 + 360]
 destination = [48, -3 + 360]
 timemin = 3
 
-forest = fr.Forest(listsimulators=sims, initstate=stateInit, destination=destination, timemin=timemin)
+forest = fr.Forest(listsimulators=sims, destination=destination, timemin=timemin)
 
+# todo: le test de la fonction launch_search a été fait avec 0 budget (aucune itération) pour tester
+# todo: si la syncro à la fin est bonne (avec les end_event) => OK
+# todo: mais bug pour 1 itération (dans le code mcts avec origin)
+forest.launch_search(stateInit, frequency)
 print(forest.master.probability)

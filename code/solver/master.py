@@ -48,12 +48,32 @@ class MasterTree:
         :param float reward: reward of the update
         """
         node = self.nodes[nodehash]
-        parentHash = node.parentHash
-        while parentHash is not None:
-            parent = self.nodes[parentHash]
+        parent_hash = node.parentHash
+        while parent_hash is not None:
+            parent = self.nodes[parent_hash]
             parent.add_reward_action(idscenario, node.arm, reward)
             node = parent
-            parentHash = node.parentHash
+            parent_hash = node.parentHash
+
+    def update(self, worker_dict, event_dict, finish_event_dict):
+        stop = False
+        while not stop:
+            for i, event in enumerate(event_dict.values()):
+                # If a tree is ready
+                if event.isSet():
+                    # Copy the buffer
+                    buffer = worker_dict[i].copy_buffer()
+                    # Clear the buffer
+                    worker_dict[i].reset_buffer()
+                    # Set the flag to false
+                    event.clear()
+                    # Add the new rewards in the master tree
+                    self.integrate_buffer(buffer)
+
+            # Test if all the workers are done
+            if all(event.isSet for event in finish_event_dict.values()):
+                # End of the master thread
+                stop = True
 
 
 class MasterNode:

@@ -19,24 +19,30 @@ class Forest:
             self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=1000,
                                       simulator=sim, destination=destination, TimeMin=timemin)
 
-    def launch_search(self, root_state):
+    def launch_search(self, root_state, frequency):
+        # Create the events
+        worker_events = dict()  # to notify the master that a buffer is ready
+        end_events = dict()  # to tell the master that the search is done
+        for worker in self.workers.values():
+            worker_events[worker.id] = th.Event()
+            end_events[worker.id] = th.Event()
 
-        # Create the threads
-        # TODO vérifier qu'il n'y a pad besoin de thread pour le master comme c'est les workers qui appele la fonction du master
-        # master_thread = th.Thread(name='master', target=self.master.update) ?? inutile?
+        # Create the master thread, passing the workers and the events in parameter
+        master_thread = th.Thread(name='master', target=self.master.update,
+                                  args=(self.workers, worker_events, end_events))
+
+        # Create the workers threads, passing their events in parameter
         worker_thread = dict()
-        for worker in self.workers:
+        for worker in self.workers.values():
             worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.uct_search,
-                                                 args=root_state)
+                                                 args=(root_state, frequency,  worker_events[worker.id], end_events[worker.id]))
 
         # Launch the threads
-        # master_thread.start()
-        for w_th in worker_thread:
+        master_thread.start()
+        for w_th in worker_thread.values():
             w_th.start()
-        # TODO regarder s'il faut utliser la méthode lock() pour blocker les autres threads pendant que le master
-        # todo se met à jour par exemple
 
-        # Wait for threads to terminate
-        # master_thread.join()
-        for w_th in worker_thread:
+        # Wait for threads to complete
+        master_thread.join()
+        for w_th in worker_thread.values():
             w_th.join()
