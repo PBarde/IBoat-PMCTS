@@ -1,5 +1,5 @@
 import sys
-sys.path.append("../model")
+sys.path.append("../model/")
 from simulatorTLKT import ACTIONS
 import numpy as np
 

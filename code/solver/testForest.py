@@ -2,7 +2,7 @@ import numpy as np
 import sys
 import forest as fr
 
-sys.path.append('../model')
+sys.path.append('../model/')
 from simulatorTLKT import Simulator
 from weatherTLKT import Weather
 
@@ -35,7 +35,7 @@ stateInit = [0, 47.5, -3.5 + 360]
 
 # TODO a changer ici on donne le même simu a tous!!
 # We create N simulators
-N = 1
+N = 10
 frequency = 10  # frequency of the buffer
 sim = Simulator(times, lats, lons, wavg, stateInit)
 sims = [sim for _ in range(N)]

@@ -145,7 +145,7 @@ class Pathfinder():
             self.closelist.append(self.currentnode)
             self.openlist.remove(self.currentnode)
             try:
-                etre_arrive = Tree.isStateAtDest(self.arr, self.currentnode.pere.give_state(),self.currentnode.give_state())
+                etre_arrive = Tree.is_state_at_dest(self.arr, self.currentnode.pere.give_state(), self.currentnode.give_state())
             except:
                 etre_arrive= [False, 0]
                 
@@ -185,7 +185,7 @@ class Pathfinder():
             self.currentnode=self.openlist[0]
             self.closelist.append(self.currentnode)
             self.openlist.remove(self.currentnode)
-            etre_arrive = Tree.isStateAtDest(self.arr, self.currentnode.pere.give_state(),self.currentnode.give_state())
+            etre_arrive = Tree.is_state_at_dest(self.arr, self.currentnode.pere.give_state(), self.currentnode.give_state())
             if (self.currentnode.lat==self.arr[0] and self.currentnode.lon==self.arr[1]) or etre_arrive[0]:
                 state=1
                 nodearr=self.currentnode

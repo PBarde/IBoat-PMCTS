@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-<<<<<<< HEAD
-    <list default="true" id="b835223c-a49b-44f3-8e3e-6c96039ec19f" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/code/model/Scaling.py" afterPath="$PROJECT_DIR$/code/model/scaling.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/code/model/SimulatorTLKT.py" afterPath="$PROJECT_DIR$/code/model/simulatorTLKT.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/code/model/WeatherTLKT.py" afterPath="$PROJECT_DIR$/code/model/weatherTLKT.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/code/solver/MyTree.py" afterPath="$PROJECT_DIR$/code/solver/myTree.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/testMyTree.py" afterPath="$PROJECT_DIR$/code/solver/testMyTree.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/utils.py" afterPath="$PROJECT_DIR$/code/solver/utils.py" />
-    </list>
-=======
-<<<<<<< HEAD
-    <list default="true" id="b835223c-a49b-44f3-8e3e-6c96039ec19f" name="Default" comment="">
+    <list default="true" id="eeeae7f7-de21-45b1-bc1d-a71a0c90b773" name="Default" comment="">
+      <change type="MOVED" beforePath="$PROJECT_DIR$/code/solver/myTree.py" afterPath="$PROJECT_DIR$/code/solver/worker.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/IBOAT-PIE-MCTS.iml" afterPath="$PROJECT_DIR$/.idea/IBOAT-PIE-MCTS.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.spyproject/workspace.ini" afterPath="$PROJECT_DIR$/.spyproject/workspace.ini" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/isochrones/AstarClass.py" afterPath="$PROJECT_DIR$/code/isochrones/AstarClass.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/forest.py" afterPath="$PROJECT_DIR$/code/solver/forest.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/master.py" afterPath="$PROJECT_DIR$/code/solver/master.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/testForest.py" afterPath="$PROJECT_DIR$/code/solver/testForest.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/testMyTree.py" afterPath="$PROJECT_DIR$/code/solver/testMyTree.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/testResults.py" afterPath="$PROJECT_DIR$/code/solver/testResults.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/code/solver/utils.py" afterPath="$PROJECT_DIR$/code/solver/utils.py" />
     </list>
-=======
-    <list default="true" id="b835223c-a49b-44f3-8e3e-6c96039ec19f" name="Default" comment="" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -28,233 +22,107 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$WeatherTLKT.coverage" NAME="WeatherTLKT Coverage Results" MODIFIED="1512658499556" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/model" />
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$blabal.coverage" NAME="blabal Coverage Results" MODIFIED="1512658835050" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/model" />
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$Nosetests_in_test_py.coverage" NAME="Nosetests in test.py Coverage Results" MODIFIED="1512658732261" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/model" />
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$Simulator.coverage" NAME="Simulator Coverage Results" MODIFIED="1512658697581" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/model" />
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$SimulatorClass.coverage" NAME="SimulatorClass Coverage Results" MODIFIED="1511184061558" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/model" />
-    <SUITE FILE_PATH="coverage/IBOAT_PIE_MCTS$utils.coverage" NAME="utils Coverage Results" MODIFIED="1512666255599" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code/solver" />
-  </component>
-  <component name="DatabaseView">
-    <option name="SHOW_INTERMEDIATE" value="true" />
-    <option name="GROUP_SCHEMA" value="true" />
-    <option name="GROUP_CONTENTS" value="false" />
-    <option name="SORT_POSITIONED" value="false" />
-    <option name="SHOW_TABLE_DETAILS" value="true" />
-    <option name="SHOW_EMPTY_GROUPS" value="false" />
-    <option name="AUTO_SCROLL_FROM_SOURCE" value="false" />
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-<<<<<<< HEAD
+      <file leaf-file-name="forest.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/solver/forest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="160">
+              <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#19#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testForest.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/solver/testForest.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="96">
+              <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
+                <marker date="1514911279086" expanded="true" signature="149:716" ph="..." />
+                <marker date="1514911279086" expanded="true" signature="1193:1269" ph="..." />
+                <marker date="1514911279086" expanded="true" signature="1561:1794" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="worker.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/solver/worker.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-3616">
+              <caret line="22" column="29" lean-forward="true" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
+              <folding>
+                <marker date="1514911427940" expanded="true" signature="1040:11537" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="6822:6905" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="6979:7833" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="7455:7833" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="7897:8223" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8262:8326" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8378:8416" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8462:8850" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8595:8703" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8730:8850" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="8876:9185" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="9216:9525" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="9574:9963" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="9640:9963" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="10024:10424" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="10084:10424" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="10483:10970" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="10549:10970" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="10580:10861" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="11001:11537" ph="..." />
+                <marker date="1514911427940" expanded="true" signature="11188:11512" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="simulatorTLKT.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-224">
-              <caret line="11" column="11" lean-forward="false" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
+            <state relative-caret-position="479">
+              <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="6" />
               <folding>
-                <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-                <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-                <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
+                <element signature="e#165#183#0" expanded="true" />
               </folding>
-=======
-<<<<<<< HEAD
-      <file leaf-file-name="MyTree.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/solver/MyTree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-144">
-              <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-=======
-      <file leaf-file-name="SimulatorTLKT.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/model/SimulatorTLKT.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1376">
-              <caret line="11" column="11" lean-forward="true" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-              <folding />
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
             </state>
           </provider>
         </entry>
       </file>
-<<<<<<< HEAD
-      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
-=======
-<<<<<<< HEAD
       <file leaf-file-name="master.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/solver/master.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-=======
-      <file leaf-file-name="utils.py" pinned="false" current-in-tab="true">
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
+            <state relative-caret-position="437">
+              <caret line="107" column="7" lean-forward="true" selection-start-line="107" selection-start-column="7" selection-end-line="107" selection-end-column="7" />
+              <folding>
+                <element signature="e#48#58#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="utils.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/solver/utils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="21" column="16" lean-forward="true" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+            <state relative-caret-position="-520">
+              <caret line="3" column="18" lean-forward="false" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="download.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/model/download.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="256">
-              <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="testNOMAD.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="480">
-              <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="myTree.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="115" column="4" lean-forward="false" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="4" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="weatherTLKT.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="224">
-              <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
-              <folding>
-                <element signature="e#152#166#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="plotResults.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/solver/plotResults.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1280">
-              <caret line="40" column="15" lean-forward="false" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="testMyTree.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/solver/testMyTree.py">
-          <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-            <state relative-caret-position="194">
-              <caret line="152" column="3" lean-forward="false" selection-start-line="152" selection-start-column="0" selection-end-line="152" selection-end-column="3" />
-=======
-            <state relative-caret-position="480">
-              <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-              <folding>
-                <element signature="e#108#118#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-<<<<<<< HEAD
-=======
-      <file leaf-file-name="testResults.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/solver/testResults.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="320">
-              <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="conf.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
     </leaf>
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Python Script" />
-      </list>
-    </option>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getde</find>
-      <find>animate</find>
-      <find>getdeter</find>
-      <find>animat</find>
-      <find>Dline</find>
-      <find>inter</find>
-      <find>plotT</find>
-      <find>crop</find>
-      <find>plotm</find>
-      <find>addun</find>
-<<<<<<< HEAD
-      <find>tre</find>
-=======
-      <find>weather</find>
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
+      <find>event</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -263,32 +131,10 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/SimulatorClass.py" />
-        <option value="$PROJECT_DIR$/code/model/simulationTest.py" />
-        <option value="$PROJECT_DIR$/code/model/compareWeather.py" />
-        <option value="$PROJECT_DIR$/code/model/download.py" />
-        <option value="$PROJECT_DIR$/code/model/testSpeedPolar.py" />
-        <option value="$PROJECT_DIR$/code/model/testNOMAD.py" />
-        <option value="$PROJECT_DIR$/code/solver/plotResults.py" />
-        <option value="$PROJECT_DIR$/code/solver/testMyTree.py" />
-        <option value="$PROJECT_DIR$/code/solver/testResults.py" />
-        <option value="$PROJECT_DIR$/documentation/index.rst" />
-        <option value="$PROJECT_DIR$/documentation/package1.rst" />
-        <option value="$PROJECT_DIR$/code/model/WeatherTLKT.py" />
-        <option value="$PROJECT_DIR$/code/model/SimulatorTLKT.py" />
-<<<<<<< HEAD
-        <option value="$PROJECT_DIR$/code/solver/Master.py" />
-=======
-        <option value="$PROJECT_DIR$/code/model/test.py" />
-        <option value="$PROJECT_DIR$/code/model/testing.py" />
-        <option value="$PROJECT_DIR$/code/model/blabal.py" />
-        <option value="$PROJECT_DIR$/code/solver/utils.py" />
-<<<<<<< HEAD
-        <option value="$PROJECT_DIR$/code/solver/MyTree.py" />
         <option value="$PROJECT_DIR$/code/solver/myTree.py" />
-=======
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
+        <option value="$PROJECT_DIR$/code/solver/forest.py" />
+        <option value="$PROJECT_DIR$/code/solver/worker.py" />
+        <option value="$PROJECT_DIR$/code/solver/master.py" />
       </list>
     </option>
   </component>
@@ -303,9 +149,6 @@
     <option name="y" value="7" />
     <option name="width" value="2473" />
     <option name="height" value="1434" />
-  </component>
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="1" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -322,46 +165,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-<<<<<<< HEAD
-      <pane id="Scratches" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="MCTS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTS" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTS" type="462c0819:PsiDirectoryNode" />
-              <item name="code" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="MCTS" type="b2602c69:ProjectViewProjectNode" />
-              <item name="MCTS" type="462c0819:PsiDirectoryNode" />
-              <item name="code" type="462c0819:PsiDirectoryNode" />
-              <item name="solver" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-=======
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
       <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="IBOAT-PIE-MCTS" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-          </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="IBOAT-PIE-MCTS" />
@@ -429,11 +236,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-<<<<<<< HEAD
-    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
-=======
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -447,81 +250,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.utils">
-    <configuration default="false" name="utils" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code/solver" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/solver/utils.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="WeatherTLKT" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/model/weatherTLKT.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Nosetests in test.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code/model" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="_new_regexPattern" value="&quot;&quot;" />
-      <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/code/model/test.py&quot;" />
-      <option name="_new_targetType" value="&quot;PATH&quot;" />
-      <method />
-    </configuration>
-    <configuration default="false" name="blabal" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/model/blabal.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
+  <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -584,29 +313,6 @@
       <module name="IBOAT-PIE-MCTS" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="ADDITIONAL_ARGS" value="" />
-      <method />
-    </configuration>
-    <configuration default="true" type="Python.DjangoServer" factoryName="Django server">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <option name="launchJavascriptDebuger" value="false" />
-      <option name="port" value="8000" />
-      <option name="host" value="" />
-      <option name="additionalOptions" value="" />
-      <option name="browserUrl" value="" />
-      <option name="runTestServer" value="false" />
-      <option name="runNoReload" value="false" />
-      <option name="useCustomRunCommand" value="false" />
-      <option name="customRunCommand" value="" />
       <method />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -694,40 +400,6 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method />
     </configuration>
-    <configuration default="false" name="Simulator" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code/model" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="IBOAT-PIE-MCTS" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/model/simulatorTLKT.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <method />
-    </configuration>
-    <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.Simulator" />
-      <item index="1" class="java.lang.String" itemvalue="Python.utils" />
-      <item index="2" class="java.lang.String" itemvalue="Python.WeatherTLKT" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in test.py" />
-      <item index="4" class="java.lang.String" itemvalue="Python.blabal" />
-    </list>
-    <recent_temporary>
-      <list size="4">
-        <item index="0" class="java.lang.String" itemvalue="Python.utils" />
-        <item index="1" class="java.lang.String" itemvalue="Python.blabal" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in test.py" />
-        <item index="3" class="java.lang.String" itemvalue="Python.WeatherTLKT" />
-      </list>
-    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
@@ -737,40 +409,30 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="b835223c-a49b-44f3-8e3e-6c96039ec19f" name="Default" comment="" />
-      <created>1510759572763</created>
+      <changelist id="eeeae7f7-de21-45b1-bc1d-a71a0c90b773" name="Default" comment="" />
+      <created>1514295477379</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1510759572763</updated>
+      <updated>1514295477379</updated>
     </task>
     <servers />
   </component>
-  <component name="TestHistory">
-    <history-entry file="Nosetests_in_test_py - 2017.12.07 at 15h 58m 52s.xml">
-      <configuration name="Nosetests in test.py" configurationId="tests" />
-    </history-entry>
-  </component>
   <component name="ToolWindowManager">
-<<<<<<< HEAD
-    <frame x="88" y="7" width="1368" height="780" extended-state="6" />
-=======
     <frame x="88" y="7" width="2473" height="1434" extended-state="6" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936507" sideWeight="0.50141644" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936507" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936507" sideWeight="0.49858356" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Coverage" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24929178" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="4.0469447E-4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24969648" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936507" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -791,742 +453,155 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-=======
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/code/model/WeatherClass.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-=======
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-    <entry file="file://$PROJECT_DIR$/code/model/SimulatorTLKT.py">
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
+    <entry file="file://$PROJECT_DIR$/code/solver/forest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
+            <element signature="e#0#19#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4752">
-          <caret line="264" column="64" lean-forward="false" selection-start-line="264" selection-start-column="64" selection-end-line="264" selection-end-column="64" />
-          <folding>
-            <element signature="e#152#166#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/plotResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="720">
-          <caret line="40" column="15" lean-forward="false" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/testMyTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
-          <folding>
-            <element signature="e#108#118#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/testResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
+    <entry file="file://$PROJECT_DIR$/code/solver/testForest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1514911279086" expanded="true" signature="149:716" ph="..." />
+            <marker date="1514911279086" expanded="true" signature="1193:1269" ph="..." />
+            <marker date="1514911279086" expanded="true" signature="1561:1794" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
+    <entry file="file://$PROJECT_DIR$/code/solver/worker.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1024">
-          <caret line="40" column="92" lean-forward="false" selection-start-line="40" selection-start-column="92" selection-end-line="40" selection-end-column="92" />
+        <state relative-caret-position="4704">
+          <caret line="147" column="34" lean-forward="true" selection-start-line="147" selection-start-column="34" selection-end-line="147" selection-end-column="34" />
           <folding>
-            <element signature="e#152#166#0" expanded="false" />
+            <marker date="1514911427940" expanded="true" signature="1040:11537" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="6822:6905" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="6979:7833" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="7455:7833" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="7897:8223" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8262:8326" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8378:8416" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8462:8850" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8595:8703" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8730:8850" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8876:9185" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9216:9525" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9574:9963" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9640:9963" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10024:10424" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10084:10424" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10483:10970" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10549:10970" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10580:10861" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="11001:11537" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="11188:11512" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
+    <entry file="file://$PROJECT_DIR$/code/solver/master.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/plotResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1280">
-          <caret line="40" column="15" lean-forward="false" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/testMyTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
+        <state relative-caret-position="2080">
+          <caret line="67" column="4" lean-forward="false" selection-start-line="67" selection-start-column="4" selection-end-line="67" selection-end-column="4" />
           <folding>
-            <element signature="e#108#118#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/testResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/index.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/package1.rst" />
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="42" column="19" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
-          <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="11" column="11" lean-forward="false" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulationTest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="8" column="32" lean-forward="false" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="3" column="35" lean-forward="false" selection-start-line="3" selection-start-column="35" selection-end-line="3" selection-end-column="35" />
-          <folding>
-            <element signature="e#152#166#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1344">
-          <caret line="42" column="19" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="42" selection-end-column="19" />
-          <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="11" column="11" lean-forward="false" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulationTest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="8" column="32" lean-forward="true" selection-start-line="8" selection-start-column="32" selection-end-line="8" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="6" column="3" lean-forward="true" selection-start-line="6" selection-start-column="3" selection-end-line="6" selection-end-column="3" />
-          <folding>
-            <element signature="e#152#166#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/SimulatorClass.py" />
-    <entry file="file://$PROJECT_DIR$/SimulatorClass.py" />
-    <entry file="file://$PROJECT_DIR$/code/model/simulationTest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/compareWeather.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="7" column="16" lean-forward="false" selection-start-line="7" selection-start-column="16" selection-end-line="7" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/scaling.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/testSpeedPolar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-=======
-    <entry file="file://$PROJECT_DIR$/code/solver/MyTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
->>>>>>> 9e9c14c89a712621817f8d49ed51c558f43ecfea
-    <entry file="file://$PROJECT_DIR$/code/solver/plotResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1280">
-          <caret line="40" column="15" lean-forward="false" selection-start-line="40" selection-start-column="15" selection-end-line="40" selection-end-column="15" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-=======
-    <entry file="file://$PROJECT_DIR$/code/solver/testMyTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
-          <folding>
-            <element signature="e#108#118#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-    <entry file="file://$PROJECT_DIR$/code/solver/testResults.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="10" column="18" lean-forward="false" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/package1.rst" />
-    <entry file="file://$PROJECT_DIR$/code/model/testNOMAD.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="480">
-          <caret line="15" column="16" lean-forward="false" selection-start-line="15" selection-start-column="16" selection-end-line="15" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/index.rst">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="632">
-          <caret line="42" column="22" lean-forward="false" selection-start-line="42" selection-start-column="22" selection-end-line="42" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/documentation/conf.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/WeatherClass.py" />
-    <entry file="file://$PROJECT_DIR$/code/model/weatherTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="224">
-          <caret line="7" column="31" lean-forward="false" selection-start-line="7" selection-start-column="31" selection-end-line="7" selection-end-column="31" />
-          <folding>
-            <element signature="e#152#166#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/test.py">
-      <provider selected="true" editor-type-id="text-editor">
-<<<<<<< HEAD
-        <state relative-caret-position="2718">
-          <caret line="159" column="42" lean-forward="false" selection-start-line="159" selection-start-column="42" selection-end-line="159" selection-end-column="42" />
-=======
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-    <entry file="file://$USER_HOME$/.PyCharmCE2017.2/system/python_stubs/938202982/numpy/core/multiarray.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="213">
-          <caret line="2227" column="4" lean-forward="false" selection-start-line="2227" selection-start-column="4" selection-end-line="2227" selection-end-column="4" />
-=======
-    <entry file="file://$PROJECT_DIR$/code/model/blabal.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
-          <folding />
-        </state>
-      </provider>
-    </entry>
-<<<<<<< HEAD
-    <entry file="file://$PROJECT_DIR$/code/solver/testMyTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="194">
-          <caret line="152" column="3" lean-forward="false" selection-start-line="152" selection-start-column="0" selection-end-line="152" selection-end-column="3" />
-          <folding>
-            <element signature="e#108#118#0" expanded="true" />
-          </folding>
-=======
-    <entry file="file://$PROJECT_DIR$/code/model/download.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-224">
-          <caret line="11" column="11" lean-forward="false" selection-start-line="11" selection-start-column="11" selection-end-line="11" selection-end-column="11" />
-          <folding>
-            <marker date="1512666476717" expanded="true" signature="852:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="857:1867" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="1932:2267" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="1942:1983" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2304:2556" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2313:2469" ph="&quot;&quot;&quot;Reset the simulated boat to a specific state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="2624:3922" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="2633:3330" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="3985:5358" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="3994:4719" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5387:5802" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5396:5600" ph="&quot;&quot;&quot;Returns the wind at the current simulator state....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="5841:7406" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="5850:6493" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="7476:8111" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="7484:7953" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8211:10031" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="8220:8919" ph="&quot;&quot;&quot;Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="8947:9411" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="9450:9997" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10114:11790" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="10123:10947" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="11231:11357" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11397:11735" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11908:14637" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="11917:12913" ph="&quot;&quot;&quot;Animates the trajectory corresponding to the list of states....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="12922:13132" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14066:14459" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14079:14168" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14651:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="14657:14711" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="14816:15405" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15412:15558" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15940:17238" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="15949:16387" ph="&quot;&quot;&quot;Returns the deterministic boat velocity for a given wind magnitude and point of sail....&quot;&quot;&quot;" />
-            <marker date="1512666476717" expanded="true" signature="16584:16840" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="16887:17143" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17292:17608" ph="..." />
-            <marker date="1512666476717" expanded="true" signature="17302:17497" ph="&quot;&quot;&quot;Returns the noisy boat velocity....&quot;&quot;&quot;" />
+            <element signature="e#48#58#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/solver/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="21" column="16" lean-forward="true" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+        <state relative-caret-position="96">
+          <caret line="3" column="18" lean-forward="true" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/myTree.py">
+    <entry file="file://$PROJECT_DIR$/code/solver/forest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="115" column="4" lean-forward="false" selection-start-line="115" selection-start-column="4" selection-end-line="115" selection-end-column="4" />
-          <folding />
->>>>>>> 53d6e203c6386673ba9c85fbe10c74b8d8e5e039
+        <state relative-caret-position="160">
+          <caret line="5" column="0" lean-forward="true" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/Master.py">
+    <entry file="file://$PROJECT_DIR$/code/solver/testForest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-372">
-          <caret line="14" column="17" lean-forward="true" selection-start-line="14" selection-start-column="17" selection-end-line="14" selection-end-column="17" />
+        <state relative-caret-position="96">
+          <caret line="3" column="0" lean-forward="true" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+            <marker date="1514911279086" expanded="true" signature="149:716" ph="..." />
+            <marker date="1514911279086" expanded="true" signature="1193:1269" ph="..." />
+            <marker date="1514911279086" expanded="true" signature="1561:1794" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/solver/utils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-520">
+          <caret line="3" column="18" lean-forward="false" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/solver/MyTree.py">
+    <entry file="file://$PROJECT_DIR$/code/model/simulatorTLKT.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-144">
-          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="479">
+          <caret line="24" column="0" lean-forward="false" selection-start-line="24" selection-start-column="0" selection-end-line="24" selection-end-column="6" />
+          <folding>
+            <element signature="e#165#183#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/solver/worker.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3616">
+          <caret line="22" column="29" lean-forward="true" selection-start-line="22" selection-start-column="29" selection-end-line="22" selection-end-column="29" />
+          <folding>
+            <marker date="1514911427940" expanded="true" signature="1040:11537" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="6822:6905" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="6979:7833" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="7455:7833" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="7897:8223" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8262:8326" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8378:8416" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8462:8850" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8595:8703" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8730:8850" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="8876:9185" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9216:9525" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9574:9963" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="9640:9963" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10024:10424" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10084:10424" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10483:10970" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10549:10970" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="10580:10861" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="11001:11537" ph="..." />
+            <marker date="1514911427940" expanded="true" signature="11188:11512" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/solver/master.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="437">
+          <caret line="107" column="7" lean-forward="true" selection-start-line="107" selection-start-column="7" selection-end-line="107" selection-end-column="7" />
+          <folding>
+            <element signature="e#48#58#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

@@ -7,9 +7,8 @@ Created on Wed May 31 10:06:46 2017
 """
 import sys
 
-sys.path.append("../model")
+sys.path.append("../model/")
 import matplotlib.pyplot as plt
-from typing import List
 import math
 from math import exp, sqrt, asin
 import simulatorTLKT as SimC
@@ -17,7 +16,6 @@ import random as rand
 from timeit import default_timer as timer
 import numpy as np
 from utils import Hist
-import copy
 
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
@@ -25,8 +23,7 @@ SEC_TO_DAYS = 1 / (60 * 60 * 24)
 
 
 class Node:
-    def __init__(self, state=None, parent=None, origins=[], \
-                 children=[], depth=0):
+    def __init__(self, state=None, parent=None, origins=[], children=[], depth=0):
         # the list() enables to copy the state in a new list and not just copy the reference
         if state is not None:
             self.state = tuple(state)  # only for the rootNode
@@ -42,8 +39,7 @@ class Node:
 
 
 class Tree:
-    def __init__(self, master, workerid, ite=0, budget=1000, simulator=None, \
-                 destination=[], TimeMin=0):
+    def __init__(self, master, workerid, ite=0, budget=1000, simulator=None, destination=[], TimeMin=0):
 
         self.Master = master
         self.id = workerid
@@ -71,7 +67,7 @@ class Tree:
             # the treePolicy gives us the reference to the newly expanded node
             startTreePolicy = timer()
 
-            leafNode = self.treePolicy(self.rootNode)
+            leafNode = self.tree_policy(self.rootNode)
 
             endTreePolicy = timer()
             timeTreePolicy = endTreePolicy - startTreePolicy
@@ -79,22 +75,23 @@ class Tree:
 
             startDefaultPolicy = timer()
 
-            leafNode.R = self.defaultPolicy(leafNode)
+            reward = self.default_policy(leafNode)
 
             endDefaultPolicy = timer()
             timeDefaultPolicy = endDefaultPolicy - startDefaultPolicy
             #            print(', Elapsed time Default policy= ' + str(timeDefaultPolicy))
 
             startBackUp = timer()
-            self.backUp(leafNode, [leafNode.R, leafNode.N])
+            Tree.back_up(leafNode, reward)
             endBackUp = timer()
 
             timeBackUp = endBackUp - startBackUp
             #            print(', Elapsed time BackUp= ' + str(timeBackUp) + '\n')
 
             totalETime = endBackUp - startTreePolicy
-
+            self.Buffer.append([self.id,hash(tuple(leafNode.origins)),hash(tuple(leafNode.origins[:-1])),leafNode.origins[-1],reward])
             self.ite = self.ite + 1
+            
             print('\n Iteration ' + str(self.ite) + 'on ' + str(self.budget) + ' : \n')
             print('Tree Policy = ' + str(timeTreePolicy / totalETime) + ', Default Policy = ' \
                   + str(timeDefaultPolicy / totalETime) + ', Time Backup = ' + \
@@ -112,83 +109,101 @@ class Tree:
         self.Buffer = []
 
     def copy_buffer(self):
-        return copy.copy(self.Buffer)
+        return list(self.Buffer)
 
-    def treePolicy(self, node):
+    def tree_policy(self, node):
 
-        while not self.isNodeTerminal(node):
+        while not self.is_node_terminal(node):
 
-            if not self.isFullyExpanded(node):
+            if not Tree.is_fully_expanded(node):
                 return self.expand(node)
 
             else:
-                node = self.bestChild(node)
+                node = self.best_child(node)
 
         return node
 
     def expand(self, node):
         action = node.actions.pop()
-        newNode = Node(parent=node, origins=node.origins + action, depth=node.depth + 1)
+        newNode = Node(parent=node, origins=node.origins + [action], depth=node.depth + 1)
         self.depth = max(self.depth, newNode.depth)
         node.children.append(newNode)
         self.Nodes.append(newNode)
         return newNode
 
-    # TODO a modif
-    def bestChild(self, node):
-        UTCs = []
-        for child in node.children:
-            UTCs.append(self.getUCT(child))
-        max_UTC = max(UTCs)
-        max_index = UTCs.index(max_UTC)
-        return node.children[max_index]
+## TODO write the get_uct method for the master tree
+    def best_child(self, node):
+        max_ucts_of_children = 0
+        id_of_best_child = 0
+        num_node = 0
+        
+        for val in node.Values :
+            num_node += sum(val.h)
 
-    def getUCT(self, node):
-        return node.R / node.N + UCT_COEFF * (2 * math.log(node.parent.N) / node.N) ** 0.5
+        for i,child in enumerate(node.children):
+            ucts_of_children=(1-RHO) * Tree.get_uct(child, num_node) + RHO * self.Master.get_uct(child)
 
-    def defaultPolicy(self, node):
+            if ucts_of_children > max_ucts_of_children :
+                max_ucts_of_children = ucts_of_children
+                id_of_best_child = i
 
-        self.getSimToEstimateState(node)
+        return node.children[id_of_best_child]
 
+    @staticmethod
+    def get_uct(node, num_parent):
+        uct_max_on_actions = 0
+        ii = SimC.A_DICT[node.origins[-1]]
+        num_node = sum(node.parent.Values[ii].h)
+        exploration = UCT_COEFF*(2*math.log(num_parent)/num_node)**0.5
+
+        for hist in node.Values :
+            uct_value = hist.get_mean()
+
+            if uct_value > uct_max_on_actions :
+                uct_max_on_actions = uct_value
+
+        return uct_max_on_actions + exploration
+
+    def default_policy(self, node):
+
+        self.get_sim_to_estimate_state(node)
         dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:], self.destination)
-        atDest, frac = Tree.isStateAtDest(self.destination, self.Simulator.prevState, self.Simulator.state)
+        atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
 
         while (not atDest) \
-                and (not Tree.isStateTerminal(self.Simulator, self.Simulator.state)):
+                and (not Tree.is_state_terminal(self.Simulator, self.Simulator.state)):
             self.Simulator.doStep(action)
             dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:], self.destination)
-            atDest, frac = Tree.isStateAtDest(self.destination, self.Simulator.prevState, self.Simulator.state)
+            atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
 
         if atDest:
             finalTime = self.Simulator.times[self.Simulator.state[0]] - (1 - frac)
             reward = (exp((self.TimeMax * 1.001 - finalTime) / (self.TimeMax * 1.001 - self.TimeMin)) - 1) / (
                 exp(1) - 1)
-        # reward=(self.TimeMax*1.001 - finalTime) / (self.TimeMax*1.001 - self.TimeMin)
+
         else:
             reward = 0
             finalTime = self.TimeMax
 
         print('Final dist = ' + str(dist) + ', final Time = ' + str(finalTime) + \
               ', reward = ' + str(reward))
-        self.rewards.append(reward)
         return reward
 
-    def getSimToEstimateState(self, node):
-        listOfActions = []
-
-        while node is not self.rootNode:
-            listOfActions.append(node.origin)
-            node = node.parent
-
+    def get_sim_to_estimate_state(self, node):
+        listOfActions = list(node.origins)
+        listOfActions.reverse()
         self.Simulator.reset(self.rootNode.state)
+        
+        action = listOfActions.pop()
+        self.Simulator.doStep(action)
 
-        while listOfActions and not Tree.isStateTerminal(self.Simulator, self.Simulator.state) \
-                and not Tree.isStateAtDest(self.destination, self.Simulator.prevState, self.Simulator.state):
+        while listOfActions and not Tree.is_state_terminal(self.Simulator, self.Simulator.state) \
+                and not Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state):
             action = listOfActions.pop()
             self.Simulator.doStep(action)
 
     @staticmethod
-    def isStateAtDest(destination, stateA, stateB):
+    def is_state_at_dest(destination, stateA, stateB):
         [xa, ya, za] = SimC.Simulator.fromGeoToCartesian(stateA[1:])
         [xb, yb, zb] = SimC.Simulator.fromGeoToCartesian(stateB[1:])
         [xd, yd, zd] = SimC.Simulator.fromGeoToCartesian(destination)
@@ -214,7 +229,7 @@ class Tree:
                 return [True, np.dot(vad, vab) / np.dot(vab, vab)]
 
     @staticmethod
-    def isStateTerminal(simulator, state):
+    def is_state_terminal(simulator, state):
         if simulator.times[state[0]] == simulator.times[-1]:
             return True
 
@@ -226,45 +241,53 @@ class Tree:
         else:
             return False
 
-    def isNodeTerminal(self, node):
+    def is_node_terminal(self, node):
         return self.Simulator.times[node.depth] == self.TimeMax
 
-    def isFullyExpanded(self, node):
+    @staticmethod
+    def is_fully_expanded(node):
         return len(node.actions) == 0
 
-    def backUp(self, node: Node, Q) -> None:
+
+    @staticmethod
+    def back_up(node, Q):
+        # the first reward of a node is shared by all the actions
+        for hist in node.Values :
+            hist.add(Q)
+        # then the reward is propagated to the parent node according to the action that expanded the
+        # child
         while node.parent:
-            node.parent.R = node.parent.R + Q[0]
-            node.parent.N = node.parent.N + Q[1]
+            ii = SimC.A_DICT[node.origins[-1]]
+            node.parent.Values[ii].add(Q)
             node = node.parent
 
-    def plotTree(self):
+    def plot_tree(self):
         x0 = 0
         y0 = 0
         l = 1
         node = self.rootNode
         fig = plt.figure()
         ax = plt.subplot(111)
-        self.plotChildren(node, x0, y0, l, 'k', ax)
+        self.plot_children(node, x0, y0, l, 'k', ax)
         ax.scatter(0, 0, color='red', s=200, zorder=self.ite)
         plt.axis('equal')
         fig.show()
         return fig
 
-    def plotGreyTree(self):
+    def plot_grey_tree(self):
         x0 = 0
         y0 = 0
         l = 1
         node = self.rootNode
         fig = plt.figure()
         ax = plt.subplot(111)
-        self.plotChildren(node, x0, y0, l, '0', ax)
+        self.plot_children(node, x0, y0, l, '0', ax)
         ax.scatter(0, 0, color='red', s=200, zorder=self.ite)
         plt.axis('equal')
         fig.show()
         return fig
 
-    def plotChildren(self, node, x, y, l, ax):
+    def plot_children(self, node, x, y, l, ax):
         x0 = x
         y0 = y
         for child in node.children:
@@ -272,14 +295,14 @@ class Tree:
             y = y0 + l * math.cos(child.origin * math.pi / 180)
             color = str((child.depth / self.depth) * 0.8)
             ax.plot([x0, x], [y0, y], color=color, marker='o', markersize='6')
-            self.plotChildren(child, x, y, l, color, ax)
+            self.plot_children(child, x, y, l, color, ax)
 
-    def plotBestChildren(self, node, x, y, l, color, ax):
+    def plot_best_children(self, node, x, y, l, color, ax):
         x0 = x
         y0 = y
 
         while node.children:
-            child = self.bestChild(node, 0)
+            child = self.best_child(node, 0)
             print(child)
             x = x0 + l * math.sin(child.origin * math.pi / 180)
             y = y0 + l * math.cos(child.origin * math.pi / 180)
@@ -288,7 +311,7 @@ class Tree:
             y0 = y
             node = child
 
-    def plotChildrenBD(self, node, nodes, x, y, l, ax):
+    def plot_children_bd(self, node, nodes, x, y, l, ax):
         x0 = x
         y0 = y
         for child in node.children:
@@ -300,9 +323,9 @@ class Tree:
 
             else:
                 break
-            self.plotChildrenBD(child, nodes, x, y, l, color, ax)
+            self.plot_children_bd(child, nodes, x, y, l, color, ax)
 
-    def plotBD(self, nBD=2):
+    def plot_bd(self, nBD=2):
         Nnodes = len(self.Nodes)
         Dnodes = int(Nnodes / nBD)
         listOfFig = []
@@ -317,6 +340,6 @@ class Tree:
             ax = plt.subplot(111)
             listOfAx.append(ax)
             nodes = self.Nodes[0:(n + 1) * Dnodes]
-            self.plotChildrenBD(self.rootNode, nodes, x0, y0, l, '0', ax)
+            self.plot_children_bd(self.rootNode, nodes, x0, y0, l, '0', ax)
             ax.scatter(0, 0, color='red', s=200, zorder=self.ite)
         return listOfFig

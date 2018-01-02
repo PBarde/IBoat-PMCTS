@@ -5,8 +5,10 @@ import sys
 import numpy as np
 from utils import Hist
 
-sys.path.append('../model')
-from simulatorTLKT import ACTIONS, Simulator
+sys.path.append('../model/')
+from simulatorTLKT import ACTIONS, Simulator, A_DICT
+from worker import UCT_COEFF
+from math import log
 
 # number of scenarios
 NUMSCENARIOS = 5
@@ -75,6 +77,38 @@ class MasterTree:
                 # End of the master thread
                 stop = True
 
+    def get_uct(self, worker_node):
+        # warning here it is a reference toward a worker node.
+        node_hash = hash(tuple(worker_node.origins))
+        
+        if node_hash not in self.nodes : return 0
+        
+        else : 
+          
+          master_node = self.nodes[node_hash]
+          uct_per_scenario = []
+  
+          for s,reward_per_scenario in enumerate(master_node.rewards) :
+              num_parent = 0
+              uct_max_on_actions = 0
+  
+              for hist in self.nodes[master_node.parenthash].rewards[s] :
+                  num_parent += sum(hist.h)
+  
+              num_node = sum(self.nodes[master_node.parenthash].rewards[s,A_DICT[master_node.arm]].h)
+              exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+  
+              for hist in reward_per_scenario :
+                  uct_value = hist.get_mean()
+  
+                  if uct_value > uct_max_on_actions:
+                      uct_max_on_actions = uct_value
+  
+              uct_per_scenario.append(uct_max_on_actions + exploration)
+  
+          return np.dot(uct_per_scenario,self.probability)
+
+
 
 class MasterNode:
     """
@@ -109,3 +143,5 @@ class MasterNode:
         :return:
         """
         self.rewards[idscenario, action].add(reward)
+
+

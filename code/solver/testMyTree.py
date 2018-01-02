@@ -81,14 +81,14 @@ for traj in range(ntra):
     d = dmean
     dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
     tra2.append(list(Sim.doStep(action)))
-    atDest,frac =Tree.isStateAtDest(destination,Sim.prevState,Sim.state)
+    atDest,frac =Tree.is_state_at_dest(destination, Sim.prevState, Sim.state)
     dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
     
     while (not atDest) \
-                and (not Tree.isStateTerminal(Sim,Sim.state)):
+                and (not Tree.is_state_terminal(Sim, Sim.state)):
             tra2.append(list(Sim.doStep(action)))
             dist, action = Sim.getDistAndBearing(Sim.state[1:],destination)
-            atDest,frac =Tree.isStateAtDest(destination,Sim.prevState,Sim.state)
+            atDest,frac =Tree.is_state_at_dest(destination, Sim.prevState, Sim.state)
             
     if atDest:
       finalTime = Sim.times[Sim.state[0]]-(1-frac)
@@ -179,7 +179,7 @@ filehandler.close()
 filehandler=open(name+'.pickle','rb')
 loaded=pickle.load(filehandler)
 filehandler.close()
-listOfFigs=loaded.plotBD(3)
+listOfFigs=loaded.plot_bd(3)
 #loaded.plotTree()
 
 #%%

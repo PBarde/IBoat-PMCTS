@@ -1,5 +1,5 @@
 import master as ms
-import myTree as mt
+import worker as mt
 
 import threading as th
 

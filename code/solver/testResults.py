@@ -48,7 +48,7 @@ for tra in range(nTra) :
     for action in listOfActions[:10]:
         state=list(loaded.Simulator.doStep(action))
         listOfStateOptim.append(state)
-        if loaded.isStateAtDest(state) or loaded.isStateTerminal(state) : 
+        if loaded.is_state_at_dest(state) or loaded.is_state_terminal(state) :
             break
 
     u,v=loaded.Simulator.plotTraj(listOfStateOptim, m,quiv=True)
@@ -59,7 +59,7 @@ for tra in range(nTra) :
     vlistDirect=[]
     listOfStateDirect=[]
 #    state=list(loaded.Simulator.state)
-    while not loaded.isStateAtDest(state) and not loaded.isStateTerminal(state) :
+    while not loaded.is_state_at_dest(state) and not loaded.is_state_terminal(state) :
         d,action = loaded.Simulator.getDistAndBearing(state[1:],loaded.destination)
         state=list(loaded.Simulator.doStep(action))
         listOfStateDirect.append(state)
@@ -139,7 +139,7 @@ for bd in BDlist :
 filehandler=open(name+'.pickle','rb')
 loaded=pickle.load(filehandler)
 filehandler.close()
-listOfFigs=loaded.plotBD(3)
+listOfFigs=loaded.plot_bd(3)
 k=1
 for fig in listOfFigs:
     ax=fig.gca()
@@ -147,14 +147,14 @@ for fig in listOfFigs:
     ax.set_ylim([-7,9])
     ax.grid()
     if k==3:
-        loaded.plotBestChildren(loaded.rootNode,0,0,1,'red',ax)
+        loaded.plot_best_children(loaded.rootNode, 0, 0, 1, 'red', ax)
     fig.savefig('./ResultsBD/latex'+str(k)+'BD_'+name+'.pdf', bbox_inches='tight')
     k=k+1
     fig.show()
 #%%
 fig=BDlist[-1]
 ax=fig.gca()
-loaded.plotBestChildren(loaded.rootNode,0,0,1,'red',ax)
+loaded.plot_best_children(loaded.rootNode, 0, 0, 1, 'red', ax)
 fig.show()
 #%%
 fig.savefig('./ResultsBD/'+'BESTCHILD_'+name+'.pdf', bbox_inches='tight')
