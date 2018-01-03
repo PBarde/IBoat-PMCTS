@@ -60,6 +60,8 @@ class Tree:
         self.rootNode = rootNode
         self.Nodes.append(rootNode)
         #        print(Node.getHash(rootState))
+        self.event=event
+        self.end_event=end_event
         count = 0
         # while we still have computationnal budget we expand nodes
         while self.ite < self.budget:
@@ -105,8 +107,8 @@ class Tree:
                 event.set()
                 # wait for the master to reset the buffer
                 while event.isSet():
-                    print("waiting, event is set :" + str(event.isSet()))
-                    # sleep(1)
+                    print("waiting, event is set :" + str(event.isSet()) + "for worker num " + str(self.id))
+
 
         # Set the end_event to True to notify the master that the search is done
         end_event.set()
