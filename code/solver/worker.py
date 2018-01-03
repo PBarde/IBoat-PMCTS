@@ -16,6 +16,7 @@ import random as rand
 from timeit import default_timer as timer
 import numpy as np
 from utils import Hist
+from time import sleep
 
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
@@ -54,7 +55,6 @@ class Tree:
         self.Buffer = []
 
     def uct_search(self, rootState, frequency, event, end_event):
-
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
         self.rootNode = rootNode
@@ -89,18 +89,24 @@ class Tree:
             #            print(', Elapsed time BackUp= ' + str(timeBackUp) + '\n')
 
             totalETime = endBackUp - startTreePolicy
-            self.Buffer.append([self.id,hash(tuple(leafNode.origins)),hash(tuple(leafNode.origins[:-1])),leafNode.origins[-1],reward])
+            self.Buffer.append(
+                [self.id, hash(tuple(leafNode.origins)), hash(tuple(leafNode.origins[:-1])), leafNode.origins[-1],
+                 reward])
             self.ite = self.ite + 1
-            
-            print('\n Iteration ' + str(self.ite) + 'on ' + str(self.budget) + ' : \n')
+
+            print(
+                '\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
             print('Tree Policy = ' + str(timeTreePolicy / totalETime) + ', Default Policy = ' \
                   + str(timeDefaultPolicy / totalETime) + ', Time Backup = ' + \
                   str(timeBackUp / totalETime) + '\n')
+
             # Notify the master that the buffer is ready
-            if count == frequency:
-                count = 0
+            if count % frequency == 0:
                 event.set()
-                # todo wait for the master to include the buffer ??
+                # wait for the master to reset the buffer
+                while event.isSet():
+                    print("waiting, event is set :" + str(event.isSet()))
+                    # sleep(1)
 
         # Set the end_event to True to notify the master that the search is done
         end_event.set()
@@ -131,19 +137,19 @@ class Tree:
         self.Nodes.append(newNode)
         return newNode
 
-## TODO write the get_uct method for the master tree
+    ## TODO write the get_uct method for the master tree
     def best_child(self, node):
         max_ucts_of_children = 0
         id_of_best_child = 0
         num_node = 0
-        
-        for val in node.Values :
+
+        for val in node.Values:
             num_node += sum(val.h)
 
-        for i,child in enumerate(node.children):
-            ucts_of_children=(1-RHO) * Tree.get_uct(child, num_node) + RHO * self.Master.get_uct(child)
+        for i, child in enumerate(node.children):
+            ucts_of_children = (1 - RHO) * Tree.get_uct(child, num_node) + RHO * self.Master.get_uct(child)
 
-            if ucts_of_children > max_ucts_of_children :
+            if ucts_of_children > max_ucts_of_children:
                 max_ucts_of_children = ucts_of_children
                 id_of_best_child = i
 
@@ -154,12 +160,12 @@ class Tree:
         uct_max_on_actions = 0
         ii = SimC.A_DICT[node.origins[-1]]
         num_node = sum(node.parent.Values[ii].h)
-        exploration = UCT_COEFF*(2*math.log(num_parent)/num_node)**0.5
+        exploration = UCT_COEFF * (2 * math.log(num_parent) / num_node) ** 0.5
 
-        for hist in node.Values :
+        for hist in node.Values:
             uct_value = hist.get_mean()
 
-            if uct_value > uct_max_on_actions :
+            if uct_value > uct_max_on_actions:
                 uct_max_on_actions = uct_value
 
         return uct_max_on_actions + exploration
@@ -180,7 +186,6 @@ class Tree:
             finalTime = self.Simulator.times[self.Simulator.state[0]] - (1 - frac)
             reward = (exp((self.TimeMax * 1.001 - finalTime) / (self.TimeMax * 1.001 - self.TimeMin)) - 1) / (
                 exp(1) - 1)
-
         else:
             reward = 0
             finalTime = self.TimeMax
@@ -193,7 +198,7 @@ class Tree:
         listOfActions = list(node.origins)
         listOfActions.reverse()
         self.Simulator.reset(self.rootNode.state)
-        
+
         action = listOfActions.pop()
         self.Simulator.doStep(action)
 
@@ -248,11 +253,10 @@ class Tree:
     def is_fully_expanded(node):
         return len(node.actions) == 0
 
-
     @staticmethod
     def back_up(node, Q):
         # the first reward of a node is shared by all the actions
-        for hist in node.Values :
+        for hist in node.Values:
             hist.add(Q)
         # then the reward is propagated to the parent node according to the action that expanded the
         # child

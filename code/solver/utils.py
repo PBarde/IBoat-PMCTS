@@ -1,11 +1,11 @@
 import sys
+
 sys.path.append("../model/")
 from simulatorTLKT import ACTIONS
 import numpy as np
 
 
 class Hist:
-
     """
     Definition of the histogram class.
     """
@@ -41,12 +41,14 @@ class Hist:
             else:
                 break
         self.h[i] += 1
-        
-    def get_mean(self) :
+
+    def get_mean(self):
         """
         Computes the mean value of the histogram
         :return float mean: mean value
         """
         summed = sum(self.h)
-        if summed == 0 : return 0 
-        else : return np.dot(self.h,Hist.MEANS)/sum(self.h)
+        if summed == 0:
+            return 0
+        else:
+            return np.dot(self.h, Hist.MEANS) / sum(self.h)

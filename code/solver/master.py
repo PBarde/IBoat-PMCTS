@@ -9,6 +9,7 @@ sys.path.append('../model/')
 from simulatorTLKT import ACTIONS, Simulator, A_DICT
 from worker import UCT_COEFF
 from math import log
+from time import sleep
 
 # number of scenarios
 NUMSCENARIOS = 5
@@ -25,7 +26,7 @@ class MasterTree:
     def __init__(self):
         self.nodes = dict()
         self.probability = np.array([1 / NUMSCENARIOS for _ in range(NUMSCENARIOS)])
-        self.nodes[0] = MasterNode(nodehash=hash(0))
+        self.nodes[hash(tuple([]))] = MasterNode(nodehash=hash(tuple([])))
 
     def integrate_buffer(self, buffer):
         """
@@ -61,7 +62,7 @@ class MasterTree:
         stop = False
         while not stop:
             for i, event in enumerate(event_dict.values()):
-                # If a tree is ready
+                # If a tree is ready)
                 if event.isSet():
                     # Copy the buffer
                     buffer = worker_dict[i].copy_buffer()
@@ -73,41 +74,41 @@ class MasterTree:
                     self.integrate_buffer(buffer)
 
             # Test if all the workers are done
-            if all(event.isSet for event in finish_event_dict.values()):
+            if all(event.isSet() for event in finish_event_dict.values()):
                 # End of the master thread
                 stop = True
 
     def get_uct(self, worker_node):
         # warning here it is a reference toward a worker node.
         node_hash = hash(tuple(worker_node.origins))
-        
-        if node_hash not in self.nodes : return 0
-        
-        else : 
-          
-          master_node = self.nodes[node_hash]
-          uct_per_scenario = []
-  
-          for s,reward_per_scenario in enumerate(master_node.rewards) :
-              num_parent = 0
-              uct_max_on_actions = 0
-  
-              for hist in self.nodes[master_node.parenthash].rewards[s] :
-                  num_parent += sum(hist.h)
-  
-              num_node = sum(self.nodes[master_node.parenthash].rewards[s,A_DICT[master_node.arm]].h)
-              exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
-  
-              for hist in reward_per_scenario :
-                  uct_value = hist.get_mean()
-  
-                  if uct_value > uct_max_on_actions:
-                      uct_max_on_actions = uct_value
-  
-              uct_per_scenario.append(uct_max_on_actions + exploration)
-  
-          return np.dot(uct_per_scenario,self.probability)
 
+        if node_hash not in self.nodes:
+            # print("Node " + str(node_hash) + " is not in the master")
+            return 0
+
+        else:
+            print("Node " + str(node_hash) + " is in the master")
+            master_node = self.nodes[node_hash]
+            uct_per_scenario = []
+            for s, reward_per_scenario in enumerate(master_node.rewards):
+                num_parent = 0
+                uct_max_on_actions = 0
+
+                for hist in self.nodes[master_node.parentHash].rewards[s]:
+                    num_parent += sum(hist.h)
+
+                num_node = sum(self.nodes[master_node.parentHash].rewards[s, A_DICT[master_node.arm]].h)
+                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+
+                for hist in reward_per_scenario:
+                    uct_value = hist.get_mean()
+
+                    if uct_value > uct_max_on_actions:
+                        uct_max_on_actions = uct_value
+
+                uct_per_scenario.append(uct_max_on_actions + exploration)
+
+            return np.dot(uct_per_scenario, self.probability)
 
 
 class MasterNode:
@@ -142,6 +143,4 @@ class MasterNode:
         :param reward:
         :return:
         """
-        self.rewards[idscenario, action].add(reward)
-
-
+        self.rewards[idscenario, A_DICT[action]].add(reward)
