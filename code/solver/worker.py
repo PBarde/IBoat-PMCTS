@@ -137,7 +137,6 @@ class Tree:
         self.Nodes.append(newNode)
         return newNode
 
-    ## TODO write the get_uct method for the master tree
     def best_child(self, node):
         max_ucts_of_children = 0
         id_of_best_child = 0
@@ -145,6 +144,8 @@ class Tree:
 
         for val in node.Values:
             num_node += sum(val.h)
+
+        num_node=max([num_node,0.001])
 
         for i, child in enumerate(node.children):
             ucts_of_children = (1 - RHO) * Tree.get_uct(child, num_node) + RHO * self.Master.get_uct(child)
@@ -159,7 +160,7 @@ class Tree:
     def get_uct(node, num_parent):
         uct_max_on_actions = 0
         ii = SimC.A_DICT[node.origins[-1]]
-        num_node = sum(node.parent.Values[ii].h)
+        num_node = max([sum(node.parent.Values[ii].h),0.001])
         exploration = UCT_COEFF * (2 * math.log(num_parent) / num_node) ** 0.5
 
         for hist in node.Values:

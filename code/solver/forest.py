@@ -39,8 +39,13 @@ class Forest:
             w_th.start()
 
         # Launch the master in this thread
-        self.master.update(self.workers, worker_events, end_events)
+        master_thread = th.Thread(name='master', target=self.master.update, args = (self.workers, worker_events, end_events))
+        master_thread.start()
 
         # Wait for threads to complete
         for w_th in worker_thread.values():
             w_th.join()
+
+        master_thread.join()
+
+        return [master_thread,worker_thread]

@@ -97,7 +97,10 @@ class MasterTree:
                 for hist in self.nodes[master_node.parentHash].rewards[s]:
                     num_parent += sum(hist.h)
 
+                num_parent = max([num_parent,0.001])
                 num_node = sum(self.nodes[master_node.parentHash].rewards[s, A_DICT[master_node.arm]].h)
+                num_node = max([num_node,0.001])
+
                 exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
                 for hist in reward_per_scenario:
