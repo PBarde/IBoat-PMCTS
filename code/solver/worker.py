@@ -62,10 +62,8 @@ class Tree:
         #        print(Node.getHash(rootState))
         self.event=event
         self.end_event=end_event
-        count = 0
         # while we still have computationnal budget we expand nodes
         while self.ite < self.budget:
-            count += 1
             # the treePolicy gives us the reference to the newly expanded node
             startTreePolicy = timer()
 
@@ -103,7 +101,7 @@ class Tree:
                   str(timeBackUp / totalETime) + '\n')
 
             # Notify the master that the buffer is ready
-            if count % frequency == 0:
+            if self.ite % frequency == 0:
                 event.set()
                 # wait for the master to reset the buffer
                 while event.isSet():

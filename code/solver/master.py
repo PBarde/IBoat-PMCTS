@@ -87,7 +87,7 @@ class MasterTree:
             return 0
 
         else:
-            print("Node " + str(node_hash) + " is in the master")
+            # print("Node " + str(node_hash) + " is in the master")
             master_node = self.nodes[node_hash]
             uct_per_scenario = []
             for s, reward_per_scenario in enumerate(master_node.rewards):
