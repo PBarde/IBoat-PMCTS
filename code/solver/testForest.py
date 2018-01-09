@@ -31,7 +31,7 @@ for ii in modelcycle:
 
 #%%
 # We create N simulators based on the scenarios
-N = 5  # <=20
+N = 1  # <=20
 frequency = 10  # frequency of the buffer
 stateInit = [0, 47.5, -3.5 + 360]
 destination = [48, -3 + 360]

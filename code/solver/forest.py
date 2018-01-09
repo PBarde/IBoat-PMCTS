@@ -1,5 +1,8 @@
 import master as ms
 import worker as mt
+import sys
+sys.path.append('../model/')
+from weatherTLKT import Weather
 
 import threading as th
 
@@ -48,3 +51,51 @@ class Forest:
 
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
+
+
+    @staticmethod
+    def download_scenarios(mydate, latBound = [43, 50],lonBound = [-10 + 360, 360],
+                          website = 'http://nomads.ncep.noaa.gov:9090/dods/',
+                          modelcycle = range(1, 21)):
+        """
+        To download the scenarios (launch in real python console)
+        :param mydate:
+        :param latBound:
+        :param lonBound:
+        :param website:
+        :param modelcycle:
+        :return:
+        """
+        pathToSaveObj = []
+        for ii in modelcycle:
+
+            if ii < 10:
+                cycle = '0' + str(ii)
+            else:
+                cycle = str(ii)
+
+            url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
+            pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
+
+            Weather.download(url, pathToSaveObj[ii-1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64], ens=True)
+
+
+    @staticmethod
+    def load_scenarios(mydate, website = 'http://nomads.ncep.noaa.gov:9090/dods/',
+                          modelcycle = range(1, 21)):
+
+        pathToSaveObj = []
+        weather_scen = []
+        for ii in modelcycle:
+
+            if ii < 10:
+                cycle = '0' + str(ii)
+            else:
+                cycle = str(ii)
+
+            url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
+            pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
+
+            weather_scen.append(Weather.load(pathToSaveObj[ii-1]))
+
+        return weather_scen

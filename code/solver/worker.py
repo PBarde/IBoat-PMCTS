@@ -16,11 +16,11 @@ import random as rand
 from timeit import default_timer as timer
 import numpy as np
 from utils import Hist
-from time import sleep
+
 
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
-SEC_TO_DAYS = 1 / (60 * 60 * 24)
+
 
 
 class Node:
@@ -183,6 +183,7 @@ class Tree:
             self.Simulator.doStep(action)
             dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:], self.destination)
             atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
+            print(str(action)+"\n")
 
         if atDest:
             finalTime = self.Simulator.times[self.Simulator.state[0]] - (1 - frac)
