@@ -1,3 +1,4 @@
 __pycache__
-.idea/workspace.xml
-.idea/**
+./.idea/workspace.xml
+./.idea
+./.spyproject

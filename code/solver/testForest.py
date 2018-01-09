@@ -29,6 +29,7 @@ for ii in modelcycle:
     # print(url)
     # Weather.download(url, pathToSaveObj[ii-1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64], ens=True)
 
+#%%
 # We create N simulators based on the scenarios
 N = 5  # <=20
 frequency = 10  # frequency of the buffer
