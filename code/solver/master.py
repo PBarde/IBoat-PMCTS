@@ -83,7 +83,7 @@ class MasterTree:
         node_hash = hash(tuple(worker_node.origins))
 
         if node_hash not in self.nodes:
-            # print("Node " + str(node_hash) + " is not in the master")
+            print("Node " + str(node_hash) + " is not in the master")
             return 0
 
         else:
@@ -97,9 +97,11 @@ class MasterTree:
                 for hist in self.nodes[master_node.parentHash].rewards[s]:
                     num_parent += sum(hist.h)
 
-                num_parent = max([num_parent,0.001])
+                if num_parent == 0:
+                    uct_per_scenario.append(0)
+                    continue
+
                 num_node = sum(self.nodes[master_node.parentHash].rewards[s, A_DICT[master_node.arm]].h)
-                num_node = max([num_node,0.001])
 
                 exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
