@@ -5,12 +5,14 @@ Created on Tue Jan  2 15:53:03 2018
 
 @author: paul
 """
-import sys
+import forest as ft
+mydate = '20180108'
 
-sys.path.append("../model/")
-import myTree as mt
+# ft.Forest.download_scenarios(mydate)
 
-node=mt.Node()
+Weathers = ft.Forest.load_scenarios(mydate)
 
-for hist in node.Values : 
-  print(hist)
+
+
+
+
