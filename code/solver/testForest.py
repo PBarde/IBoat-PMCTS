@@ -54,3 +54,8 @@ for jj in range(N):
 timemin = 1.8
 forest = fr.Forest(listsimulators=sims, destination=destination, timemin=timemin)
 forest.launch_search(stateInit, frequency)
+
+forest.master.get_children()
+forest.master.get_depth()
+forest.master.plot_best_policy()
+
