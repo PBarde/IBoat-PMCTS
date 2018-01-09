@@ -16,11 +16,11 @@ import random as rand
 from timeit import default_timer as timer
 import numpy as np
 from utils import Hist
-from time import sleep
+
 
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
-SEC_TO_DAYS = 1 / (60 * 60 * 24)
+
 
 
 class Node:
