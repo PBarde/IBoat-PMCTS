@@ -28,11 +28,16 @@ for i,a in enumerate(ACTIONS) :
 #: Constant to convert days in seconds.
 DAY_TO_SEC=24*60*60
 
+SEC_TO_DAYS = 1 / DAY_TO_SEC
+
 #: Earth radius in meters.
 EARTH_RADIUS = 6371e3
 
 #: Angular margin that characterizes the destination point.
 DESTINATION_ANGLE=rad(0.005)
+
+#: Constant to convert hours to days
+HOURS_TO_DAY = 1 / 24
                         
 class Simulator:
     """
