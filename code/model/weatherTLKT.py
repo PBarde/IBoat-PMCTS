@@ -50,7 +50,7 @@ class Weather:
         self.v = v
 
     @classmethod
-    def load(cls, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
+    def load(cls, path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]):
         """
         Takes a file path where a Weather object is saved and loads it into the script.
         If no lat or lon boundaries are defined, it takes the whole span present in the saved object.
@@ -79,7 +79,7 @@ class Weather:
         return Cropped
     
     @classmethod
-    def download(cls, url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]):
+    def download(cls, url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]):
         """
         Downloads Weather object from url server and writes it into path file.
         
@@ -163,7 +163,7 @@ class Weather:
         ang = (180 / math.pi * math.atan2(u, v)) % 360
         return mag, ang
 
-    def crop(self, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]):
+    def crop(self, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]):
         """
         Returns a cropped Weather object's data to the selected range of lon, lat and time steps.
         If no lat or lon boundaries are defined it takes the whole span present in the object.
@@ -204,7 +204,7 @@ class Weather:
 
 
 
-        elif latBound == [-90, 90] and lonBound == [0, 360] and timeSteps != [0, 81]:
+        elif latBound == [-90, 90] and lonBound == [0, 360] and timeSteps != [0, 64]:
             Cropped = Weather()
             Cropped.lat = self.lat
             Cropped.lon = self.lon
@@ -256,7 +256,7 @@ class Weather:
         plt.title('Wind amplitude and direction in [m/s] at time : ' + str(self.time[instant]) + ' days')
         plt.show()
 
-        return plt
+        return m
     
     def plotMultipleQuiver(self, otherWeather, proj='mill', res='i', instant=0, Dline=5, density=1):
         """
