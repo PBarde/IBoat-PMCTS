@@ -3,6 +3,8 @@ import worker as mt
 import sys
 sys.path.append('../model/')
 from weatherTLKT import Weather
+from simulatorTLKT import Simulator, HOURS_TO_DAY
+import numpy as np
 
 import threading as th
 
@@ -82,7 +84,8 @@ class Forest:
 
     @staticmethod
     def load_scenarios(mydate, website = 'http://nomads.ncep.noaa.gov:9090/dods/',
-                          modelcycle = range(1, 21)):
+                          modelcycle = range(1, 21),latBound=[-90, 90],
+                          lonBound=[0, 360], timeSteps=[0, 64]):
 
         pathToSaveObj = []
         weather_scen = []
@@ -96,6 +99,81 @@ class Forest:
             url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
             pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
 
-            weather_scen.append(Weather.load(pathToSaveObj[ii-1]))
+            weather_scen.append(Weather.load(pathToSaveObj[ii-1],latBound, lonBound, timeSteps))
 
         return weather_scen
+
+    @staticmethod
+    def create_simulators(weathers, numberofsim, simtimestep = 6, stateinit = [0, 47.5, -3.5 + 360],
+                          ndaysim = 8, delatlatlon = 0.5):
+        """
+
+        :param weathers:
+        :param numberofsim:
+        :param simtimestep:
+        :param stateinit:
+        :param ndaysim:
+        :param delatlatlon:
+        :return:
+        """
+        sims = []
+        for jj in range(numberofsim):
+            # We shift the times so that all times are in the correct bounds for interpolations
+            weathers[jj].time = weathers[jj].time - weathers[jj].time[0]
+
+            # We set up the parameters of the simulation
+            timemax = simtimestep * len(weathers[jj].time)
+            times = np.arange(0, ndaysim, simtimestep * HOURS_TO_DAY)
+            lats = np.arange(weathers[jj].lat[0], weathers[jj].lat[-1], delatlatlon)
+            lons = np.arange(weathers[jj].lon[0], weathers[jj].lon[-1], delatlatlon)
+            sims.append(Simulator(times, lats, lons, weathers[jj], stateinit))
+
+        return sims
+
+
+    @staticmethod
+    def initialize_simulators(sims,ntra,stateinit,missionheading):
+
+        arrivalpositions = np.zeros((ntra * len(sims), 2))
+        ii = 0
+        for sim in sims:
+
+            for _ in range(ntra):
+                sim.reset(stateinit)
+
+                for t in sim.times[0:-1]:
+                    sim.doStep(missionheading)
+
+                arrivalpositions[ii, :] = list(sim.state[1:])
+                ii += 1
+
+        latdest = np.mean(arrivalpositions[:, 0])
+        londest = np.mean(arrivalpositions[:, 1])
+        destination = [latdest, londest]
+
+        arrivaltimes = []
+        ii = 0
+
+        for sim in sims:
+
+            for _ in range(ntra):
+                sim.reset(stateinit)
+                dist, action = sim.getDistAndBearing(sim.state[1:], destination)
+                sim.doStep(action)
+                atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
+
+                while (not atDest) \
+                        and (not mt.Tree.is_state_terminal(sim, sim.state)):
+                    dist, action = sim.getDistAndBearing(sim.state[1:], destination)
+                    sim.doStep(action)
+                    atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
+
+                if atDest:
+                    finalTime = sim.times[sim.state[0]] - (1 - frac)
+                    arrivaltimes.append(finalTime)
+
+                ii += 1
+
+        timemin = min(arrivaltimes)
+
+        return [destination,timemin]
