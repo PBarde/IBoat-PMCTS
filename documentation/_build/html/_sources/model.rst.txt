@@ -7,7 +7,7 @@ This package contains the two classes useful to construct the model.
 WeatherTLKT
 ------------------------------
 
-.. automodule:: WeatherTLKT
+.. automodule:: weatherTLKT
 	:members:
 	:undoc-members:
 	:show-inheritance: 
@@ -15,7 +15,7 @@ WeatherTLKT
 SimulatorTLKT
 ------------------------------
 
-.. automodule:: SimulatorTLKT
+.. automodule:: simulatorTLKT
 	:members:
 	:undoc-members:
 	:show-inheritance: 

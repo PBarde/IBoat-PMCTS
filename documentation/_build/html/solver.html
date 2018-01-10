@@ -41,6 +41,353 @@
             
   <div class="section" id="package-solver">
 <h1>Package Solver<a class="headerlink" href="#package-solver" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-master">
+<span id="master"></span><h2>Master<a class="headerlink" href="#module-master" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master.MasterNode">
+<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parenthash=None</em>, <em>action=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Node of a MasterTree
+:ivar int hash:
+:ivar int action:
+:ivar int parentHash:
+:ivar numpy.array rewards: Array of <cite>Hist</cite>
+:ivar list children: List of children (MasterNode)
+:ivar int depth: Depth of the node</p>
+<dl class="method">
+<dt id="master.MasterNode.add_reward">
+<code class="descname">add_reward</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Includes a reward into the histogram for all actions of one scenario.
+:param int idscenario: id of the scenario/workertree where the update is coming
+:param float reward: reward of the update</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterNode.add_reward_action">
+<code class="descname">add_reward_action</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Includes a reward into the histogram for one action of one scenario.
+:param idscenario:
+:param action:
+:param reward:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterNode.is_expanded">
+<code class="descname">is_expanded</code><span class="sig-paren">(</span><em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.is_expanded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this node has been expanded by the scenario <cite>idscenario</cite>
+:param idscenario:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="master.MasterTree">
+<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>num_scenarios</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Master tree that manages ns different WorkerTree in parallel.
+Each WorkerTree is searching on a different Weather scenario.
+:ivar dict nodes: dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash
+:ivar numpy.array probability: array containing the probability of each scenario</p>
+<dl class="method">
+<dt id="master.MasterTree.backup">
+<code class="descname">backup</code><span class="sig-paren">(</span><em>nodehash</em>, <em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagates the reward through the master tree.
+:param int nodehash: hash of the node
+:param int idscenario: id of the scenario/workertree where the update is coming
+:param float reward: reward of the update</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_best_child">
+<code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_children">
+<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the children nodes to each master node
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_depth">
+<code class="descname">get_depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the depth of each master node and add it in their attributes
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_uct">
+<code class="descname">get_uct</code><span class="sig-paren">(</span><em>worker_node</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the master uct value of a worker node
+:param worker_node:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.integrate_buffer">
+<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates a list of update from a scenario. This method is to be called from a worker.
+:param buffer: list of updates coming from the worker. One update is a list :            [scenarioId, newNodeHash, parentHash, action, reward]
+:type buffer: list of list</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="master.MasterTree.load_tree">
+<em class="property">classmethod </em><code class="descname">load_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.load_tree" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_best_policy">
+<code class="descname">plot_best_policy</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_best_policy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the master tree and its best policy
+:param grey:
+:param idscenario:
+:return:</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_children">
+<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em>, <em>color=None</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive function to plot the children of a master node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> – </li>
+<li><strong>x</strong> – </li>
+<li><strong>y</strong> – </li>
+<li><strong>l</strong> – </li>
+<li><strong>ax</strong> – </li>
+<li><strong>color</strong> – if None =&gt; grayscale</li>
+<li><strong>idscenario</strong> – if not None =&gt; plot only for one scenario</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">figure</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_tree">
+<code class="descname">plot_tree</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the master tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>grey</strong> (<em>boolean</em>) – if True =&gt; grey scale</li>
+<li><strong>idscenario</strong> (<em>int</em>) – If not None, plot the corresponding worker tree</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.save_tree">
+<code class="descname">save_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.save_tree" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>worker_dict</em>, <em>event_dict</em>, <em>finish_event_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Background task which waits for worker buffer update
+:param worker_dict:
+:param event_dict:
+:param finish_event_dict:
+:return:</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-worker">
+<span id="worker"></span><h2>Worker<a class="headerlink" href="#module-worker" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed May 31 10:06:46 2017</p>
+<p>&#64;author: paul</p>
+<dl class="class">
+<dt id="worker.Node">
+<em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>state=None</em>, <em>parent=None</em>, <em>origins=[]</em>, <em>children=[]</em>, <em>depth=0</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="worker.Tree">
+<em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Tree</code><span class="sig-paren">(</span><em>master</em>, <em>workerid</em>, <em>ite=0</em>, <em>budget=1000</em>, <em>simulator=None</em>, <em>destination=[]</em>, <em>TimeMin=0</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="staticmethod">
+<dt id="worker.Tree.back_up">
+<em class="property">static </em><code class="descname">back_up</code><span class="sig-paren">(</span><em>node</em>, <em>Q</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.back_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.best_child">
+<code class="descname">best_child</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.best_child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.copy_buffer">
+<code class="descname">copy_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.copy_buffer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.default_policy">
+<code class="descname">default_policy</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.default_policy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.expand">
+<code class="descname">expand</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.expand" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.get_sim_to_estimate_state">
+<code class="descname">get_sim_to_estimate_state</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_sim_to_estimate_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="worker.Tree.get_uct">
+<em class="property">static </em><code class="descname">get_uct</code><span class="sig-paren">(</span><em>node</em>, <em>num_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_uct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="worker.Tree.is_fully_expanded">
+<em class="property">static </em><code class="descname">is_fully_expanded</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_fully_expanded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.is_node_terminal">
+<code class="descname">is_node_terminal</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_node_terminal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="worker.Tree.is_state_at_dest">
+<em class="property">static </em><code class="descname">is_state_at_dest</code><span class="sig-paren">(</span><em>destination</em>, <em>stateA</em>, <em>stateB</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_state_at_dest" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="worker.Tree.is_state_terminal">
+<em class="property">static </em><code class="descname">is_state_terminal</code><span class="sig-paren">(</span><em>simulator</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_state_terminal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_bd">
+<code class="descname">plot_bd</code><span class="sig-paren">(</span><em>nBD=2</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_bd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_best_children">
+<code class="descname">plot_best_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>color</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_best_children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_children">
+<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_children" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_children_bd">
+<code class="descname">plot_children_bd</code><span class="sig-paren">(</span><em>node</em>, <em>nodes</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_children_bd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_grey_tree">
+<code class="descname">plot_grey_tree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_grey_tree" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.plot_tree">
+<code class="descname">plot_tree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_tree" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.reset_buffer">
+<code class="descname">reset_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.reset_buffer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.tree_policy">
+<code class="descname">tree_policy</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.tree_policy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.uct_search">
+<code class="descname">uct_search</code><span class="sig-paren">(</span><em>rootState</em>, <em>frequency</em>, <em>event</em>, <em>end_event</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.uct_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-forest">
+<span id="forest"></span><h2>Forest<a class="headerlink" href="#module-forest" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="forest.Forest">
+<em class="property">class </em><code class="descclassname">forest.</code><code class="descname">Forest</code><span class="sig-paren">(</span><em>listsimulators=[]</em>, <em>destination=[]</em>, <em>timemin=0</em>, <em>budget=100</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Object coordinating a MasterTree and its WorkerTrees</p>
+<dl class="staticmethod">
+<dt id="forest.Forest.create_simulators">
+<em class="property">static </em><code class="descname">create_simulators</code><span class="sig-paren">(</span><em>weathers, numberofsim, simtimestep=6, stateinit=[0, 47.5, 356.5], ndaysim=8, delatlatlon=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.create_simulators" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>weathers</strong> – </li>
+<li><strong>numberofsim</strong> – </li>
+<li><strong>simtimestep</strong> – </li>
+<li><strong>stateinit</strong> – </li>
+<li><strong>ndaysim</strong> – </li>
+<li><strong>delatlatlon</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="forest.Forest.download_scenarios">
+<em class="property">static </em><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd><p>To download the scenarios (launch in real python console)
+:param mydate:
+:param latBound:
+:param lonBound:
+:param website:
+:param modelcycle:
+:return:</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="forest.Forest.initialize_simulators">
+<em class="property">static </em><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="forest.Forest.launch_search">
+<code class="descname">launch_search</code><span class="sig-paren">(</span><em>root_state</em>, <em>frequency</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.launch_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="forest.Forest.load_scenarios">
+<em class="property">static </em><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -51,7 +398,17 @@
         <div class="sphinxsidebarwrapper">
             <p class="logo"><a href="index.html">
               <img class="logo" src="_static/IBOAT_logo1.png" alt="Logo"/>
-            </a></p><div class="relations">
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Package Solver</a><ul>
+<li><a class="reference internal" href="#module-master">Master</a></li>
+<li><a class="reference internal" href="#module-worker">Worker</a></li>
+<li><a class="reference internal" href="#module-forest">Forest</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>

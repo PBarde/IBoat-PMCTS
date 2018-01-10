@@ -7,13 +7,10 @@ from utils import Hist
 import matplotlib.pyplot as plt
 from worker import UCT_COEFF
 from math import log, sin, cos, pi
-from operator import attrgetter
+import pickle
 
 sys.path.append('../model/')
 from simulatorTLKT import ACTIONS, Simulator, A_DICT
-
-# number of scenarios
-NUMSCENARIOS = 5
 
 
 class MasterTree:
@@ -24,11 +21,12 @@ class MasterTree:
     :ivar numpy.array probability: array containing the probability of each scenario
     """
 
-    def __init__(self):
+    def __init__(self, num_scenarios):
         self.nodes = dict()
-        self.probability = np.array([1 / NUMSCENARIOS for _ in range(NUMSCENARIOS)])
-        self.nodes[hash(tuple([]))] = MasterNode(nodehash=hash(tuple([])))
+        self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
+        self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
         self.max_depth = None
+        self.numScenarios = num_scenarios
 
     def integrate_buffer(self, buffer):
         """
@@ -40,7 +38,8 @@ class MasterTree:
         for update in buffer:
             scenarioId, newNodeHash, parentHash, action, reward = update
             if newNodeHash not in self.nodes:
-                self.nodes[newNodeHash] = MasterNode(newNodeHash, parentHash, action)
+                self.nodes[newNodeHash] = MasterNode(self.numScenarios, nodehash=newNodeHash,
+                                                     parenthash=parentHash, action=action)
 
             self.nodes[newNodeHash].add_reward(scenarioId, reward)
             self.backup(newNodeHash, scenarioId, reward)
@@ -61,6 +60,13 @@ class MasterTree:
             parent_hash = node.parentHash
 
     def update(self, worker_dict, event_dict, finish_event_dict):
+        """
+        Background task which waits for worker buffer update
+        :param worker_dict:
+        :param event_dict:
+        :param finish_event_dict:
+        :return:
+        """
         stop = False
         while not stop:
             for i, event in enumerate(event_dict.values()):
@@ -81,6 +87,11 @@ class MasterTree:
                 stop = True
 
     def get_uct(self, worker_node):
+        """
+        Compute the master uct value of a worker node
+        :param worker_node:
+        :return:
+        """
         # warning here it is a reference toward a worker node.
         node_hash = hash(tuple(worker_node.origins))
 
@@ -118,12 +129,20 @@ class MasterTree:
             return np.dot(uct_per_scenario, self.probability)
 
     def get_children(self):
+        """
+        Add the children nodes to each master node
+        :return:
+        """
         nodes = dict(self.nodes)
         del nodes[hash(tuple([]))]  # remove the rootNode
         for node in nodes.values():
             self.nodes[node.parentHash].children.append(node)
 
     def get_depth(self):
+        """
+        Compute the depth of each master node and add it in their attributes
+        :return:
+        """
         node = self.nodes[hash(tuple([]))]
         list_nodes = [node]
         node.depth = 0
@@ -136,39 +155,83 @@ class MasterTree:
         # get max depth of the tree
         self.max_depth = max(map(lambda i: self.nodes[i].depth, self.nodes))
 
-    def get_best_child(self, node):
-        reward_per_action = np.zeros(shape=len(ACTIONS))
-        temp = np.zeros(shape=NUMSCENARIOS)
-        for j in range(len(ACTIONS)):
-            for i in range(NUMSCENARIOS):
-                temp[i] = node.rewards[i, j].get_mean()
-
-            reward_per_action[j] = np.dot(temp, self.probability)
-            print(np.dot(temp, self.probability))
-
-        best_action = np.argmax(reward_per_action)
-        print("best action" + str(best_action))
+    def get_best_child(self, node, idscenario=None):
+        best_reward = 0
+        best_action = None
+        best_child = None
         for child in node.children:
-            if A_DICT[child.arm] == best_action:
-                return child
+            reward_per_action = np.zeros(shape=len(ACTIONS))
+            for j in range(len(ACTIONS)):
+                if idscenario is None:
+                    temp = np.zeros(shape=self.numScenarios)
+                    for i in range(self.numScenarios):
+                        temp[i] = child.rewards[i, j].get_mean()
+                    reward_per_action[j] = np.dot(temp, self.probability)
+                else:
+                    reward_per_action[j] = child.rewards[idscenario, j].get_mean()
+            if np.max(reward_per_action) > best_reward:
+                best_reward = np.max(reward_per_action)
+                best_action = np.argmax(reward_per_action)
+                best_child = child
+        print("best reward :" + str(best_reward) + " for action :" + str(best_action))
+        return best_child
 
-    def plot_tree(self):
+    def plot_tree(self, grey=False, idscenario=None):
+        """
+        Plot the master tree.
+
+        :param boolean grey: if True => grey scale
+
+        :param int idscenario: If not None, plot the corresponding worker tree
+        """
         x0 = 0
         y0 = 0
         length = 1
         node = self.nodes[hash(tuple([]))]  # rootNode
-        fig = plt.figure()
-        ax = plt.subplot(111)
-        self.plot_children(node, x0, y0, length, ax, 'k')
+
+        # Make sure all the variable have been computed
+        if node.depth is None:
+            self.get_depth()
+        if not node.children:
+            self.get_children()
+
+        fig, ax = plt.subplots()
+        if grey:
+            self.plot_children(node, x0, y0, length, ax, idscenario=idscenario)
+        else:
+            self.plot_children(node, x0, y0, length, ax, 'k', idscenario=idscenario)
+
         ax.scatter(0, 0, color='red', s=200, zorder=len(self.nodes))
         plt.axis('equal')
         fig.show()
         return fig, ax
 
-    def plot_children(self, node, x, y, l, ax, color=None):
+    def plot_children(self, node, x, y, l, ax, color=None, idscenario=None):
+        """
+        Recursive function to plot the children of a master node.
+
+        :param node:
+
+        :param x:
+
+        :param y:
+
+        :param l:
+
+        :param ax:
+
+        :param color: if None => grayscale
+
+        :param idscenario: if not None => plot only for one scenario
+
+        :return: figure
+        """
         x0 = x
         y0 = y
         for child in node.children:
+            if idscenario is not None:
+                if not child.is_expanded(idscenario):
+                    continue
             x = x0 + l * sin(child.arm * pi / 180)
             y = y0 + l * cos(child.arm * pi / 180)
             if color is None:
@@ -177,82 +240,42 @@ class MasterTree:
                 col = color
 
             ax.plot([x0, x], [y0, y], color=col, marker='o', markersize='6')
-            self.plot_children(child, x, y, l, ax, color=color)
+            ax.annotate(str(child.depth), (x, y))
+            self.plot_children(child, x, y, l, ax, color=color, idscenario=idscenario)
 
-    def plot_best_policy(self):
-        fig, ax = self.plot_tree()
+    def plot_best_policy(self, grey=False, idscenario=None):
+        """
+        Plot the master tree and its best policy
+        :param grey:
+        :param idscenario:
+        :return:
+        """
+        fig, ax = self.plot_tree(grey=grey, idscenario=idscenario)
         node = self.nodes[hash(tuple([]))]  # rootNode
         x0 = 0
         y0 = 0
         length = 1
-        for i in range(self.max_depth-1):
-            node = self.get_best_child(node)
-            x = x0 + length * sin(node.arm * pi / 180)
-            y = y0 + length * cos(node.arm * pi / 180)
+        while node.children:
+            child = self.get_best_child(node, idscenario=idscenario)
+            x = x0 + length * sin(child.arm * pi / 180)
+            y = y0 + length * cos(child.arm * pi / 180)
             ax.plot([x0, x], [y0, y], color="red", marker='o', markersize='6')
             x0 = x
             y0 = y
+            node = child
         return fig
 
-    def plot_grey_tree(self):
-        x0 = 0
-        y0 = 0
-        length = 1
-        node = self.nodes[hash(tuple([]))]  # rootNode
-        fig = plt.figure()
-        ax = plt.subplot(111)
-        self.plot_children(node, x0, y0, length, ax)
-        ax.scatter(0, 0, color='red', s=200, zorder=len(self.nodes))
-        plt.axis('equal')
-        fig.show()
-        return fig, ax
+    def save_tree(self, name):
+        filehandler = open("../data/" + name + '.pickle', 'wb')
+        pickle.dump(self, filehandler)
+        filehandler.close()
 
-    def plot_best_children(self, node, x, y, l, color, ax):
-        x0 = x
-        y0 = y
-
-        while node.children:
-            child = self.best_child(node, 0)
-            print(child)
-            x = x0 + l * math.sin(child.origin * math.pi / 180)
-            y = y0 + l * math.cos(child.origin * math.pi / 180)
-            ax.plot([x0, x], [y0, y], color=color, marker='o', markersize='6')
-            x0 = x
-            y0 = y
-            node = child
-
-    def plot_children_bd(self, node, nodes, x, y, l, ax):
-        x0 = x
-        y0 = y
-        for child in node.children:
-            if child in nodes:
-                x = x0 + l * math.sin(child.origin * math.pi / 180)
-                y = y0 + l * math.cos(child.origin * math.pi / 180)
-                color = str((child.depth / self.depth) * 0.8)
-                ax.plot([x0, x], [y0, y], color=color, marker='o', markersize='6')
-
-            else:
-                break
-            self.plot_children_bd(child, nodes, x, y, l, color, ax)
-
-    def plot_bd(self, nBD=2):
-        Nnodes = len(self.Nodes)
-        Dnodes = int(Nnodes / nBD)
-        listOfFig = []
-        listOfAx = []
-        x0 = 0
-        y0 = 0
-        l = 1
-
-        for n in range(nBD):
-            fig = plt.figure()
-            listOfFig.append(fig)
-            ax = plt.subplot(111)
-            listOfAx.append(ax)
-            nodes = self.Nodes[0:(n + 1) * Dnodes]
-            self.plot_children_bd(self.rootNode, nodes, x0, y0, l, '0', ax)
-            ax.scatter(0, 0, color='red', s=200, zorder=self.ite)
-        return listOfFig
+    @classmethod
+    def load_tree(cls, name):
+        filehandler = open("../data/" + name + '.pickle', 'rb')
+        loaded_tree = pickle.load(filehandler)
+        filehandler.close()
+        return loaded_tree
 
 
 class MasterNode:
@@ -263,13 +286,14 @@ class MasterNode:
     :ivar int parentHash:
     :ivar numpy.array rewards: Array of `Hist`
     :ivar list children: List of children (MasterNode)
+    :ivar int depth: Depth of the node
     """
 
-    def __init__(self, nodehash=None, parenthash=None, action=None):
+    def __init__(self, numscenarios, nodehash=None, parenthash=None, action=None):
         self.hash = nodehash
         self.arm = action
         self.parentHash = parenthash
-        self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(NUMSCENARIOS)])
+        self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
         self.children = []
         self.depth = None
 
@@ -291,3 +315,11 @@ class MasterNode:
         :return:
         """
         self.rewards[idscenario, A_DICT[action]].add(reward)
+
+    def is_expanded(self, idscenario):
+        """
+        Check if this node has been expanded by the scenario `idscenario`
+        :param idscenario:
+        :return:
+        """
+        return not all(hist.is_empty() for hist in self.rewards[idscenario, :])

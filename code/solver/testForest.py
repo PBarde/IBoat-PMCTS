@@ -1,61 +1,36 @@
+import forest as ft
+from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
-import sys
-import forest as fr
+from worker import Tree
 
-sys.path.append('../model/')
-from simulatorTLKT import Simulator
-from weatherTLKT import Weather
+mydate = '20180108'
 
-# -----------------download--------------------------
-mydate = '20180103'
-website = 'http://nomads.ncep.noaa.gov:9090/dods/'
-# gfs_0p25/gfs20171014/gfs_0p25_00z'
-modelcycle = range(1, 21)
-# resolution = '1p00'
-latBound = [43, 50]
-lonBound = [-10 + 360, 360]
-pathToSaveObj = []
-for ii in modelcycle:
-    # url = (website + 'gfs_' + resolution + '/gfs' + mydate + '/gfs_' + resolution + '_' + modelcycle + 'z')
-    if ii < 10:
-        cycle = '0' + str(ii)
-    else:
-        cycle = str(ii)
+# ft.Forest.download_scenarios(mydate,latBound = [50-28, 50],lonBound = [-40 + 360, 360])
+#
+Weathers = ft.Forest.load_scenarios(mydate, latBound=[40, 50], lonBound=[360 - 15, 360])
 
-    url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
-    pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
-
-    # Uncomment the following lines to download the scenarios (launch in real python console)
-    # print(url)
-    # Weather.download(url, pathToSaveObj[ii-1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64], ens=True)
-
-#%%
 # We create N simulators based on the scenarios
-N = 1  # <=20
-frequency = 10  # frequency of the buffer
-stateInit = [0, 47.5, -3.5 + 360]
-destination = [48, -3 + 360]
-sims = []
-for jj in range(N):
-    weather_scen = Weather.load(pathToSaveObj[jj])
-    # We shift the times so that all times are in the correct bounds for interpolations
-    weather_scen.time = weather_scen.time - weather_scen.time[0]
+NUMBER_OF_SIM = 5  # <=20
+SIM_TIME_STEP = 6  # in hours
+STATE_INIT = [0, 47.5, -3.5 + 360]
+N_DAYS_SIM = 8  # time horizon in days
 
-    # We set up the parameters of the simulation
-    HOURS_TO_DAY = 1 / 24
-    timeStep = 6  # in hour
-    timemax = timeStep * len(weather_scen.time)
-    Tf = 24 * 5
-    times = np.arange(0, Tf * HOURS_TO_DAY, timeStep * HOURS_TO_DAY)
-    lats = np.arange(weather_scen.lat[0], weather_scen.lat[-1], 0.05)
-    lons = np.arange(weather_scen.lon[0], weather_scen.lon[-1], 0.05)
-    sims.append(Simulator(times, lats, lons, weather_scen, stateInit))
+sims = ft.Forest.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
+                                   stateinit=STATE_INIT, ndaysim=N_DAYS_SIM)
 
-timemin = 1.8
-forest = fr.Forest(listsimulators=sims, destination=destination, timemin=timemin)
-forest.launch_search(stateInit, frequency)
+# initialize the simulators to get common destination and individual time min
 
+missionheading = 235
+ntra = 50
+frequency = 10
+budget = 1000
+
+destination, timemin = ft.Forest.initialize_simulators(sims, ntra, STATE_INIT, missionheading)
+
+print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
+
+forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
+forest.launch_search(STATE_INIT, frequency)
 forest.master.get_children()
 forest.master.get_depth()
-forest.master.plot_best_policy()
-
+forest.master.save_tree("tree_for_vis_1000")
