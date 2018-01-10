@@ -52,3 +52,6 @@ class Hist:
             return 0
         else:
             return np.dot(self.h, Hist.MEANS) / sum(self.h)
+
+    def is_empty(self):
+        return all(value == 0 for value in self.h)

@@ -7,7 +7,7 @@ from simulatorTLKT import Simulator
 from weatherTLKT import Weather
 
 # -----------------download--------------------------
-mydate = '20180103'
+mydate = '20180108'
 website = 'http://nomads.ncep.noaa.gov:9090/dods/'
 # gfs_0p25/gfs20171014/gfs_0p25_00z'
 modelcycle = range(1, 21)
@@ -31,7 +31,7 @@ for ii in modelcycle:
 
 #%%
 # We create N simulators based on the scenarios
-N = 1  # <=20
+N = 5  # <=20
 frequency = 10  # frequency of the buffer
 stateInit = [0, 47.5, -3.5 + 360]
 destination = [48, -3 + 360]
@@ -51,7 +51,7 @@ for jj in range(N):
     lons = np.arange(weather_scen.lon[0], weather_scen.lon[-1], 0.05)
     sims.append(Simulator(times, lats, lons, weather_scen, stateInit))
 
-timemin = 1.8
+timemin = 0.7
 forest = fr.Forest(listsimulators=sims, destination=destination, timemin=timemin)
 forest.launch_search(stateInit, frequency)
 
