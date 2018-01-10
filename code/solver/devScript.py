@@ -30,18 +30,34 @@ sims = ft.Forest.create_simulators(Weathers, numberofsim = NUMBER_OF_SIM, simtim
 missionheading = 235
 ntra = 50
 
-destination, timemin = ft.Forest.initialize_simulators(sims,ntra,STATE_INIT,missionheading)
+destination, timemin, meantrajs = ft.Forest.initialize_simulators(sims,ntra,STATE_INIT,missionheading, plot = True)
 
 print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
 
 #todo plotter tout les mean trajs pour chaque scénarios avec le vent observé, le point de départ et 
 #la destination  
 #%%
-weather=Weathers[0]
-weather.getPolarVel()
-mapp=weather.plotQuiver()
+#weather=Weathers[0]
+#weather.getPolarVel()
+#mapp=weather.plotQuiver()
+#
+#x,y=mapp(destination[1],destination[0])
+#plt.scatter(x,y)
 
-x,y=mapp(destination[1],destination[0])
-plt.scatter(x,y)
 
-
+#%%
+#def box_pir(l,destination):
+#    lengths = [i for i in map(len, l)]
+#    shape = (len(l), max(lengths))
+#    a = np.empty(shape,dtype=object)
+#    a.fill(np.array(destination))
+#    for i, r in enumerate(l):
+#        a[i, :lengths[i]] = np.array(r)
+#    return a
+#
+#t1 = [[1,2],[1,2],[1,2]]
+#t2 = [[2,4],[2,4]]
+#
+#t=[t1,t2]
+#
+#tt = box_pir(t,[1,1])
