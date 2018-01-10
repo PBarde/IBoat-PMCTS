@@ -14,14 +14,13 @@ class Forest:
     Object coordinating a MasterTree and its WorkerTrees
     """
 
-    def __init__(self, listsimulators=[], destination=[], timemin=0):
+    def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
-        ms.NUMSCENARIOS = len(listsimulators)
 
-        self.master = ms.MasterTree()
+        self.master = ms.MasterTree(len(listsimulators))
         self.workers = dict()
         for i, sim in enumerate(listsimulators):
-            self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=100,
+            self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=budget,
                                       simulator=sim, destination=destination, TimeMin=timemin)
 
     def launch_search(self, root_state, frequency):
