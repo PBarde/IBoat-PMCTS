@@ -7,6 +7,7 @@ from utils import Hist
 import matplotlib.pyplot as plt
 from worker import UCT_COEFF
 from math import log, sin, cos, pi
+from matplotlib import animation
 import pickle
 
 sys.path.append('../model/')
@@ -174,7 +175,7 @@ class MasterTree:
                 best_action = np.argmax(reward_per_action)
                 best_child = child
         print("best reward :" + str(best_reward) + " for action :" + str(best_action))
-        return best_child
+        return best_child, best_action
 
     def plot_tree(self, grey=False, idscenario=None):
         """
@@ -240,7 +241,7 @@ class MasterTree:
                 col = color
 
             ax.plot([x0, x], [y0, y], color=col, marker='o', markersize='6')
-            ax.annotate(str(child.depth), (x, y))
+            # ax.annotate(str(child.depth), (x, y))
             self.plot_children(child, x, y, l, ax, color=color, idscenario=idscenario)
 
     def plot_best_policy(self, grey=False, idscenario=None):
@@ -256,13 +257,49 @@ class MasterTree:
         y0 = 0
         length = 1
         while node.children:
-            child = self.get_best_child(node, idscenario=idscenario)
+            child, _ = self.get_best_child(node, idscenario=idscenario)
             x = x0 + length * sin(child.arm * pi / 180)
             y = y0 + length * cos(child.arm * pi / 180)
             ax.plot([x0, x], [y0, y], color="red", marker='o', markersize='6')
             x0 = x
             y0 = y
             node = child
+        return fig
+
+    def plot_hist_best_policy(self, idscenario=None):
+        # get best policy:
+        nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
+        policy = []
+        node = nodes_policy[0]
+        while node.children:
+            child, action = self.get_best_child(node, idscenario=idscenario)
+            nodes_policy.append(child)
+            policy.append(action)
+            node = child
+
+        fig = plt.figure()
+        axes = plt.gca()
+        axes.set_ylim([0, 30])
+        barcollection = plt.bar(x=Hist.MEANS, height=[0] * len(Hist.MEANS),
+                                width=Hist.THRESH[1] - Hist.THRESH[0])
+
+        # barcollection = ax.bar([], [])
+
+        def animate(i):
+            n = nodes_policy[i]
+            a = policy[i]
+            if idscenario is None:
+                hist = sum(n.rewards[ii, a].h * self.probability[ii] for ii in range(len(n.rewards[:, a])))
+            else:
+                hist = n.rewards[idscenario, a].h
+
+            for j, b in enumerate(barcollection):
+                b.set_height(hist[j])
+            axes.set_ylim([0, np.max(hist) + 1])
+            return barcollection,
+
+        anim = animation.FuncAnimation(fig, animate, frames=len(policy), interval=1000, blit=False)
+        plt.show()
         return fig
 
     def save_tree(self, name):
@@ -323,3 +360,20 @@ class MasterNode:
         :return:
         """
         return not all(hist.is_empty() for hist in self.rewards[idscenario, :])
+
+    def plot_hist(self, idscenario, action):
+        print(self.rewards[idscenario, action].h)
+        fig, ax = plt.subplots()
+        plt.bar(x=Hist.MEANS, height=self.rewards[idscenario, action].h, width=Hist.THRESH[1] - Hist.THRESH[0])
+        fig.show()
+        return fig
+
+    def plot_mean_hist(self, action, probability):
+        # Mean on all the scenarios:
+        hist = sum(self.rewards[ii, action].h * probability[ii] for ii in range(len(self.rewards[:, action])))
+
+        fig, ax = plt.subplots()
+        print(hist)
+        plt.bar(x=Hist.MEANS, height=hist, width=Hist.THRESH[1] - Hist.THRESH[0])
+        fig.show()
+        return fig
