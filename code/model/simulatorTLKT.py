@@ -272,7 +272,7 @@ class Simulator:
           
         return basemap
     
-    def plotTraj(self,states,basemap,quiv=False,scatter=False,color='black'):
+    def plotTraj(self,states,basemap,quiv=False,scatter=False,color='black',label=''):
         """
         Draw the states on the map either as a trajectory and/or scatter of points. Can also plot mean wind
         for each state and return it.
@@ -300,11 +300,11 @@ class Simulator:
         x,y=basemap(posLon,posLat)
         
         if scatter :
-            basemap.scatter(x,y,zorder=0,c=color,s=100)
+            basemap.scatter(x,y,zorder=0,c=color,s=100,label=label)
             
         else:
             basemap.plot(x,y,markersize=4,zorder=0,color=color)
-            basemap.scatter(x[-1],y[-1],zorder=1,color=color)
+            basemap.scatter(x[-1],y[-1],zorder=1,color=color,label=label)
             
         
         if quiv : 

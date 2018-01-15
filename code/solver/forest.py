@@ -5,7 +5,7 @@ sys.path.append('../model/')
 from weatherTLKT import Weather
 from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
-
+import matplotlib.pyplot as plt
 import threading as th
 
 
@@ -133,7 +133,6 @@ class Forest:
     @staticmethod
     def initialize_simulators(sims,ntra,stateinit,missionheading, plot = False):
 
-        global minarrivaltimes
         arrivalpositions = np.zeros((ntra * len(sims), 2))
         ii = 0
 
@@ -148,13 +147,13 @@ class Forest:
                 sim.reset(stateinit)
                 
                 if plot : 
-                  traj.append(list(sim.state[1:]))
+                  traj.append(list(sim.state))
 
                 for t in sim.times[0:-1]:
                     sim.doStep(missionheading)
 
                     if plot :
-                        traj.append(list(sim.state[1:]))
+                        traj.append(list(sim.state))
 
                 if plot :
                     trajsofsim.append(list(traj))
@@ -173,9 +172,9 @@ class Forest:
         
         if plot :
             minarrivaltimes = []
-            shape = (len(sims),len(sims[0].times),2)
-            meantrajs = np.full(shape,destination)
-            trajsofsim = np.full((ntra,len(sims[0].times),2),destination)
+            shape = (len(sims),len(sims[0].times),3)
+            meantrajs = []
+            trajsofsim = np.full((ntra,len(sims[0].times),3),stateinit)
 
         arrivaltimes = []
         
@@ -186,13 +185,13 @@ class Forest:
                 
                 if plot:
                     traj = []
-                    traj.append(list(sim.state[1:]))
+                    traj.append(list(sim.state))
                     
                 dist, action = sim.getDistAndBearing(sim.state[1:], destination)
                 sim.doStep(action)
 
                 if plot:
-                    traj.append(list(sim.state[1:]))
+                    traj.append(list(sim.state))
 
                 atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
 
@@ -202,7 +201,7 @@ class Forest:
                     sim.doStep(action)
 
                     if plot :
-                        traj.append(list(sim.state[1:]))
+                        traj.append(list(sim.state))
 
                     atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
 
@@ -212,18 +211,53 @@ class Forest:
 
                 if plot :
                     trajsofsim[jj][:len(traj)] = traj
+                    buff=traj[-1]
+                    fillstates=[[kk]+buff[1:] for kk in range(len(traj),len(sim.times))]
+                    if fillstates :
+                        trajsofsim[jj][len(traj):] = fillstates
                     traj = []
 
             if plot :
-              if arrivaltimes :
-                  minarrivaltimes.append(min(arrivaltimes))
-                  
-              meantrajs[ii] = np.mean(trajsofsim,0)
-              trajsofsim = np.full((ntra,len(sims[0].times),2),destination)
-              arrivaltimes = []
+                if arrivaltimes :
+                    minarrivaltimes.append(min(arrivaltimes))
+                else :
+                    print("Scenario num : " + str(ii)+ " did not reach destination")
+
+                meantrajs.append(np.mean(trajsofsim,0))
+                trajsofsim = np.full((ntra,len(sims[0].times),3),stateinit)
+                arrivaltimes = []
 
         if plot :
             timemin = min(minarrivaltimes)
+            basemap_dest = sims[0].prepareBaseMap(proj='aeqd',centerOfMap=stateinit[1:])
+            plt.title('Mean initialization trajectory for distance estimation')
+            colors = plt.get_cmap("tab20")
+            colors = colors.colors[:len(sims)]
+            xd,yd=basemap_dest(destination[1],destination[0])
+            xs,ys=basemap_dest(stateinit[2],stateinit[1])
+
+            basemap_dest.scatter(xd,yd,zorder=0,c="red",s=100)
+            plt.annotate("destination",(xd,yd))
+            basemap_dest.scatter(xs, ys, zorder=0, c="green", s=100)
+            plt.annotate("start", (xs, ys))
+
+            for ii,sim in enumerate(sims):
+                sim.plotTraj(meantrajs_dest[ii],basemap_dest,color=colors[ii],label="Scen. num : " + str(ii))
+            plt.legend()
+
+            basemap_time = sims[0].prepareBaseMap(proj='aeqd',centerOfMap=stateinit[1:])
+            plt.title('Mean trajectory for minimal travel time estimation')
+            basemap_time.scatter(xd, yd, zorder=0, c="red", s=100)
+            plt.annotate("destination", (xd, yd))
+            basemap_time.scatter(xs, ys, zorder=0, c="green", s=100)
+            plt.annotate("start", (xs, ys))
+
+            for ii,sim in enumerate(sims):
+                sim.plotTraj(meantrajs[ii],basemap_time,color=colors[ii],label="Scen. num : " + str(ii))
+
+            plt.legend()
+
+
 
         else :
             timemin = min(arrivaltimes)

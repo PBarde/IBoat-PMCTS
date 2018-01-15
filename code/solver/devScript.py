@@ -30,7 +30,7 @@ sims = ft.Forest.create_simulators(Weathers, numberofsim = NUMBER_OF_SIM, simtim
 missionheading = 235
 ntra = 50
 
-destination, timemin, meantrajs = ft.Forest.initialize_simulators(sims,ntra,STATE_INIT,missionheading, plot = True)
+destination, timemin, meantrajs, meantrajs_dest = ft.Forest.initialize_simulators(sims,ntra,STATE_INIT,missionheading, plot = True)
 
 print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
 
