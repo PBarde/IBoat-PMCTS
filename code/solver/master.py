@@ -22,12 +22,19 @@ class MasterTree:
     :ivar numpy.array probability: array containing the probability of each scenario
     """
 
-    def __init__(self, num_scenarios):
+    def __init__(self, sims, destination):
+        num_scenarios = len(sims)
         self.nodes = dict()
+        self.Simulators = sims
         self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
         self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
         self.max_depth = None
         self.numScenarios = num_scenarios
+        self.destination = destination
+        self.best_global_policy = []
+        self.best_global_nodes_policy = []
+        self.best_policy = dict()
+        self.best_nodes_policy = dict()
 
     def integrate_buffer(self, buffer):
         """
@@ -156,6 +163,40 @@ class MasterTree:
         # get max depth of the tree
         self.max_depth = max(map(lambda i: self.nodes[i].depth, self.nodes))
 
+    def get_best_policy(self):
+        # Make sure all the variable have been computed
+        if not self.nodes[hash(tuple([]))].children:
+            self.get_children()
+        if self.nodes[hash(tuple([]))].depth is None:
+            self.get_depth()
+
+        # get best global policy:
+        print("Global policy")
+        nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
+        policy = []
+        node = nodes_policy[0]
+        while node.children:
+            child, action = self.get_best_child(node, idscenario=None)
+            nodes_policy.append(child)
+            policy.append(action)
+            node = child
+        self.best_global_policy = policy
+        self.best_global_nodes_policy = nodes_policy
+
+        # get best policy for each scenario:
+        for id_scenario in range(len(self.Simulators)):
+            print("Policy for scenario " + str(id_scenario))
+            nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
+            policy = []
+            node = nodes_policy[0]
+            while node.children:
+                child, action = self.get_best_child(node, idscenario=id_scenario)
+                nodes_policy.append(child)
+                policy.append(action)
+                node = child
+            self.best_policy[id_scenario] = policy
+            self.best_nodes_policy[id_scenario] = nodes_policy
+
     def get_best_child(self, node, idscenario=None):
         best_reward = 0
         best_action = None
@@ -172,8 +213,8 @@ class MasterTree:
                     reward_per_action[j] = child.rewards[idscenario, j].get_mean()
             if np.max(reward_per_action) > best_reward:
                 best_reward = np.max(reward_per_action)
-                best_action = np.argmax(reward_per_action)
                 best_child = child
+                best_action = child.arm
         print("best reward :" + str(best_reward) + " for action :" + str(best_action))
         return best_child, best_action
 
@@ -191,18 +232,20 @@ class MasterTree:
         node = self.nodes[hash(tuple([]))]  # rootNode
 
         # Make sure all the variable have been computed
-        if node.depth is None:
-            self.get_depth()
         if not node.children:
             self.get_children()
+        if node.depth is None:
+            self.get_depth()
 
-        fig, ax = plt.subplots()
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 2, 1)
+
         if grey:
             self.plot_children(node, x0, y0, length, ax, idscenario=idscenario)
         else:
             self.plot_children(node, x0, y0, length, ax, 'k', idscenario=idscenario)
 
-        ax.scatter(0, 0, color='red', s=200, zorder=len(self.nodes))
+        ax.scatter(0, 0, color='blue', s=200, zorder=len(self.nodes))
         plt.axis('equal')
         fig.show()
         return fig, ax
@@ -251,52 +294,74 @@ class MasterTree:
         :param idscenario:
         :return:
         """
+        # check if the best_policy has been computed
+        if not self.best_global_policy:
+            self.get_best_policy()
+
+        # Get the right policy
+        if idscenario is None:
+            nodes_policy = self.best_global_nodes_policy
+            policy = self.best_global_policy
+        else:
+            nodes_policy = self.best_nodes_policy[idscenario]
+            policy = self.best_policy[idscenario]
+
         fig, ax = self.plot_tree(grey=grey, idscenario=idscenario)
         node = self.nodes[hash(tuple([]))]  # rootNode
         x0 = 0
         y0 = 0
         length = 1
-        while node.children:
-            child, _ = self.get_best_child(node, idscenario=idscenario)
-            x = x0 + length * sin(child.arm * pi / 180)
-            y = y0 + length * cos(child.arm * pi / 180)
+        for node in nodes_policy[1:]:
+            x = x0 + length * sin(node.arm * pi / 180)
+            y = y0 + length * cos(node.arm * pi / 180)
             ax.plot([x0, x], [y0, y], color="red", marker='o', markersize='6')
             x0 = x
             y0 = y
-            node = child
-        return fig
+        return fig, ax
 
     def plot_hist_best_policy(self, idscenario=None):
-        # get best policy:
-        nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
-        policy = []
-        node = nodes_policy[0]
-        while node.children:
-            child, action = self.get_best_child(node, idscenario=idscenario)
-            nodes_policy.append(child)
-            policy.append(action)
-            node = child
+        # check if the best_policy has been computed
+        if not self.best_global_policy:
+            self.get_best_policy()
 
-        fig = plt.figure()
-        axes = plt.gca()
-        axes.set_ylim([0, 30])
-        barcollection = plt.bar(x=Hist.MEANS, height=[0] * len(Hist.MEANS),
+        # Get the right policy
+        if idscenario is None:
+            nodes_policy = self.best_global_nodes_policy
+            policy = self.best_global_policy
+        else:
+            nodes_policy = self.best_nodes_policy[idscenario]
+            policy = self.best_policy[idscenario]
+
+        # Plot
+        fig, ax1 = self.plot_best_policy(grey=True, idscenario=idscenario)
+        ax2 = fig.add_subplot(1, 2, 2)
+        ax2.set_ylim([0, 30])
+        barcollection = ax2.bar(x=Hist.MEANS, height=[0 for _ in Hist.MEANS],
                                 width=Hist.THRESH[1] - Hist.THRESH[0])
-
-        # barcollection = ax.bar([], [])
+        pt, = ax1.plot(0, 0, color="green", marker='o', markersize='7')
+        x0, y0 = 0, 0
+        x_list = [x0]
+        y_list = [y0]
+        for node in nodes_policy[1:]:
+            x = x0 + 1 * sin(node.arm * pi / 180)
+            y = y0 + 1 * cos(node.arm * pi / 180)
+            x_list.append(x)
+            y_list.append(y)
+            x0, y0 = x, y
 
         def animate(i):
             n = nodes_policy[i]
-            a = policy[i]
+            a = A_DICT[policy[i]]
             if idscenario is None:
                 hist = sum(n.rewards[ii, a].h * self.probability[ii] for ii in range(len(n.rewards[:, a])))
             else:
                 hist = n.rewards[idscenario, a].h
-
             for j, b in enumerate(barcollection):
                 b.set_height(hist[j])
-            axes.set_ylim([0, np.max(hist) + 1])
-            return barcollection,
+            ax2.set_ylim([0, np.max(hist) + 1])
+            pt.set_data(x_list[i], y_list[i])
+
+            return barcollection, pt
 
         anim = animation.FuncAnimation(fig, animate, frames=len(policy), interval=1000, blit=False)
         plt.show()

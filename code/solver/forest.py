@@ -1,6 +1,7 @@
 import master as ms
 import worker as mt
 import sys
+
 sys.path.append('../model/')
 from weatherTLKT import Weather
 from simulatorTLKT import Simulator, HOURS_TO_DAY
@@ -17,7 +18,7 @@ class Forest:
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
 
-        self.master = ms.MasterTree(len(listsimulators))
+        self.master = ms.MasterTree(listsimulators, destination)
         self.workers = dict()
         for i, sim in enumerate(listsimulators):
             self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=budget,
@@ -53,11 +54,10 @@ class Forest:
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
 
-
     @staticmethod
-    def download_scenarios(mydate, latBound = [43, 50],lonBound = [-10 + 360, 360],
-                          website = 'http://nomads.ncep.noaa.gov:9090/dods/',
-                          modelcycle = range(1, 21)):
+    def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],
+                           website='http://nomads.ncep.noaa.gov:9090/dods/',
+                           modelcycle=range(1, 21)):
         """
         To download the scenarios (launch in real python console)
         :param mydate:
@@ -78,13 +78,13 @@ class Forest:
             url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
             pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
 
-            Weather.download(url, pathToSaveObj[ii-1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64], ens=True)
-
+            Weather.download(url, pathToSaveObj[ii - 1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64],
+                             ens=True)
 
     @staticmethod
-    def load_scenarios(mydate, website = 'http://nomads.ncep.noaa.gov:9090/dods/',
-                          modelcycle = range(1, 21),latBound=[-90, 90],
-                          lonBound=[0, 360], timeSteps=[0, 64]):
+    def load_scenarios(mydate, website='http://nomads.ncep.noaa.gov:9090/dods/',
+                       modelcycle=range(1, 21), latBound=[-90, 90],
+                       lonBound=[0, 360], timeSteps=[0, 64]):
 
         pathToSaveObj = []
         weather_scen = []
@@ -98,13 +98,13 @@ class Forest:
             url = (website + 'gens/gens' + mydate + '/gep' + cycle + '_00z')
             pathToSaveObj.append(('../data/' + mydate + '_gep_' + cycle + '00z.obj'))
 
-            weather_scen.append(Weather.load(pathToSaveObj[ii-1],latBound, lonBound, timeSteps))
+            weather_scen.append(Weather.load(pathToSaveObj[ii - 1], latBound, lonBound, timeSteps))
 
         return weather_scen
 
     @staticmethod
-    def create_simulators(weathers, numberofsim, simtimestep = 6, stateinit = [0, 47.5, -3.5 + 360],
-                          ndaysim = 8, delatlatlon = 0.5):
+    def create_simulators(weathers, numberofsim, simtimestep=6, stateinit=[0, 47.5, -3.5 + 360],
+                          ndaysim=8, delatlatlon=0.5):
         """
 
         :param weathers:
@@ -129,14 +129,13 @@ class Forest:
 
         return sims
 
-
     @staticmethod
-    def initialize_simulators(sims,ntra,stateinit,missionheading, plot = False):
+    def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
 
         arrivalpositions = np.zeros((ntra * len(sims), 2))
         ii = 0
 
-        if plot :
+        if plot:
             meantrajs_dest = []
             trajsofsim = []
             traj = []
@@ -145,48 +144,48 @@ class Forest:
 
             for _ in range(ntra):
                 sim.reset(stateinit)
-                
-                if plot : 
-                  traj.append(list(sim.state))
+
+                if plot:
+                    traj.append(list(sim.state))
 
                 for t in sim.times[0:-1]:
                     sim.doStep(missionheading)
 
-                    if plot :
+                    if plot:
                         traj.append(list(sim.state))
 
-                if plot :
+                if plot:
                     trajsofsim.append(list(traj))
                     traj = []
 
                 arrivalpositions[ii, :] = list(sim.state[1:])
                 ii += 1
 
-            if plot :
-                meantrajs_dest.append(np.mean(trajsofsim,0))
+            if plot:
+                meantrajs_dest.append(np.mean(trajsofsim, 0))
                 trajsofsim = []
 
         latdest = np.mean(arrivalpositions[:, 0])
         londest = np.mean(arrivalpositions[:, 1])
         destination = [latdest, londest]
-        
-        if plot :
+
+        if plot:
             minarrivaltimes = []
-            shape = (len(sims),len(sims[0].times),3)
+            shape = (len(sims), len(sims[0].times), 3)
             meantrajs = []
-            trajsofsim = np.full((ntra,len(sims[0].times),3),stateinit)
+            trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
 
         arrivaltimes = []
-        
-        for ii,sim in enumerate(sims):
+
+        for ii, sim in enumerate(sims):
 
             for jj in range(ntra):
                 sim.reset(stateinit)
-                
+
                 if plot:
                     traj = []
                     traj.append(list(sim.state))
-                    
+
                 dist, action = sim.getDistAndBearing(sim.state[1:], destination)
                 sim.doStep(action)
 
@@ -200,7 +199,7 @@ class Forest:
                     dist, action = sim.getDistAndBearing(sim.state[1:], destination)
                     sim.doStep(action)
 
-                    if plot :
+                    if plot:
                         traj.append(list(sim.state))
 
                     atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
@@ -209,61 +208,61 @@ class Forest:
                     finalTime = sim.times[sim.state[0]] - (1 - frac)
                     arrivaltimes.append(finalTime)
 
-                if plot :
+                if plot:
                     trajsofsim[jj][:len(traj)] = traj
-                    buff=traj[-1]
-                    fillstates=[[kk]+buff[1:] for kk in range(len(traj),len(sim.times))]
-                    if fillstates :
+                    buff = traj[-1]
+                    fillstates = [[kk] + buff[1:] for kk in range(len(traj), len(sim.times))]
+                    if fillstates:
                         trajsofsim[jj][len(traj):] = fillstates
                     traj = []
 
-            if plot :
-                if arrivaltimes :
+            if plot:
+                if arrivaltimes:
                     minarrivaltimes.append(min(arrivaltimes))
-                else :
-                    print("Scenario num : " + str(ii)+ " did not reach destination")
+                else:
+                    print("Scenario num : " + str(ii) + " did not reach destination")
 
-                meantrajs.append(np.mean(trajsofsim,0))
-                trajsofsim = np.full((ntra,len(sims[0].times),3),stateinit)
+                meantrajs.append(np.mean(trajsofsim, 0))
+                trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
                 arrivaltimes = []
 
-        if plot :
+        if plot:
             timemin = min(minarrivaltimes)
-            basemap_dest = sims[0].prepareBaseMap(proj='aeqd',centerOfMap=stateinit[1:])
+            basemap_dest = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
             plt.title('Mean initialization trajectory for distance estimation')
             colors = plt.get_cmap("tab20")
             colors = colors.colors[:len(sims)]
-            xd,yd=basemap_dest(destination[1],destination[0])
-            xs,ys=basemap_dest(stateinit[2],stateinit[1])
+            xd, yd = basemap_dest(destination[1], destination[0])
+            xs, ys = basemap_dest(stateinit[2], stateinit[1])
 
-            basemap_dest.scatter(xd,yd,zorder=0,c="red",s=100)
-            plt.annotate("destination",(xd,yd))
+            basemap_dest.scatter(xd, yd, zorder=0, c="red", s=100)
+            plt.annotate("destination", (xd, yd))
             basemap_dest.scatter(xs, ys, zorder=0, c="green", s=100)
             plt.annotate("start", (xs, ys))
 
-            for ii,sim in enumerate(sims):
-                sim.plotTraj(meantrajs_dest[ii],basemap_dest,color=colors[ii],label="Scen. num : " + str(ii))
+            for ii, sim in enumerate(sims):
+                sim.plotTraj(meantrajs_dest[ii], basemap_dest, color=colors[ii], label="Scen. num : " + str(ii))
             plt.legend()
 
-            basemap_time = sims[0].prepareBaseMap(proj='aeqd',centerOfMap=stateinit[1:])
+            basemap_time = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
             plt.title('Mean trajectory for minimal travel time estimation')
             basemap_time.scatter(xd, yd, zorder=0, c="red", s=100)
             plt.annotate("destination", (xd, yd))
             basemap_time.scatter(xs, ys, zorder=0, c="green", s=100)
             plt.annotate("start", (xs, ys))
 
-            for ii,sim in enumerate(sims):
-                sim.plotTraj(meantrajs[ii],basemap_time,color=colors[ii],label="Scen. num : " + str(ii))
+            for ii, sim in enumerate(sims):
+                sim.plotTraj(meantrajs[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
 
             plt.legend()
 
 
 
-        else :
+        else:
             timemin = min(arrivaltimes)
 
-# todo maintenant qu'on a les mean trajs il faut faire les plots depart, arrivée, mean traj par scenario
+        # todo maintenant qu'on a les mean trajs il faut faire les plots depart, arrivée, mean traj par scenario
 
-        return [destination,timemin,meantrajs, meantrajs_dest]
+        return [destination, timemin]
 
-    # @staticmethod
+        # @staticmethod

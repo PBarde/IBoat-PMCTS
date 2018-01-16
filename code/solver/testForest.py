@@ -3,6 +3,11 @@ from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
 from worker import Tree
 
+# parameters
+name = "tree_for_vis_1000"
+frequency = 10
+budget = 1000
+
 mydate = '20180108'
 
 # ft.Forest.download_scenarios(mydate,latBound = [50-28, 50],lonBound = [-40 + 360, 360])
@@ -22,8 +27,6 @@ sims = ft.Forest.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimes
 
 missionheading = 235
 ntra = 50
-frequency = 10
-budget = 1000
 
 destination, timemin = ft.Forest.initialize_simulators(sims, ntra, STATE_INIT, missionheading)
 
@@ -31,6 +34,4 @@ print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "
 
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
 forest.launch_search(STATE_INIT, frequency)
-forest.master.get_children()
-forest.master.get_depth()
-forest.master.save_tree("tree_for_vis_1000")
+forest.master.save_tree(name)
