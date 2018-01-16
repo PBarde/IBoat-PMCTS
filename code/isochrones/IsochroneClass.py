@@ -8,11 +8,16 @@ Created on Wed Dec 20 13:48:13 2017
 
 import sys
 sys.path.append("../solver")
-from MyTree import Tree
+#from MyTree import Tree
+from worker import Tree
 import numpy as np
+from math import atan2
 
 
 #Simulator.Boat.Uncertainitycoeff=0
+
+# PB = delta_S à corriger (fait par trigo simple)
+# attention calcul du temps total?
 
 class Node():
     
@@ -35,15 +40,15 @@ class Node():
     
 class Secteur():
     
-    def __init__(self,cap_sup,cap_inf,liste_noeud = [],liste_distance = []):
+    def __init__(self,cap_sup,cap_inf):
         self.cap_sup = cap_sup
         self.cap_inf = cap_inf
-        self.liste_noeud = liste_noeud # attention s'assurer dans la construction de la correspondance entre les indices des 2 listes
-        self.liste_distance = liste_distance
+        self.liste_noeud = [] # attention s'assurer dans la construction de la correspondance entre les indices des 2 listes
+        self.liste_distance = []
         
     def recherche_meilleur_noeud(self):
         try:
-            meilleur_noeud = self.liste_noeud[self.liste_distance.index(min(self.liste_distance))]
+            meilleur_noeud = self.liste_noeud[self.liste_distance.index(max(self.liste_distance))]
             return meilleur_noeud
         except ValueError:
             return None
@@ -66,7 +71,7 @@ class Isochrone():
         self.reso = resolution
         self.p = nb_secteur
         self.constante = np.pi/(60*180)
-        self.delta_t = (self.sim.times[noeuddep.time+1]-self.sim.times[self.noeuddep.time])
+        self.delta_t = (self.sim.times[noeuddep.time+1]-self.sim.times[noeuddep.time])
         self.liste_actions = []
         self.liste_positions = []
         self.temps_transit = 0
@@ -76,12 +81,12 @@ class Isochrone():
         self.C0 = C0
         C = []
         for action in self.liste_actions:
-            C.append(self.recentrage(C0+action))
+            C.append(self.recentrage_cap(C0+action))
         self.isochrone_actuelle=[]
         for cap in C:
-            self.sim.state = noeuddep.give_state()
+            self.sim.reset(noeuddep.give_state())
             state = self.sim.doStep(cap)
-            D1,C1 = self.sim.getDistAndBearing(self.dep,state)
+            D1,C1 = self.sim.getDistAndBearing(self.dep,state[1:3])
             current_node = Node(state[0],state[1],state[2],noeuddep,cap,C1,D1)
             self.isochrone_actuelle.append(current_node)
         
@@ -91,26 +96,25 @@ class Isochrone():
     
         
     def reset(self,coord_depart=None,coord_arrivee=None):
-        if not coord_depart==None:
+        if (not coord_depart==None):
             self.dep=coord_depart   #liste des coord de départ (lat,lon)
-        if not coord_arrivee==None:
+        if (not coord_arrivee==None):
             self.arr=coord_arrivee  #liste des coord d'arrivée (lat,lon)
         
         noeuddep=Node(0,self.dep[0],self.dep[1])
         self.isochrone_actuelle=[noeuddep]
         self.isochrone_future=[]
         self.distance_moy_iso = 0
-        self.liste_actions = []
         self.liste_positions = []
         self.temps_transit = 0
         C = []
         for action in self.liste_actions:
-            C.append(self.recentrage(self.C0+action))
+            C.append(self.recentrage_cap(self.C0+action))
         self.isochrone_actuelle=[]
         for cap in C:
-            self.sim.state = noeuddep.give_state()
+            self.sim.reset(noeuddep.give_state())
             state = self.sim.doStep(cap)
-            D1,C1 = self.sim.getDistAndBearing(self.dep,state)
+            D1,C1 = self.sim.getDistAndBearing(self.dep,state[1:3])
             current_node = Node(state[0],state[1],state[2],noeuddep,cap,C1,D1)
             self.isochrone_actuelle.append(current_node)
         return None
@@ -122,11 +126,11 @@ class Isochrone():
         for x_i in self.isochrone_actuelle:
             C = []
             for action in self.liste_actions:
-                C.append(self.recentrage(x_i.C+action))
+                C.append(self.recentrage_cap(x_i.C+action))
             for cap in C:
-                self.sim.state = x_i.give_state()
+                self.sim.reset(x_i.give_state())
                 state = self.sim.doStep(cap)
-                Dij,Cij = self.sim.getDistAndBearing(self.dep,state)
+                Dij,Cij = self.sim.getDistAndBearing(self.dep,state[1:3])
                 futur_node = Node(state[0],state[1],state[2],x_i,cap,Cij,Dij)
                 self.isochrone_future.append(futur_node)
                 self.distance_moy_iso += Dij
@@ -135,7 +139,8 @@ class Isochrone():
         return None
     
     def secteur_liste(self):
-        delta_S = self.constante*self.reso/np.sin(self.constante*self.distance_moy_iso)
+        #delta_S = self.constante*self.reso/np.sin(self.constante*self.distance_moy_iso) #pb définition delta_S
+        delta_S = atan2(self.reso,self.distance_moy_iso)*180/np.pi
         liste_S = []
         for k in range(2*self.p):
             k+=1
@@ -161,7 +166,7 @@ class Isochrone():
                 indice_S = int(diff/delta_S + self.p)
                 liste_S[indice_S].liste_noeud.append(xij)
                 liste_S[indice_S].liste_distance.append(xij.D)
-        return None
+        return liste_S
         
     def nouvelle_isochrone_propre(self,liste_S):
         self.isochrone_actuelle = []
@@ -180,7 +185,7 @@ class Isochrone():
         arrive = False
         for xi in self.isochrone_actuelle:
             Ddest,Cdest = self.sim.getDistAndBearing([xi.lat,xi.lon],self.arr)
-            if Ddest <= 3000:
+            if Ddest <= 10000:
                 Top_noeud.append(xi)
                 Top_dist.append(Ddest)
                 Top_cap.append(Cdest)
@@ -197,8 +202,9 @@ class Isochrone():
             self.sim.reset([noeud_final.time,noeud_final.lat,noeud_final.lon])
             while (not atDest):
                 self.sim.doStep(cap_a_suivre)
-                atDest,frac =Tree.isStateAtDest(self.arr,self.sim.prevState,self.sim.state)
-            temps_total = self.sim.times[self.sim.state[0]]-(1-frac)
+                atDest,frac =Tree.is_state_at_dest(self.arr,self.sim.prevState,self.sim.state)
+            #temps_total = self.sim.times[self.sim.state[0]]-(1-frac)
+            temps_total = self.sim.times[self.sim.state[0]] + frac*self.delta_t
             Top_time.append(temps_total)
         indice_solution = Top_time.index(min(Top_time))
         meilleur_noeud_final = Top_noeud[indice_solution]
@@ -214,9 +220,11 @@ class Isochrone():
         while (not arrive):
             self.isochrone_brouillon()
             liste_S,delta_S = self.secteur_liste()
-            self.associer_xij_a_S(liste_S,delta_S)
+            liste_S = self.associer_xij_a_S(liste_S,delta_S)
             self.nouvelle_isochrone_propre(liste_S)
+            print(self.isochrone_actuelle[0])
             arrive,Top_noeud,Top_dist,Top_cap = self.isochrone_proche_arrivee()
+            print(arrive)
             #pour chaque noeud Top faire simu jusqu'à isstateatdest et calculer temps pour discriminer le meilleur noeud
             #remonter les noeuds parents
         meilleur_noeud_final,temps_total,cap_final = self.aller_point_arrivee(Top_noeud,Top_dist,Top_cap)
@@ -228,6 +236,7 @@ class Isochrone():
         liste_point_passage.append([meilleur_noeud_final.lat,meilleur_noeud_final.lon])
         
         self.liste_positions = liste_point_passage[::-1]
+        self.liste_positions.append(self.arr)
         self.liste_actions = liste_de_caps_solution[::-1]
         self.temps_transit = temps_total
         
