@@ -43,11 +43,11 @@
   <div class="section" id="package-model">
 <h1>Package Model<a class="headerlink" href="#package-model" title="Permalink to this headline">¶</a></h1>
 <p>This package contains the two classes useful to construct the model.</p>
-<div class="section" id="module-WeatherTLKT">
-<span id="weathertlkt"></span><h2>WeatherTLKT<a class="headerlink" href="#module-WeatherTLKT" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-weatherTLKT">
+<span id="weathertlkt"></span><h2>WeatherTLKT<a class="headerlink" href="#module-weatherTLKT" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
-<dt id="WeatherTLKT.Weather">
-<em class="property">class </em><code class="descclassname">WeatherTLKT.</code><code class="descname">Weather</code><span class="sig-paren">(</span><em>lat=None</em>, <em>lon=None</em>, <em>time=None</em>, <em>u=None</em>, <em>v=None</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather">
+<em class="property">class </em><code class="descclassname">weatherTLKT.</code><code class="descname">Weather</code><span class="sig-paren">(</span><em>lat=None</em>, <em>lon=None</em>, <em>time=None</em>, <em>u=None</em>, <em>v=None</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>This class is supposed to be used on GrAD’s server files. No warranty however.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -67,8 +67,8 @@ it is 10.125 days with time steps of 0.125 days)</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="WeatherTLKT.Weather.Interpolators">
-<code class="descname">Interpolators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.Interpolators" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.Interpolators">
+<code class="descname">Interpolators</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.Interpolators" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add the u and v <a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a> objects to the weather object (two new attributes :
 self.uInterpolator and self.vInterpolator).</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">uInterpolator</span><span class="p">([</span><span class="n">t</span><span class="p">,</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">])</span>
@@ -78,15 +78,15 @@ self.uInterpolator and self.vInterpolator).</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.animateQuiver">
-<code class="descname">animateQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.animateQuiver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pretty much the same than <a class="reference internal" href="#WeatherTLKT.Weather.plotQuiver" title="WeatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but animating the quiver over the different time steps
+<dt id="weatherTLKT.Weather.animateQuiver">
+<code class="descname">animateQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.animateQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty much the same than <a class="reference internal" href="#weatherTLKT.Weather.plotQuiver" title="weatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but animating the quiver over the different time steps
 starting at instant.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.crop">
-<code class="descname">crop</code><span class="sig-paren">(</span><em>latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.crop" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.crop">
+<code class="descname">crop</code><span class="sig-paren">(</span><em>latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.crop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a cropped Weather object’s data to the selected range of lon, lat and time steps.
 If no lat or lon boundaries are defined it takes the whole span present in the object.
 If no number of time step is defined it takes the whole span present if the object
@@ -105,7 +105,7 @@ If no number of time step is defined it takes the whole span present if the obje
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the cropped object.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -113,8 +113,8 @@ If no number of time step is defined it takes the whole span present if the obje
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="WeatherTLKT.Weather.download">
-<em class="property">classmethod </em><code class="descname">download</code><span class="sig-paren">(</span><em>url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 65]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.download" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.download">
+<em class="property">classmethod </em><code class="descname">download</code><span class="sig-paren">(</span><em>url, path, ens=False, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Downloads Weather object from url server and writes it into path file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -133,7 +133,7 @@ If no number of time step is defined it takes the whole span present if the obje
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the object corresponding to the downloaded weather.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -141,15 +141,15 @@ If no number of time step is defined it takes the whole span present if the obje
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.getPolarVel">
-<code class="descname">getPolarVel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.getPolarVel" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.getPolarVel">
+<code class="descname">getPolarVel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.getPolarVel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes wind magnitude and direction and adds it to the object’s attribute as self.wMag (magnitude)
 and self.wAng (direction toward which the wind is blowing).</p>
 </dd></dl>
 
 <dl class="classmethod">
-<dt id="WeatherTLKT.Weather.load">
-<em class="property">classmethod </em><code class="descname">load</code><span class="sig-paren">(</span><em>path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 81]</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.load" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.load">
+<em class="property">classmethod </em><code class="descname">load</code><span class="sig-paren">(</span><em>path, latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Takes a file path where a Weather object is saved and loads it into the script.
 If no lat or lon boundaries are defined, it takes the whole span present in the saved object.
 If no number of time step is defined it takes the whole span present if the saved object
@@ -169,7 +169,7 @@ If no number of time step is defined it takes the whole span present if the save
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">loaded object.</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -177,29 +177,29 @@ If no number of time step is defined it takes the whole span present if the save
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.plotColorQuiver">
-<code class="descname">plotColorQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.plotColorQuiver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pretty much the same than <a class="reference internal" href="#WeatherTLKT.Weather.plotQuiver" title="WeatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but on a contour plot of wind magnitude.</p>
+<dt id="weatherTLKT.Weather.plotColorQuiver">
+<code class="descname">plotColorQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.plotColorQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty much the same than <a class="reference internal" href="#weatherTLKT.Weather.plotQuiver" title="weatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but on a contour plot of wind magnitude.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.plotMultipleQuiver">
-<code class="descname">plotMultipleQuiver</code><span class="sig-paren">(</span><em>otherWeather</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.plotMultipleQuiver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pretty much the same than <a class="reference internal" href="#WeatherTLKT.Weather.plotQuiver" title="WeatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but to superimpose two quivers.</p>
+<dt id="weatherTLKT.Weather.plotMultipleQuiver">
+<code class="descname">plotMultipleQuiver</code><span class="sig-paren">(</span><em>otherWeather</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.plotMultipleQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty much the same than <a class="reference internal" href="#weatherTLKT.Weather.plotQuiver" title="weatherTLKT.Weather.plotQuiver"><code class="xref py py-func docutils literal"><span class="pre">plotQuiver()</span></code></a> but to superimpose two quivers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>otherWeather</strong> (<a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><em>Weather</em></a>) – Second forecasts to be plotted with the one calling the method.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>otherWeather</strong> (<a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><em>Weather</em></a>) – Second forecasts to be plotted with the one calling the method.</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="method">
-<dt id="WeatherTLKT.Weather.plotQuiver">
-<code class="descname">plotQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.plotQuiver" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plots a quiver of the <a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a> object’s wind for a given instant. Basemap projection using the lat/lon limits of the data itself.</p>
+<dt id="weatherTLKT.Weather.plotQuiver">
+<code class="descname">plotQuiver</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.plotQuiver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a quiver of the <a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref any py py-class docutils literal"><span class="pre">Weather</span></code></a> object’s wind for a given instant. Basemap projection using the lat/lon limits of the data itself.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -225,8 +225,8 @@ If no number of time step is defined it takes the whole span present if the save
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="WeatherTLKT.Weather.returnPolarVel">
-<em class="property">static </em><code class="descname">returnPolarVel</code><span class="sig-paren">(</span><em>u</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#WeatherTLKT.Weather.returnPolarVel" title="Permalink to this definition">¶</a></dt>
+<dt id="weatherTLKT.Weather.returnPolarVel">
+<em class="property">static </em><code class="descname">returnPolarVel</code><span class="sig-paren">(</span><em>u</em>, <em>v</em><span class="sig-paren">)</span><a class="headerlink" href="#weatherTLKT.Weather.returnPolarVel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes wind magnitude and direction from the velocities u and v.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -251,8 +251,8 @@ If no number of time step is defined it takes the whole span present if the save
 </dd></dl>
 
 </div>
-<div class="section" id="module-SimulatorTLKT">
-<span id="simulatortlkt"></span><h2>SimulatorTLKT<a class="headerlink" href="#module-SimulatorTLKT" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-simulatorTLKT">
+<span id="simulatortlkt"></span><h2>SimulatorTLKT<a class="headerlink" href="#module-simulatorTLKT" title="Permalink to this headline">¶</a></h2>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -263,50 +263,50 @@ If no number of time step is defined it takes the whole span present if the save
 </table>
 <p>Module encapsulating all the classes required to run a simulation.</p>
 <dl class="data">
-<dt id="SimulatorTLKT.ACTIONS">
-<code class="descclassname">SimulatorTLKT.</code><code class="descname">ACTIONS</code><em class="property"> = (0, 45, 90, 135, 180, 225, 270, 315)</em><a class="headerlink" href="#SimulatorTLKT.ACTIONS" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.ACTIONS">
+<code class="descclassname">simulatorTLKT.</code><code class="descname">ACTIONS</code><em class="property"> = (0, 45, 90, 135, 180, 225, 270, 315)</em><a class="headerlink" href="#simulatorTLKT.ACTIONS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Actions that are authorized i.e. headings the boat can follow. Must be sorted.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="SimulatorTLKT.Boat">
-<em class="property">class </em><code class="descclassname">SimulatorTLKT.</code><code class="descname">Boat</code><a class="headerlink" href="#SimulatorTLKT.Boat" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat">
+<em class="property">class </em><code class="descclassname">simulatorTLKT.</code><code class="descname">Boat</code><a class="headerlink" href="#simulatorTLKT.Boat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class defining the boat’s dynamics.</p>
 <dl class="attribute">
-<dt id="SimulatorTLKT.Boat.FIT_VELOCITY">
-<code class="descname">FIT_VELOCITY</code><em class="property"> = ((-0.0310198207067136, -0.0600881995286002, 0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07, 0), (-0.00037026055411375, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08, 0, 0), (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08, 0, 0, 0), (-2.91900968067076e-08, -1.67287818401469e-09, 0, 0, 0, 0), (6.34463723894578e-11, 0, 0, 0, 0, 0))</em><a class="headerlink" href="#SimulatorTLKT.Boat.FIT_VELOCITY" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.FIT_VELOCITY">
+<code class="descname">FIT_VELOCITY</code><em class="property"> = ((-0.0310198207067136, -0.0600881995286002, 0.0286695485969272, -0.00684406929296715, 0.000379636836557256, -6.77704610076153e-06), (0.0106968590293653, 0.00665508747173206, -4.03686836415123e-05, 2.38962919033178e-05, -6.16724919464073e-07, 0), (-0.00037026055411375, -7.68003222256045e-05, -2.44425618051996e-06, -2.16961875441841e-08, 0, 0), (4.94175336099537e-06, 5.68757177397705e-07, 1.17646387245609e-08, 0, 0, 0), (-2.91900968067076e-08, -1.67287818401469e-09, 0, 0, 0, 0), (6.34463723894578e-11, 0, 0, 0, 0, 0))</em><a class="headerlink" href="#simulatorTLKT.Boat.FIT_VELOCITY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Coefficients of the polar fitted with a 5th order two dimensionnal polynomial.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="SimulatorTLKT.Boat.POLAR_MAX_POFSAIL">
-<code class="descname">POLAR_MAX_POFSAIL</code><em class="property"> = 160</em><a class="headerlink" href="#SimulatorTLKT.Boat.POLAR_MAX_POFSAIL" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.POLAR_MAX_POFSAIL">
+<code class="descname">POLAR_MAX_POFSAIL</code><em class="property"> = 160</em><a class="headerlink" href="#simulatorTLKT.Boat.POLAR_MAX_POFSAIL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximal point of sail where the boat can sail without tacking.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="SimulatorTLKT.Boat.POLAR_MAX_WIND_MAG">
-<code class="descname">POLAR_MAX_WIND_MAG</code><em class="property"> = 19.1</em><a class="headerlink" href="#SimulatorTLKT.Boat.POLAR_MAX_WIND_MAG" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.POLAR_MAX_WIND_MAG">
+<code class="descname">POLAR_MAX_WIND_MAG</code><em class="property"> = 19.1</em><a class="headerlink" href="#simulatorTLKT.Boat.POLAR_MAX_WIND_MAG" title="Permalink to this definition">¶</a></dt>
 <dd><p>Maximal wind magnitude acceptable by the polar fit. If experienced magnitude is greater the wind magnitude is
 set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="SimulatorTLKT.Boat.POLAR_MIN_POFSAIL">
-<code class="descname">POLAR_MIN_POFSAIL</code><em class="property"> = 35</em><a class="headerlink" href="#SimulatorTLKT.Boat.POLAR_MIN_POFSAIL" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.POLAR_MIN_POFSAIL">
+<code class="descname">POLAR_MIN_POFSAIL</code><em class="property"> = 35</em><a class="headerlink" href="#simulatorTLKT.Boat.POLAR_MIN_POFSAIL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Minimal point of sail where the boat can sail without tacking.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="SimulatorTLKT.Boat.UNCERTAINTY_COEFF">
-<code class="descname">UNCERTAINTY_COEFF</code><em class="property"> = 0.2</em><a class="headerlink" href="#SimulatorTLKT.Boat.UNCERTAINTY_COEFF" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.UNCERTAINTY_COEFF">
+<code class="descname">UNCERTAINTY_COEFF</code><em class="property"> = 0.2</em><a class="headerlink" href="#simulatorTLKT.Boat.UNCERTAINTY_COEFF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Characterizes the uncertainty on the boat’s dynamics.</p>
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="SimulatorTLKT.Boat.addUncertainty">
-<em class="property">static </em><code class="descname">addUncertainty</code><span class="sig-paren">(</span><em>boatSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Boat.addUncertainty" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.addUncertainty">
+<em class="property">static </em><code class="descname">addUncertainty</code><span class="sig-paren">(</span><em>boatSpeed</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Boat.addUncertainty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the noisy boat velocity.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -323,8 +323,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="SimulatorTLKT.Boat.getDeterDyn">
-<em class="property">static </em><code class="descname">getDeterDyn</code><span class="sig-paren">(</span><em>pOfSail</em>, <em>windMag</em>, <em>fitCoeffs</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Boat.getDeterDyn" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Boat.getDeterDyn">
+<em class="property">static </em><code class="descname">getDeterDyn</code><span class="sig-paren">(</span><em>pOfSail</em>, <em>windMag</em>, <em>fitCoeffs</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Boat.getDeterDyn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the deterministic boat velocity for a given wind magnitude and point of sail.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -333,7 +333,7 @@ set to POLAR_MAX_WIND_MAG.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>pOfSail</strong> (<em>float</em>) – point of sail of the boat (in degree).</li>
 <li><strong>windMag</strong> (<em>float</em>) – magnitude of the winf in m/s.</li>
-<li><strong>fitCoeffs</strong> (<em>tuple</em>) – coefficients of the fitted velocity polar cf: <a class="reference internal" href="#SimulatorTLKT.Boat.FIT_VELOCITY" title="SimulatorTLKT.Boat.FIT_VELOCITY"><code class="xref any py py-attr docutils literal"><span class="pre">FIT_VELOCITY</span></code></a>.</li>
+<li><strong>fitCoeffs</strong> (<em>tuple</em>) – coefficients of the fitted velocity polar cf: <a class="reference internal" href="#simulatorTLKT.Boat.FIT_VELOCITY" title="simulatorTLKT.Boat.FIT_VELOCITY"><code class="xref any py py-attr docutils literal"><span class="pre">FIT_VELOCITY</span></code></a>.</li>
 </ul>
 </td>
 </tr>
@@ -350,55 +350,61 @@ set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="SimulatorTLKT.DAY_TO_SEC">
-<code class="descclassname">SimulatorTLKT.</code><code class="descname">DAY_TO_SEC</code><em class="property"> = 86400</em><a class="headerlink" href="#SimulatorTLKT.DAY_TO_SEC" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.DAY_TO_SEC">
+<code class="descclassname">simulatorTLKT.</code><code class="descname">DAY_TO_SEC</code><em class="property"> = 86400</em><a class="headerlink" href="#simulatorTLKT.DAY_TO_SEC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constant to convert days in seconds.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="SimulatorTLKT.DESTINATION_ANGLE">
-<code class="descclassname">SimulatorTLKT.</code><code class="descname">DESTINATION_ANGLE</code><em class="property"> = 8.726646259971648e-05</em><a class="headerlink" href="#SimulatorTLKT.DESTINATION_ANGLE" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.DESTINATION_ANGLE">
+<code class="descclassname">simulatorTLKT.</code><code class="descname">DESTINATION_ANGLE</code><em class="property"> = 8.726646259971648e-05</em><a class="headerlink" href="#simulatorTLKT.DESTINATION_ANGLE" title="Permalink to this definition">¶</a></dt>
 <dd><p>Angular margin that characterizes the destination point.</p>
 </dd></dl>
 
 <dl class="data">
-<dt id="SimulatorTLKT.EARTH_RADIUS">
-<code class="descclassname">SimulatorTLKT.</code><code class="descname">EARTH_RADIUS</code><em class="property"> = 6371000.0</em><a class="headerlink" href="#SimulatorTLKT.EARTH_RADIUS" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.EARTH_RADIUS">
+<code class="descclassname">simulatorTLKT.</code><code class="descname">EARTH_RADIUS</code><em class="property"> = 6371000.0</em><a class="headerlink" href="#simulatorTLKT.EARTH_RADIUS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Earth radius in meters.</p>
 </dd></dl>
 
+<dl class="data">
+<dt id="simulatorTLKT.HOURS_TO_DAY">
+<code class="descclassname">simulatorTLKT.</code><code class="descname">HOURS_TO_DAY</code><em class="property"> = 0.041666666666666664</em><a class="headerlink" href="#simulatorTLKT.HOURS_TO_DAY" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constant to convert hours to days</p>
+</dd></dl>
+
 <dl class="class">
-<dt id="SimulatorTLKT.Simulator">
-<em class="property">class </em><code class="descclassname">SimulatorTLKT.</code><code class="descname">Simulator</code><span class="sig-paren">(</span><em>times</em>, <em>lats</em>, <em>lons</em>, <em>WeatherAvg</em>, <em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator">
+<em class="property">class </em><code class="descclassname">simulatorTLKT.</code><code class="descname">Simulator</code><span class="sig-paren">(</span><em>times</em>, <em>lats</em>, <em>lons</em>, <em>WeatherAvg</em>, <em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Class emboding the boat and weather interactions with also the tools required    to do projection on earth surface. For now, only used by the MCTS tree search.</p>
+<p>Class embedding the boat and weather interactions with also the tools required    to do projection on earth surface. For now, only used by the MCTS tree search.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
 <li><strong>times</strong> (<em>numpy.array</em>) – Vector of the instants used for the simulation         in days.</li>
-<li><strong>array lons</strong> (<em>numpy</em>) – Longitudes in degree in [0 , 360].</li>
+<li><strong>lons</strong> (<em>numpy.array</em>) – Longitudes in degree in [0 , 360].</li>
 <li><strong>lats</strong> (<em>numpy.array</em>) – Latitudes in degree in [-90 : 90].</li>
 <li><strong>state</strong> (<em>list</em>) – Current state [time index, lat, lon] of the boat in         (int,degree,degree).</li>
 <li><strong>prevState</strong> (<em>list</em>) – Previous state [time index, lat, lon] of the boat in         (int,degree,degree).</li>
-<li><strong>uWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward West. Generated at initialisation with <a class="reference internal" href="#WeatherTLKT.Weather.Interpolators" title="WeatherTLKT.Weather.Interpolators"><code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code></a>.</li>
-<li><strong>vWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward North. Generated at initialisation with <a class="reference internal" href="#WeatherTLKT.Weather.Interpolators" title="WeatherTLKT.Weather.Interpolators"><code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code></a>.</li>
+<li><strong>uWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward West. Generated at initialisation with <code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code>.</li>
+<li><strong>vWindAvg</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy-0.16.1/reference/generated/scipy.interpolate.RegularGridInterpolator.html">Interpolator</a>) – Interpolator for the wind velocity blowing toward North. Generated at initialisation with <code class="xref py py-meth docutils literal"><span class="pre">WeatherTLKT.Weather.Interpolators()</span></code>.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.animateTraj">
-<code class="descname">animateTraj</code><span class="sig-paren">(</span><em>windAvg</em>, <em>states</em>, <em>trajSteps=3</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.animateTraj" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.animateTraj">
+<code class="descname">animateTraj</code><span class="sig-paren">(</span><em>windAvg</em>, <em>states</em>, <em>trajSteps=3</em>, <em>proj='mill'</em>, <em>res='i'</em>, <em>instant=0</em>, <em>Dline=5</em>, <em>density=1</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.animateTraj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Animates the trajectory corresponding to the list of states.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>windAvg</strong> (<a class="reference internal" href="#WeatherTLKT.Weather" title="WeatherTLKT.Weather"><em>Weather</em></a>) – The weather object corresponding to the trajectory.</li>
+<li><strong>windAvg</strong> (<a class="reference internal" href="#weatherTLKT.Weather" title="weatherTLKT.Weather"><em>Weather</em></a>) – The weather object corresponding to the trajectory.</li>
 <li><strong>states</strong> (<em>list</em>) – List of boat states along its trajectory.</li>
 <li><strong>trajSteps</strong> (<em>int</em>) – State step for the animation (a plot update corresponds to trajSteps covered states)</li>
 <li><strong>proj</strong> (<em>str</em>) – <p>Projection to be used. Refer to <a class="reference external" href="https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap">Basemap</a></p>
@@ -422,8 +428,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.doStep">
-<code class="descname">doStep</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.doStep" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.doStep">
+<code class="descname">doStep</code><span class="sig-paren">(</span><em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.doStep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Does one iteration of the simulation (one time step) following a provided action.        Updates and returns the new boat state. Supposes constant wind during a time step. Also        constant boat speed. Assumes that the boat moves following orthodomes trajectories. This         is correct if the distances covered during the time step is relatively small (and we        are not close to the poles): the orthodrome’s headings do not vary much.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -440,8 +446,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="staticmethod">
-<dt id="SimulatorTLKT.Simulator.fromGeoToCartesian">
-<em class="property">static </em><code class="descname">fromGeoToCartesian</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.fromGeoToCartesian" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.fromGeoToCartesian">
+<em class="property">static </em><code class="descname">fromGeoToCartesian</code><span class="sig-paren">(</span><em>coordinates</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.fromGeoToCartesian" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transforms geographic coordinates to cartesian coordinates. The cartesian frame       has its origin at the center of the earth. Its orientation and so on is not explicitely given      since the function is only used to create a plane.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -458,8 +464,8 @@ set to POLAR_MAX_WIND_MAG.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.getDestination">
-<code class="descname">getDestination</code><span class="sig-paren">(</span><em>distance</em>, <em>bearing</em>, <em>departure</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.getDestination" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.getDestination">
+<code class="descname">getDestination</code><span class="sig-paren">(</span><em>distance</em>, <em>bearing</em>, <em>departure</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.getDestination" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the destination point following a orthodrome trajectory for a
 given bearing and distance. <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">Link to
 documentation</a>.</p>
@@ -485,8 +491,8 @@ documentation</a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.getDistAndBearing">
-<code class="descname">getDistAndBearing</code><span class="sig-paren">(</span><em>position</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.getDistAndBearing" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.getDistAndBearing">
+<code class="descname">getDistAndBearing</code><span class="sig-paren">(</span><em>position</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.getDistAndBearing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the distance and the initial bearing to follow to go to        a destination following a great circle trajectory (orthodrome). <a class="reference external" href="http://www.movable-type.co.uk/scripts/latlong.html">Link to documentation</a></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -509,8 +515,8 @@ documentation</a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.getWind">
-<code class="descname">getWind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.getWind" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.getWind">
+<code class="descname">getWind</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.getWind" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the wind at the current simulator state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -525,8 +531,8 @@ documentation</a>.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.plotTraj">
-<code class="descname">plotTraj</code><span class="sig-paren">(</span><em>states</em>, <em>basemap</em>, <em>quiv=False</em>, <em>scatter=False</em>, <em>color='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.plotTraj" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.plotTraj">
+<code class="descname">plotTraj</code><span class="sig-paren">(</span><em>states</em>, <em>basemap</em>, <em>quiv=False</em>, <em>scatter=False</em>, <em>color='black'</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.plotTraj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draw the states on the map either as a trajectory and/or scatter of points. Can also plot mean wind
 for each state and return it.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -553,8 +559,8 @@ for each state and return it.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.prepareBaseMap">
-<code class="descname">prepareBaseMap</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>Dline=5</em>, <em>dl=1.5</em>, <em>dh=1</em>, <em>centerOfMap=None</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.prepareBaseMap" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.prepareBaseMap">
+<code class="descname">prepareBaseMap</code><span class="sig-paren">(</span><em>proj='mill'</em>, <em>res='i'</em>, <em>Dline=5</em>, <em>dl=1.5</em>, <em>dh=1</em>, <em>centerOfMap=None</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.prepareBaseMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepares the figure to plot a trajectory. Based on mpl_toolkits.basemap.Basemap.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -581,8 +587,8 @@ for each state and return it.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="SimulatorTLKT.Simulator.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#SimulatorTLKT.Simulator.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="simulatorTLKT.Simulator.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>stateInit</em><span class="sig-paren">)</span><a class="headerlink" href="#simulatorTLKT.Simulator.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the simulated boat to a specific state.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -615,8 +621,8 @@ for each state and return it.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Package Model</a><ul>
-<li><a class="reference internal" href="#module-WeatherTLKT">WeatherTLKT</a></li>
-<li><a class="reference internal" href="#module-SimulatorTLKT">SimulatorTLKT</a></li>
+<li><a class="reference internal" href="#module-weatherTLKT">WeatherTLKT</a></li>
+<li><a class="reference internal" href="#module-simulatorTLKT">SimulatorTLKT</a></li>
 </ul>
 </li>
 </ul>

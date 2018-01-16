@@ -102,10 +102,10 @@ print('Number of Boat that arrived : ' + str(len(Times)))
 #%%
 m = Sim.prepareBaseMap(centerOfMap=stateInit[1:],proj='aeqd')
 # Azimuthal Equidistant Projection
-#The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
-#projection. So, for the specified point, all points that lie on a circle around this point are equidistant
-#on the surface of the earth on this projection.
-rgba_colors = np.zeros((len(dests2),4))
+# The shortest route from the center of the map to any other point is a straight line in the azimuthal equidistant
+# projection. So, for the specified point, all points that lie on a circle around this point are equidistant
+# on the surface of the earth on this projection.
+rgba_colors = np.zeros((len(dests2), 4))
 rgba_colors[:, 3] = np.exp(min(Times)-np.array(Times))
 
 
