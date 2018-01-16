@@ -198,7 +198,7 @@ class MasterTree:
             self.best_nodes_policy[id_scenario] = nodes_policy
 
     def get_best_child(self, node, idscenario=None):
-        best_reward = 0
+        best_reward = -1
         best_action = None
         best_child = None
         for child in node.children:
@@ -209,6 +209,9 @@ class MasterTree:
                     for i in range(self.numScenarios):
                         temp[i] = child.rewards[i, j].get_mean()
                     reward_per_action[j] = np.dot(temp, self.probability)
+                    # print(temp)
+                    # print(self.probability)
+                    # print(reward_per_action[j])
                 else:
                     reward_per_action[j] = child.rewards[idscenario, j].get_mean()
             if np.max(reward_per_action) > best_reward:
@@ -245,7 +248,7 @@ class MasterTree:
         else:
             self.plot_children(node, x0, y0, length, ax, 'k', idscenario=idscenario)
 
-        ax.scatter(0, 0, color='blue', s=200, zorder=len(self.nodes))
+        ax.plot(0, 0, color="blue", marker='o', markersize='10')
         plt.axis('equal')
         fig.show()
         return fig, ax
@@ -301,13 +304,10 @@ class MasterTree:
         # Get the right policy
         if idscenario is None:
             nodes_policy = self.best_global_nodes_policy
-            policy = self.best_global_policy
         else:
             nodes_policy = self.best_nodes_policy[idscenario]
-            policy = self.best_policy[idscenario]
 
         fig, ax = self.plot_tree(grey=grey, idscenario=idscenario)
-        node = self.nodes[hash(tuple([]))]  # rootNode
         x0 = 0
         y0 = 0
         length = 1
@@ -335,7 +335,7 @@ class MasterTree:
         # Plot
         fig, ax1 = self.plot_best_policy(grey=True, idscenario=idscenario)
         ax2 = fig.add_subplot(1, 2, 2)
-        ax2.set_ylim([0, 30])
+        # ax2.set_ylim([0, 30])
         barcollection = ax2.bar(x=Hist.MEANS, height=[0 for _ in Hist.MEANS],
                                 width=Hist.THRESH[1] - Hist.THRESH[0])
         pt, = ax1.plot(0, 0, color="green", marker='o', markersize='7')
@@ -427,7 +427,7 @@ class MasterNode:
         return not all(hist.is_empty() for hist in self.rewards[idscenario, :])
 
     def plot_hist(self, idscenario, action):
-        print(self.rewards[idscenario, action].h)
+        # print(self.rewards[idscenario, action].h)
         fig, ax = plt.subplots()
         plt.bar(x=Hist.MEANS, height=self.rewards[idscenario, action].h, width=Hist.THRESH[1] - Hist.THRESH[0])
         fig.show()
@@ -438,7 +438,7 @@ class MasterNode:
         hist = sum(self.rewards[ii, action].h * probability[ii] for ii in range(len(self.rewards[:, action])))
 
         fig, ax = plt.subplots()
-        print(hist)
+        # print(hist)
         plt.bar(x=Hist.MEANS, height=hist, width=Hist.THRESH[1] - Hist.THRESH[0])
         fig.show()
         return fig

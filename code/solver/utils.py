@@ -51,7 +51,7 @@ class Hist:
         if summed == 0:
             return 0
         else:
-            return np.dot(self.h, Hist.MEANS) / sum(self.h)
+            return np.dot(self.h, Hist.MEANS) / summed
 
     def is_empty(self):
         return all(value == 0 for value in self.h)

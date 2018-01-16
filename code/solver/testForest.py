@@ -4,9 +4,9 @@ import numpy as np
 from worker import Tree
 
 # parameters
-name = "tree_for_vis_1000"
+name = "tree_for_vis_100_20"
 frequency = 10
-budget = 1000
+budget = 100
 
 mydate = '20180108'
 
@@ -15,7 +15,7 @@ mydate = '20180108'
 Weathers = ft.Forest.load_scenarios(mydate, latBound=[40, 50], lonBound=[360 - 15, 360])
 
 # We create N simulators based on the scenarios
-NUMBER_OF_SIM = 5  # <=20
+NUMBER_OF_SIM = 20  # <=20
 SIM_TIME_STEP = 6  # in hours
 STATE_INIT = [0, 47.5, -3.5 + 360]
 N_DAYS_SIM = 8  # time horizon in days
