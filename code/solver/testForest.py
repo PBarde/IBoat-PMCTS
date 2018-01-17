@@ -6,7 +6,7 @@ from worker import Tree
 # parameters
 name = "tree_for_vis_100_20"
 frequency = 10
-budget = 100
+budget = 10000
 
 mydate = '20180108'
 
