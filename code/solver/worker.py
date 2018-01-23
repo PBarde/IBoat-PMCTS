@@ -98,13 +98,17 @@ class Tree:
                   #~ + str(timeDefaultPolicy / totalETime) + ', Time Backup = ' + \
                   #~ str(timeBackUp / totalETime) + '\n')
 
-            # Notify the master that the buffer is ready
+            # Notify the master that the buffer is ready)
             if self.ite % frequency == 0:
+                # startmaster = timer()
                 event.set()
                 # wait for the master to reset the buffer
                 while event.isSet():
-                    print("waiting, event is set :" + str(event.isSet()) + "for worker num " + str(self.id))
-
+                    pass
+                #     print("waiting, event is set :" + str(event.isSet()) + "for worker num " + str(self.id))
+                # endmaster = timer()
+                # timemaster = endmaster - startmaster
+                # print(', Elapsed time BackUp= ' + str(timemaster) + '\n')
         # Set the end_event to True to notify the master that the search is done
         end_event.set()
 
@@ -116,7 +120,9 @@ class Tree:
 
     def tree_policy(self, node):
         while not self.is_node_terminal(node):
-            if (random.random() < 0.2) and (not Tree.is_fully_expanded(node)):
+            if (random.random() < 0) and node.children:
+                node = self.best_child(node)
+            elif not Tree.is_fully_expanded(node):
                 return self.expand(node)
             else:
                 node = self.best_child(node)
@@ -131,7 +137,7 @@ class Tree:
         return newNode
 
     def best_child(self, node):
-        max_ucts_of_children = 0
+        max_ucts_of_children = -1
         id_of_best_child = -1
         num_node = 0
 
@@ -148,7 +154,6 @@ class Tree:
             if ucts_of_children > max_ucts_of_children:
                 max_ucts_of_children = ucts_of_children
                 id_of_best_child = i
-
         return node.children[id_of_best_child]
 
     @staticmethod

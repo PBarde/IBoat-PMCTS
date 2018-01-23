@@ -109,14 +109,14 @@ class MasterTree:
                 num_parent = 0
                 uct_max_on_actions = 0
 
-                for hist in self.nodes[master_node.parentHash].rewards[s]:
+                for hist in master_node.parentNode.rewards[s]:
                     num_parent += sum(hist.h)
 
-                if num_parent == 0:
+                num_node = sum(master_node.parentNode.rewards[s, A_DICT[master_node.arm]].h)
+
+                if (num_parent == 0) or (num_node == 0):
                     uct_per_scenario.append(0)
                     continue
-
-                num_node = sum(self.nodes[master_node.parentHash].rewards[s, A_DICT[master_node.arm]].h)
 
                 exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
@@ -138,7 +138,7 @@ class MasterTree:
         nodes = dict(self.nodes)
         del nodes[hash(tuple([]))]  # remove the rootNode
         for node in nodes.values():
-            self.nodes[node.parentHash].children.append(node)
+            node.parentNode.children.append(node)
 
     def get_depth(self):
         """
@@ -386,7 +386,7 @@ class MasterNode:
     Node of a MasterTree
     :ivar int hash:
     :ivar int action:
-    :ivar int parentHash:
+    :ivar MasterNode parentNode:
     :ivar numpy.array rewards: Array of `Hist`
     :ivar list children: List of children (MasterNode)
     :ivar int depth: Depth of the node
