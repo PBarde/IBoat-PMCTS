@@ -192,6 +192,8 @@ class MasterTree:
             node = nodes_policy[0]
             while node.children:
                 child, action = self.get_best_child(node, idscenario=id_scenario)
+                if child is None:
+                    break
                 nodes_policy.append(child)
                 policy.append(action)
                 node = child
@@ -207,9 +209,15 @@ class MasterTree:
          for the global tree
         :return: A tuple: (the best child, the action taken to go from the node to its best child)
         """
-        best_reward = -1
+        best_reward = 0
         best_action = None
         best_child = None
+
+        # Test if at least one node has been expanded by the scenario
+        if idscenario is not None:
+            if all(not child.is_expanded(idscenario) for child in node.children):
+                return best_child, best_action
+
         for child in node.children:
             reward_per_action = np.zeros(shape=len(ACTIONS))
             for j in range(len(ACTIONS)):
@@ -218,9 +226,6 @@ class MasterTree:
                     for i in range(self.numScenarios):
                         temp[i] = child.rewards[i, j].get_mean()
                     reward_per_action[j] = np.dot(temp, self.probability)
-                    # print(temp)
-                    # print(self.probability)
-                    # print(reward_per_action[j])
                 else:
                     reward_per_action[j] = child.rewards[idscenario, j].get_mean()
             if np.max(reward_per_action) > best_reward:

@@ -4,9 +4,9 @@ import numpy as np
 from worker import Tree
 
 # parameters
-name = "tree_for_vis_1000_20_p05"
+name = "tree_for_vis_20_20_p05"
 frequency = 10
-budget = 1000
+budget = 20
 
 mydate = '20180108'
 
@@ -28,6 +28,7 @@ sims = ft.Forest.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimes
 missionheading = 235
 ntra = 50
 
+# TODO remove !!
 # destination, timemin = ft.Forest.initialize_simulators(sims, ntra, STATE_INIT, missionheading)
 # print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
 destination = [45.61007569408288, 352.76762529249345]
