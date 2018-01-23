@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#PBS -N mcts_parallel
+#PBS -j oe
+#PBS -m abe
+#PBS -M paul.barde@isae-supaero.fr
+#PBS -l walltime=1:00:00
+#PBS -l nodes=2:ppn=4
+
+module load <module name>
+mpirun -np 8 ${HOME}/repertoire_de_mon_code/monprogramme arg1 arg2

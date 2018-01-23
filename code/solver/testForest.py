@@ -4,9 +4,9 @@ import numpy as np
 from worker import Tree
 
 # parameters
-name = "tree_for_vis_100_20_bis"
+name = "tree_for_vis_100_20"
 frequency = 10
-budget = 20
+budget = 10000
 
 mydate = '20180108'
 
@@ -34,7 +34,4 @@ print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "
 
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
 forest.launch_search(STATE_INIT, frequency)
-forest.master.get_children()
-forest.master.get_depth()
-forest.master.get_best_policy()
 forest.master.save_tree(name)

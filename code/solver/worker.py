@@ -64,40 +64,39 @@ class Tree:
         # while we still have computationnal budget we expand nodes
         while self.ite < self.budget:
             # the treePolicy gives us the reference to the newly expanded node
-            startTreePolicy = timer()
+            #~ startTreePolicy = timer()
 
             leafNode = self.tree_policy(self.rootNode)
 
-            endTreePolicy = timer()
-            timeTreePolicy = endTreePolicy - startTreePolicy
+            #~ endTreePolicy = timer()
+            #~ timeTreePolicy = endTreePolicy - startTreePolicy
             #            print('Elapsed time Tree policy= ' + str(timeTreePolicy))
 
-            startDefaultPolicy = timer()
+            #~ startDefaultPolicy = timer()
 
             reward = self.default_policy(leafNode)
 
-            endDefaultPolicy = timer()
-            timeDefaultPolicy = endDefaultPolicy - startDefaultPolicy
+            #~ endDefaultPolicy = timer()
+            #~ timeDefaultPolicy = endDefaultPolicy - startDefaultPolicy
             #            print(', Elapsed time Default policy= ' + str(timeDefaultPolicy))
 
-            startBackUp = timer()
+            #~ startBackUp = timer()
             Tree.back_up(leafNode, reward)
-            endBackUp = timer()
+            #~ endBackUp = timer()
 
-            timeBackUp = endBackUp - startBackUp
+            #~ timeBackUp = endBackUp - startBackUp
             #            print(', Elapsed time BackUp= ' + str(timeBackUp) + '\n')
 
-            totalETime = endBackUp - startTreePolicy
+            #~ totalETime = endBackUp - startTreePolicy
             self.Buffer.append(
                 [self.id, hash(tuple(leafNode.origins)), hash(tuple(leafNode.origins[:-1])), leafNode.origins[-1],
                  reward])
             self.ite = self.ite + 1
-
-            print(
-                '\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
-            print('Tree Policy = ' + str(timeTreePolicy / totalETime) + ', Default Policy = ' \
-                  + str(timeDefaultPolicy / totalETime) + ', Time Backup = ' + \
-                  str(timeBackUp / totalETime) + '\n')
+            
+            if self.ite % 50 == 0 : print('\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
+            #~ print('Tree Policy = ' + str(timeTreePolicy / totalETime) + ', Default Policy = ' \
+                  #~ + str(timeDefaultPolicy / totalETime) + ', Time Backup = ' + \
+                  #~ str(timeBackUp / totalETime) + '\n')
 
             # Notify the master that the buffer is ready
             if self.ite % frequency == 0:
@@ -187,8 +186,8 @@ class Tree:
             reward = 0
             finalTime = self.TimeMax
 
-        print('Final dist = ' + str(dist) + ', final Time = ' + str(finalTime) + \
-              ', reward = ' + str(reward))
+        #~ print('Final dist = ' + str(dist) + ', final Time = ' + str(finalTime) + \
+              #~ ', reward = ' + str(reward))
         return reward
 
     def get_sim_to_estimate_state(self, node):
