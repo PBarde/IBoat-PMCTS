@@ -132,7 +132,7 @@ class Forest:
     @staticmethod
     def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
 
-        arrivalpositions = np.zeros((ntra * len(sims), 2))
+        meanarrivaldistances = []
         ii = 0
 
         if plot:
@@ -141,6 +141,7 @@ class Forest:
             traj = []
 
         for sim in sims:
+            arrivaldistances = []
 
             for _ in range(ntra):
                 sim.reset(stateinit)
@@ -158,16 +159,17 @@ class Forest:
                     trajsofsim.append(list(traj))
                     traj = []
 
-                arrivalpositions[ii, :] = list(sim.state[1:])
+                dist, dump = sim.getDistAndBearing(stateinit[1:],(sim.state[1:]))
+                arrivaldistances.append(dist)
                 ii += 1
 
+            meanarrivaldistances.append(np.mean(arrivaldistances))
             if plot:
                 meantrajs_dest.append(np.mean(trajsofsim, 0))
                 trajsofsim = []
 
-        latdest = np.mean(arrivalpositions[:, 0])
-        londest = np.mean(arrivalpositions[:, 1])
-        destination = [latdest, londest]
+        mindist = np.min(meanarrivaldistances)
+        destination = sim.getDestination(mindist,missionheading,stateinit[1:])
 
         if plot:
             minarrivaltimes = []
