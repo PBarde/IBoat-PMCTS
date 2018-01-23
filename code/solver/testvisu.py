@@ -6,8 +6,10 @@ if len(sys.argv) > 1:
 else:
     id = None
 
-tree = mt.MasterTree.load_tree("tree_for_vis_100_20")
-tree.get_best_policy()
+# tree = mt.MasterTree.load_tree("tree_for_vis_1000")
+tree = mt.MasterTree.load_tree("tree_for_vis_100_20_bis")
+
+# tree.get_best_policy()
 # tree.plot_best_policy(grey=True, idscenario=id)
 
 tree.plot_hist_best_policy(idscenario=id)

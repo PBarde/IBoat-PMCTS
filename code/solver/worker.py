@@ -10,6 +10,7 @@ import sys
 sys.path.append("../model/")
 import matplotlib.pyplot as plt
 import math
+import random
 from math import exp, sqrt, asin
 import simulatorTLKT as SimC
 import random as rand
@@ -17,10 +18,8 @@ from timeit import default_timer as timer
 import numpy as np
 from utils import Hist
 
-
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
-
 
 
 class Node:
@@ -117,15 +116,11 @@ class Tree:
         return list(self.Buffer)
 
     def tree_policy(self, node):
-
         while not self.is_node_terminal(node):
-
-            if not Tree.is_fully_expanded(node):
+            if (random.random() < 0.2) and (not Tree.is_fully_expanded(node)):
                 return self.expand(node)
-
             else:
                 node = self.best_child(node)
-
         return node
 
     def expand(self, node):
@@ -138,7 +133,7 @@ class Tree:
 
     def best_child(self, node):
         max_ucts_of_children = 0
-        id_of_best_child = 0
+        id_of_best_child = -1
         num_node = 0
 
         for val in node.Values:
