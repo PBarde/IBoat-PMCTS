@@ -184,7 +184,7 @@ class Tree:
             atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
 
         if atDest:
-            finalTime = self.Simulator.times[self.Simulator.state[0]] - (1 - frac)
+            finalTime = self.Simulator.times[self.Simulator.state[0]] - (1 - frac)*(self.Simulator.times[self.Simulator.state[0]]-self.Simulator.times[self.Simulator.state[0]-1])
             reward = (exp((self.TimeMax * 1.001 - finalTime) / (self.TimeMax * 1.001 - self.TimeMin)) - 1) / (
                 exp(1) - 1)
         else:
