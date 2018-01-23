@@ -80,16 +80,38 @@
 :return:</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="master.MasterNode.plot_hist">
+<code class="descname">plot_hist</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.plot_hist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.MasterNode.plot_mean_hist">
+<code class="descname">plot_mean_hist</code><span class="sig-paren">(</span><em>action</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.plot_mean_hist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="master.MasterTree">
-<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>num_scenarios</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Master tree that manages ns different WorkerTree in parallel.
-Each WorkerTree is searching on a different Weather scenario.
-:ivar dict nodes: dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash
-:ivar numpy.array probability: array containing the probability of each scenario</p>
+Each WorkerTree is searching on a different Weather scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash</li>
+<li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario</li>
+<li><strong>Simulators</strong> (<em>list</em>) – List of the simulators used during the search</li>
+<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <cite>MasterTree.get_depth</cite> has been called</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="master.MasterTree.backup">
 <code class="descname">backup</code><span class="sig-paren">(</span><em>nodehash</em>, <em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.backup" title="Permalink to this definition">¶</a></dt>
@@ -102,6 +124,11 @@ Each WorkerTree is searching on a different Weather scenario.
 <dl class="method">
 <dt id="master.MasterTree.get_best_child">
 <code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_best_policy">
+<code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -173,6 +200,11 @@ Each WorkerTree is searching on a different Weather scenario.
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_hist_best_policy">
+<code class="descname">plot_hist_best_policy</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_hist_best_policy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="master.MasterTree.plot_tree">
@@ -372,7 +404,7 @@ Each WorkerTree is searching on a different Weather scenario.
 
 <dl class="staticmethod">
 <dt id="forest.Forest.initialize_simulators">
-<em class="property">static </em><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

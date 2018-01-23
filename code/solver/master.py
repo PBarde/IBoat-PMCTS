@@ -18,8 +18,15 @@ class MasterTree:
     """
     Master tree that manages ns different WorkerTree in parallel.
     Each WorkerTree is searching on a different Weather scenario.
+
     :ivar dict nodes: dictionary containing `MasterNode`, the keys are their corresponding hash
     :ivar numpy.array probability: array containing the probability of each scenario
+    :ivar list Simulators: List of the simulators used during the search
+    :ivar int max_depth: Maximum depth of the master tree computed after `MasterTree.get_depth()` has been called
+    :ivar int numScenarios: Number of scenarios
+    :ivar list destination: Destination state [lat, long]
+    :ivar list best_global_policy:
+
     """
 
     def __init__(self, sims, destination):
@@ -45,31 +52,18 @@ class MasterTree:
         """
         for update in buffer:
             scenarioId, newNodeHash, parentHash, action, reward = update
-            if newNodeHash not in self.nodes:
+            node = self.nodes.get(newNodeHash, 0)
+            if node == 0:
                 self.nodes[newNodeHash] = MasterNode(self.numScenarios, nodehash=newNodeHash,
-                                                     parenthash=parentHash, action=action)
+                                                     parentNode=self.nodes[parentHash], action=action)
+                node = self.nodes[newNodeHash]
 
-            self.nodes[newNodeHash].add_reward(scenarioId, reward)
-            self.backup(newNodeHash, scenarioId, reward)
-
-    def backup(self, nodehash, idscenario, reward):
-        """
-        Propagates the reward through the master tree.
-        :param int nodehash: hash of the node
-        :param int idscenario: id of the scenario/workertree where the update is coming
-        :param float reward: reward of the update
-        """
-        node = self.nodes[nodehash]
-        parent_hash = node.parentHash
-        while parent_hash is not None:
-            parent = self.nodes[parent_hash]
-            parent.add_reward_action(idscenario, node.arm, reward)
-            node = parent
-            parent_hash = node.parentHash
+            node.add_reward(scenarioId, reward)
+            node.backup(scenarioId, reward)
 
     def update(self, worker_dict, event_dict, finish_event_dict):
         """
-        Background task which waits for worker buffer update
+        Background task which waits for worker buffer updates
         :param worker_dict:
         :param event_dict:
         :param finish_event_dict:
@@ -78,7 +72,7 @@ class MasterTree:
         stop = False
         while not stop:
             for i, event in enumerate(event_dict.values()):
-                # If a tree is ready)
+                # If a tree is ready
                 if event.isSet():
                     # Copy the buffer
                     buffer = worker_dict[i].copy_buffer()
@@ -103,13 +97,13 @@ class MasterTree:
         # warning here it is a reference toward a worker node.
         node_hash = hash(tuple(worker_node.origins))
 
-        if node_hash not in self.nodes:
-            print("Node " + str(node_hash) + " is not in the master")
+        master_node = self.nodes.get(node_hash, 0)
+        if master_node == 0:
+            # print("Node " + str(node_hash) + " is not in the master")
             return 0
 
         else:
             # print("Node " + str(node_hash) + " is in the master")
-            master_node = self.nodes[node_hash]
             uct_per_scenario = []
             for s, reward_per_scenario in enumerate(master_node.rewards):
                 num_parent = 0
@@ -349,9 +343,16 @@ class MasterTree:
             y_list.append(y)
             x0, y0 = x, y
 
+        print(len(policy))
+        print(len(nodes_policy))
+
         def animate(i):
             n = nodes_policy[i]
-            a = A_DICT[policy[i]]
+            if i == len(nodes_policy) - 1:
+                # last nodes: same reward for all actions
+                a = 0
+            else:
+                a = A_DICT[policy[i]]
             if idscenario is None:
                 hist = sum(n.rewards[ii, a].h * self.probability[ii] for ii in range(len(n.rewards[:, a])))
             else:
@@ -363,7 +364,7 @@ class MasterTree:
 
             return barcollection, pt
 
-        anim = animation.FuncAnimation(fig, animate, frames=len(policy), interval=1000, blit=False)
+        anim = animation.FuncAnimation(fig, animate, frames=len(nodes_policy), interval=1000, blit=False)
         plt.show()
         return fig
 
@@ -391,10 +392,10 @@ class MasterNode:
     :ivar int depth: Depth of the node
     """
 
-    def __init__(self, numscenarios, nodehash=None, parenthash=None, action=None):
+    def __init__(self, numscenarios, nodehash=None, parentNode=None, action=None):
         self.hash = nodehash
         self.arm = action
-        self.parentHash = parenthash
+        self.parentNode = parentNode
         self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
         self.children = []
         self.depth = None
@@ -417,6 +418,17 @@ class MasterNode:
         :return:
         """
         self.rewards[idscenario, A_DICT[action]].add(reward)
+
+    def backup(self, idscenario, reward):
+        """
+        Propagates the reward through the master tree.
+        :param int idscenario: id of the scenario/workertree where the update is coming
+        :param float reward: reward of the update
+        """
+        parent = self.parentNode
+        if parent is not None:
+            parent.add_reward_action(idscenario, self.arm, reward)
+            parent.backup(idscenario, reward)
 
     def is_expanded(self, idscenario):
         """
