@@ -7,7 +7,7 @@ else:
     id = None
 
 # tree = mt.MasterTree.load_tree("tree_for_vis_1000")
-tree = mt.MasterTree.load_tree("tree_for_vis_100_20_bis")
+tree = mt.MasterTree.load_tree("tree_for_vis_1000_20_p05")
 
 # tree.get_best_policy()
 # tree.plot_best_policy(grey=True, idscenario=id)

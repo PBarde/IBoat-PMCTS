@@ -18,14 +18,20 @@ class MasterTree:
     """
     Master tree that manages ns different WorkerTree in parallel.
     Each WorkerTree is searching on a different Weather scenario.
+    The best policies are available after :py:meth:`get_best_policy` has been called.
 
     :ivar dict nodes: dictionary containing `MasterNode`, the keys are their corresponding hash
     :ivar numpy.array probability: array containing the probability of each scenario
     :ivar list Simulators: List of the simulators used during the search
-    :ivar int max_depth: Maximum depth of the master tree computed after `MasterTree.get_depth()` has been called
+    :ivar int max_depth: Maximum depth of the master tree computed after :py:meth:`get_depth` has been called
     :ivar int numScenarios: Number of scenarios
     :ivar list destination: Destination state [lat, long]
-    :ivar list best_global_policy:
+    :ivar list best_global_policy: List of actions corresponding to the average best policy
+    :ivar list best_global_nodes_policy: List of MasterNodes encountered during the global best policy
+    :ivar dict best_policy: Dictionary of list of actions. Key of the dictionary is the scenario id.\
+     The list is the sequel of action.
+    :ivar dict best_global_nodes_policy: Dictionnary of list of MasterNodes encountered during the best\
+     policy of one scenario. The Key of the dictionary is the scenario id.
 
     """
 
@@ -46,6 +52,7 @@ class MasterTree:
     def integrate_buffer(self, buffer):
         """
         Integrates a list of update from a scenario. This method is to be called from a worker.
+
         :param buffer: list of updates coming from the worker. One update is a list :\
             [scenarioId, newNodeHash, parentHash, action, reward]
         :type buffer: list of list
@@ -63,11 +70,12 @@ class MasterTree:
 
     def update(self, worker_dict, event_dict, finish_event_dict):
         """
-        Background task which waits for worker buffer updates
-        :param worker_dict:
-        :param event_dict:
-        :param finish_event_dict:
-        :return:
+        Background task which waits for worker buffer updates.
+
+        :param worker_dict: Dictionary of worker tree (the key is their id).
+        :param event_dict: Dictionary of event (one per scenario) to notify the master that a buffer is ready.
+        :param finish_event_dict: Dictionary of event (one per scenario) to notify the \
+        master that the search of a scenario is ended.
         """
         stop = False
         while not stop:
@@ -88,15 +96,13 @@ class MasterTree:
                 # End of the master thread
                 stop = True
 
-    def get_uct(self, worker_node):
+    def get_uct(self, node_hash):
         """
-        Compute the master uct value of a worker node
-        :param worker_node:
-        :return:
-        """
-        # warning here it is a reference toward a worker node.
-        node_hash = hash(tuple(worker_node.origins))
+        Compute the master uct value of a worker node.
 
+        :param int node_hash: the corresponding hash node
+        :return float: The uct value of the worker node passed in parameter
+        """
         master_node = self.nodes.get(node_hash, 0)
         if master_node == 0:
             # print("Node " + str(node_hash) + " is not in the master")
@@ -108,7 +114,6 @@ class MasterTree:
             for s, reward_per_scenario in enumerate(master_node.rewards):
                 num_parent = 0
                 uct_max_on_actions = 0
-
                 for hist in master_node.parentNode.rewards[s]:
                     num_parent += sum(hist.h)
 
@@ -132,8 +137,8 @@ class MasterTree:
 
     def get_children(self):
         """
-        Add the children nodes to each master node
-        :return:
+        Add the children nodes as attribute to each master node of the master tree. \
+        This method is called after the search.
         """
         nodes = dict(self.nodes)
         del nodes[hash(tuple([]))]  # remove the rootNode
@@ -142,8 +147,7 @@ class MasterTree:
 
     def get_depth(self):
         """
-        Compute the depth of each master node and add it in their attributes
-        :return:
+        Compute the depth of each master node and add it in their attributes. This method is called after the search.
         """
         node = self.nodes[hash(tuple([]))]
         list_nodes = [node]
@@ -158,6 +162,9 @@ class MasterTree:
         self.max_depth = max(map(lambda i: self.nodes[i].depth, self.nodes))
 
     def get_best_policy(self):
+        """
+        Compute the best policy for each scenario and the global best policy. This method is called after the search.
+        """
         # Make sure all the variable have been computed
         if not self.nodes[hash(tuple([]))].children:
             self.get_children()
@@ -192,6 +199,14 @@ class MasterTree:
             self.best_nodes_policy[id_scenario] = nodes_policy
 
     def get_best_child(self, node, idscenario=None):
+        """
+        Compare the children of a node based on their reward and return the best one.
+
+        :param MasterNode node: the parent node
+        :param int idscenario: id of the considered scenario. If default (None), the method return the best child\
+         for the global tree
+        :return: A tuple: (the best child, the action taken to go from the node to its best child)
+        """
         best_reward = -1
         best_action = None
         best_child = None
@@ -217,15 +232,14 @@ class MasterTree:
 
     def plot_tree(self, grey=False, idscenario=None):
         """
-        Plot the master tree.
+        Plot a 2D representation of a tree.
 
-        :param boolean grey: if True => grey scale
-
-        :param int idscenario: If not None, plot the corresponding worker tree
+        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
+        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :return: A tuple (fig, ax) of the current plot
         """
         x0 = 0
         y0 = 0
-        length = 1
         node = self.nodes[hash(tuple([]))]  # rootNode
 
         # Make sure all the variable have been computed
@@ -238,43 +252,34 @@ class MasterTree:
         ax = fig.add_subplot(1, 2, 1)
 
         if grey:
-            self.plot_children(node, x0, y0, length, ax, idscenario=idscenario)
+            self.plot_children(node, [x0, y0], ax, idscenario=idscenario)
         else:
-            self.plot_children(node, x0, y0, length, ax, 'k', idscenario=idscenario)
+            self.plot_children(node, [x0, y0], ax, 'k', idscenario=idscenario)
 
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         plt.axis('equal')
         fig.show()
         return fig, ax
 
-    def plot_children(self, node, x, y, l, ax, color=None, idscenario=None):
+    def plot_children(self, node, coordinate, ax, color=None, idscenario=None):
         """
         Recursive function to plot the children of a master node.
 
-        :param node:
-
-        :param x:
-
-        :param y:
-
-        :param l:
-
-        :param ax:
-
-        :param color: if None => grayscale
-
-        :param idscenario: if not None => plot only for one scenario
-
-        :return: figure
+        :param MasterNode node: the parent node
+        :param list coordinate: coordinate of the parent node in the representation
+        :param ax: the `Axis <https://matplotlib.org/api/axes_api.html>`_ on \
+        which the children are plotted
+        :param color: color of the nodes/branches plotted. If None the color of the nodes/branches is a\
+         grey scale depending of their depth.
+        :param int idscenario: id of the scenario plotted. If None the global tree is plotted.
         """
-        x0 = x
-        y0 = y
+        x0, y0 = coordinate
         for child in node.children:
             if idscenario is not None:
                 if not child.is_expanded(idscenario):
                     continue
-            x = x0 + l * sin(child.arm * pi / 180)
-            y = y0 + l * cos(child.arm * pi / 180)
+            x = x0 + 1 * sin(child.arm * pi / 180)
+            y = y0 + 1 * cos(child.arm * pi / 180)
             if color is None:
                 col = str((child.depth / self.max_depth) * 0.8)
             else:
@@ -282,14 +287,15 @@ class MasterTree:
 
             ax.plot([x0, x], [y0, y], color=col, marker='o', markersize='6')
             # ax.annotate(str(child.depth), (x, y))
-            self.plot_children(child, x, y, l, ax, color=color, idscenario=idscenario)
+            self.plot_children(child, [x, y], ax, color=color, idscenario=idscenario)
 
     def plot_best_policy(self, grey=False, idscenario=None):
         """
-        Plot the master tree and its best policy
-        :param grey:
-        :param idscenario:
-        :return:
+        Plot a representation of a tree and its best policy.
+
+        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
+        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :return: A tuple (fig, ax) of the current plot
         """
         # check if the best_policy has been computed
         if not self.best_global_policy:
@@ -314,6 +320,13 @@ class MasterTree:
         return fig, ax
 
     def plot_hist_best_policy(self, idscenario=None):
+        """
+        Plot the best policy as in :py:meth:`plot_best_policy`, with the histogram of the best action at each node\
+         (`Animation <https://matplotlib.org/api/animation_api.html>`_)
+
+        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :return: the `figure <https://matplotlib.org/api/figure_api.html>`_ of the current plot
+        """
         # check if the best_policy has been computed
         if not self.best_global_policy:
             self.get_best_policy()
@@ -343,9 +356,6 @@ class MasterTree:
             y_list.append(y)
             x0, y0 = x, y
 
-        print(len(policy))
-        print(len(nodes_policy))
-
         def animate(i):
             n = nodes_policy[i]
             if i == len(nodes_policy) - 1:
@@ -369,12 +379,22 @@ class MasterTree:
         return fig
 
     def save_tree(self, name):
+        """
+        Save the master tree (object) in the data Folder.
+
+        :param name: Name of the file.
+        """
         filehandler = open("../data/" + name + '.pickle', 'wb')
         pickle.dump(self, filehandler)
         filehandler.close()
 
     @classmethod
     def load_tree(cls, name):
+        """
+        Load a master tree (object) from the data Folder.
+
+        :param name: Name of the file.
+        """
         filehandler = open("../data/" + name + '.pickle', 'rb')
         loaded_tree = pickle.load(filehandler)
         filehandler.close()
@@ -383,13 +403,14 @@ class MasterTree:
 
 class MasterNode:
     """
-    Node of a MasterTree
-    :ivar int hash:
-    :ivar int action:
-    :ivar MasterNode parentNode:
-    :ivar numpy.array rewards: Array of `Hist`
-    :ivar list children: List of children (MasterNode)
-    :ivar int depth: Depth of the node
+    Node of a MasterTree.
+
+    :ivar int hash: hash of the node (key of the dictionary :py:attr:`MasterTree.nodes`)
+    :ivar int arm: Action taken to get to this node from its parent.
+    :ivar MasterNode parentNode: parent of this node
+    :ivar numpy.array rewards: Array of `Hist`. Its shape is (#scenario, #possible actions).
+    :ivar list children: List of children (:py:class:`MasterNode`)
+    :ivar int depth: Depth of the node.
     """
 
     def __init__(self, numscenarios, nodehash=None, parentNode=None, action=None):
@@ -403,8 +424,9 @@ class MasterNode:
     def add_reward(self, idscenario, reward):
         """
         Includes a reward into the histogram for all actions of one scenario.
-        :param int idscenario: id of the scenario/workertree where the update is coming
-        :param float reward: reward of the update
+
+        :param int idscenario: id of the scenario/workertree from which the update is coming.
+        :param float reward: reward of the update.
         """
         for hist in self.rewards[idscenario, :]:
             hist.add(reward)
@@ -412,16 +434,17 @@ class MasterNode:
     def add_reward_action(self, idscenario, action, reward):
         """
         Includes a reward into the histogram for one action of one scenario.
-        :param idscenario:
-        :param action:
-        :param reward:
-        :return:
+
+        :param int idscenario: id of the scenario/workertree from which the update is coming.
+        :param int action: Action (in degree) of the update
+        :param int reward: reward of the update
         """
         self.rewards[idscenario, A_DICT[action]].add(reward)
 
     def backup(self, idscenario, reward):
         """
-        Propagates the reward through the master tree.
+        Propagates the reward through the master tree, starting from this node.
+
         :param int idscenario: id of the scenario/workertree where the update is coming
         :param float reward: reward of the update
         """
@@ -432,12 +455,14 @@ class MasterNode:
 
     def is_expanded(self, idscenario):
         """
-        Check if this node has been expanded by the scenario `idscenario`
-        :param idscenario:
-        :return:
+        Check if this node has been expanded by a scenario.
+
+        :param idscenario: id of the scenario
+        :return boolean: True if the scenario has expanded this node.
         """
         return not all(hist.is_empty() for hist in self.rewards[idscenario, :])
 
+    # TODO enelever les deux fonction suivantes si on ne s'en sert pas
     def plot_hist(self, idscenario, action):
         # print(self.rewards[idscenario, action].h)
         fig, ax = plt.subplots()

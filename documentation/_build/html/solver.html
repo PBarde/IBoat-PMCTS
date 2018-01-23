@@ -45,39 +45,94 @@
 <span id="master"></span><h2>Master<a class="headerlink" href="#module-master" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="master.MasterNode">
-<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parenthash=None</em>, <em>action=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parentNode=None</em>, <em>action=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Node of a MasterTree
-:ivar int hash:
-:ivar int action:
-:ivar int parentHash:
-:ivar numpy.array rewards: Array of <cite>Hist</cite>
-:ivar list children: List of children (MasterNode)
-:ivar int depth: Depth of the node</p>
+<p>Node of a MasterTree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hash</strong> (<em>int</em>) – hash of the node (key of the dictionary <code class="xref py py-attr docutils literal"><span class="pre">MasterTree.nodes</span></code>)</li>
+<li><strong>arm</strong> (<em>int</em>) – Action taken to get to this node from its parent.</li>
+<li><strong>parentNode</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – parent of this node</li>
+<li><strong>rewards</strong> (<em>numpy.array</em>) – Array of <cite>Hist</cite>. Its shape is (#scenario, #possible actions).</li>
+<li><strong>children</strong> (<em>list</em>) – List of children (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">MasterNode</span></code></a>)</li>
+<li><strong>depth</strong> (<em>int</em>) – Depth of the node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="master.MasterNode.add_reward">
 <code class="descname">add_reward</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Includes a reward into the histogram for all actions of one scenario.
-:param int idscenario: id of the scenario/workertree where the update is coming
-:param float reward: reward of the update</p>
+<dd><p>Includes a reward into the histogram for all actions of one scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
+<li><strong>reward</strong> (<em>float</em>) – reward of the update.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="master.MasterNode.add_reward_action">
 <code class="descname">add_reward_action</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward_action" title="Permalink to this definition">¶</a></dt>
-<dd><p>Includes a reward into the histogram for one action of one scenario.
-:param idscenario:
-:param action:
-:param reward:
-:return:</p>
+<dd><p>Includes a reward into the histogram for one action of one scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
+<li><strong>action</strong> (<em>int</em>) – Action (in degree) of the update</li>
+<li><strong>reward</strong> (<em>int</em>) – reward of the update</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterNode.backup">
+<code class="descname">backup</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagates the reward through the master tree, starting from this node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree where the update is coming</li>
+<li><strong>reward</strong> (<em>float</em>) – reward of the update</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="master.MasterNode.is_expanded">
 <code class="descname">is_expanded</code><span class="sig-paren">(</span><em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.is_expanded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if this node has been expanded by the scenario <cite>idscenario</cite>
-:param idscenario:
-:return:</p>
+<dd><p>Check if this node has been expanded by a scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> – id of the scenario</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return boolean:</th><td class="field-body">True if the scenario has expanded this node.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -97,7 +152,8 @@
 <em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Master tree that manages ns different WorkerTree in parallel.
-Each WorkerTree is searching on a different Weather scenario.</p>
+Each WorkerTree is searching on a different Weather scenario.
+The best policies are available after <a class="reference internal" href="#master.MasterTree.get_best_policy" title="master.MasterTree.get_best_policy"><code class="xref py py-meth docutils literal"><span class="pre">get_best_policy()</span></code></a> has been called.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -106,95 +162,137 @@ Each WorkerTree is searching on a different Weather scenario.</p>
 <li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash</li>
 <li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario</li>
 <li><strong>Simulators</strong> (<em>list</em>) – List of the simulators used during the search</li>
-<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <cite>MasterTree.get_depth</cite> has been called</li>
+<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <a class="reference internal" href="#master.MasterTree.get_depth" title="master.MasterTree.get_depth"><code class="xref py py-meth docutils literal"><span class="pre">get_depth()</span></code></a> has been called</li>
+<li><strong>numScenarios</strong> (<em>int</em>) – Number of scenarios</li>
+<li><strong>destination</strong> (<em>list</em>) – Destination state [lat, long]</li>
+<li><strong>best_global_policy</strong> (<em>list</em>) – List of actions corresponding to the average best policy</li>
+<li><strong>best_global_nodes_policy</strong> (<em>dict</em>) – List of MasterNodes encountered during the global best policy</li>
+<li><strong>best_policy</strong> (<em>dict</em>) – Dictionary of list of actions. Key of the dictionary is the scenario id.     The list is the sequel of action.</li>
+<li><strong>best_global_nodes_policy</strong> – Dictionnary of list of MasterNodes encountered during the best     policy of one scenario. The Key of the dictionary is the scenario id.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="master.MasterTree.backup">
-<code class="descname">backup</code><span class="sig-paren">(</span><em>nodehash</em>, <em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.backup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagates the reward through the master tree.
-:param int nodehash: hash of the node
-:param int idscenario: id of the scenario/workertree where the update is coming
-:param float reward: reward of the update</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="master.MasterTree.get_best_child">
 <code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_best_policy">
-<code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_children">
-<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the children nodes to each master node
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_depth">
-<code class="descname">get_depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the depth of each master node and add it in their attributes
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_uct">
-<code class="descname">get_uct</code><span class="sig-paren">(</span><em>worker_node</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the master uct value of a worker node
-:param worker_node:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.integrate_buffer">
-<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrates a list of update from a scenario. This method is to be called from a worker.
-:param buffer: list of updates coming from the worker. One update is a list :            [scenarioId, newNodeHash, parentHash, action, reward]
-:type buffer: list of list</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="master.MasterTree.load_tree">
-<em class="property">classmethod </em><code class="descname">load_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.load_tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.plot_best_policy">
-<code class="descname">plot_best_policy</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_best_policy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the master tree and its best policy
-:param grey:
-:param idscenario:
-:return:</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.plot_children">
-<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em>, <em>color=None</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recursive function to plot the children of a master node.</p>
+<dd><p>Compare the children of a node based on their reward and return the best one.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>node</strong> – </li>
-<li><strong>x</strong> – </li>
-<li><strong>y</strong> – </li>
-<li><strong>l</strong> – </li>
-<li><strong>ax</strong> – </li>
-<li><strong>color</strong> – if None =&gt; grayscale</li>
-<li><strong>idscenario</strong> – if not None =&gt; plot only for one scenario</li>
+<li><strong>node</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the considered scenario. If default (None), the method return the best child         for the global tree</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">figure</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tuple: (the best child, the action taken to go from the node to its best child)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_best_policy">
+<code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the best policy for each scenario and the global best policy. This method is called after the search.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_children">
+<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the children nodes as attribute to each master node of the master tree.         This method is called after the search.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_depth">
+<code class="descname">get_depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the depth of each master node and add it in their attributes. This method is called after the search.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_uct">
+<code class="descname">get_uct</code><span class="sig-paren">(</span><em>worker_node</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the master uct value of a worker node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>worker_node</strong> (<em>WorkerNode</em>) – the corresponding worker node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The uct value of the worker node passed in parameter</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.integrate_buffer">
+<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates a list of update from a scenario. This method is to be called from a worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> (<em>list of list</em>) – list of updates coming from the worker. One update is a list :            [scenarioId, newNodeHash, parentHash, action, reward]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="master.MasterTree.load_tree">
+<em class="property">classmethod </em><code class="descname">load_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.load_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a master tree (object) from the data Folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – Name of the file.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_best_policy">
+<code class="descname">plot_best_policy</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_best_policy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a representation of a tree and its best policy.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tuple (fig, ax) of the current plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_children">
+<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>coordinate</em>, <em>ax</em>, <em>color=None</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive function to plot the children of a master node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>node</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
+<li><strong>coordinate</strong> (<em>list</em>) – coordinate of the parent node in the representation</li>
+<li><strong>ax</strong> – the <a class="reference external" href="https://matplotlib.org/api/axes_api.html">Axis</a> on         which the children are plotted</li>
+<li><strong>color</strong> – color of the nodes/branches plotted. If None the color of the nodes/branches is a         grey scale depending of their depth.</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario plotted. If None the global tree is plotted.</li>
+</ul>
 </td>
 </tr>
 </tbody>
@@ -204,20 +302,34 @@ Each WorkerTree is searching on a different Weather scenario.</p>
 <dl class="method">
 <dt id="master.MasterTree.plot_hist_best_policy">
 <code class="descname">plot_hist_best_policy</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_hist_best_policy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.plot_tree">
-<code class="descname">plot_tree</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the master tree.</p>
+<dd><p>Plot the best policy as in <a class="reference internal" href="#master.MasterTree.plot_best_policy" title="master.MasterTree.plot_best_policy"><code class="xref py py-meth docutils literal"><span class="pre">plot_best_policy()</span></code></a>, with the histogram of the best action at each node         (<a class="reference external" href="https://matplotlib.org/api/animation_api.html">Animation</a>)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>grey</strong> (<em>boolean</em>) – if True =&gt; grey scale</li>
-<li><strong>idscenario</strong> (<em>int</em>) – If not None, plot the corresponding worker tree</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the <a class="reference external" href="https://matplotlib.org/api/figure_api.html">figure</a> of the current plot</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.plot_tree">
+<code class="descname">plot_tree</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a 2D representation of a tree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tuple (fig, ax) of the current plot</p>
 </td>
 </tr>
 </tbody>
@@ -227,16 +339,34 @@ Each WorkerTree is searching on a different Weather scenario.</p>
 <dl class="method">
 <dt id="master.MasterTree.save_tree">
 <code class="descname">save_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.save_tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Save the master tree (object) in the data Folder.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – Name of the file.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="master.MasterTree.update">
 <code class="descname">update</code><span class="sig-paren">(</span><em>worker_dict</em>, <em>event_dict</em>, <em>finish_event_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Background task which waits for worker buffer update
-:param worker_dict:
-:param event_dict:
-:param finish_event_dict:
-:return:</p>
+<dd><p>Background task which waits for worker buffer updates.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>worker_dict</strong> – Dictionary of worker tree (the key is their id).</li>
+<li><strong>event_dict</strong> – Dictionary of event (one per scenario) to notify the master that a buffer is ready.</li>
+<li><strong>finish_event_dict</strong> – Dictionary of event (one per scenario) to notify the         master that the search of a scenario is ended.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>

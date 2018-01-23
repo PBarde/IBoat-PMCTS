@@ -120,7 +120,7 @@ class Tree:
 
     def tree_policy(self, node):
         while not self.is_node_terminal(node):
-            if (random.random() < 0) and node.children:
+            if (random.random() < 0.5) and node.children:
                 node = self.best_child(node)
             elif not Tree.is_fully_expanded(node):
                 return self.expand(node)
@@ -145,7 +145,7 @@ class Tree:
             num_node += sum(val.h)
 
         for i, child in enumerate(node.children):
-            uct_master = self.Master.get_uct(child)
+            uct_master = self.Master.get_uct(hash(tuple(child.origins)))
             if uct_master == 0:
                 ucts_of_children = Tree.get_uct(child, num_node)
             else:
