@@ -28,10 +28,10 @@ sims = ft.Forest.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimes
 missionheading = 235
 ntra = 50
 
-destination, timemin = ft.Forest.initialize_simulators(sims, ntra, STATE_INIT, missionheading)
+destination, timemin = ft.Forest.initialize_simulators(sims, ntra, STATE_INIT, missionheading, plot=True)
 
 print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
-
-forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
-forest.launch_search(STATE_INIT, frequency)
-forest.master.save_tree(name)
+#%%
+#forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
+#forest.launch_search(STATE_INIT, frequency)
+#forest.master.save_tree(name)
