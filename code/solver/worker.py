@@ -68,8 +68,7 @@ class Node:
 
 
 class Tree:
-    def __init__(self, master, workerid, ite=0, budget=1000, simulator=None, destination=[], TimeMin=0):
-        self.Master = master
+    def __init__(self, workerid, ite=0, budget=1000, simulator=None, destination=[], TimeMin = 0, buffer = []):
         self.id = workerid
         self.ite = ite
         self.budget = budget
@@ -79,18 +78,22 @@ class Tree:
         self.TimeMin = TimeMin
         self.depth = 0
         self.Nodes = []
-        self.Buffer = []
+        self.Buffer = buffer
         self.rootNode = None
         self.event = None
         self.end_event = None
 
-    def uct_search(self, rootState, frequency, event, end_event):
+    def null_function(self):
+        i=0
+        while True:
+            # print(i)
+            pass
+
+    def uct_search(self, rootState, frequency):#, Master):
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
         self.rootNode = rootNode
         self.Nodes.append(rootNode)
-        self.event = event
-        self.end_event = end_event
 
         # While we still have computational budget we expand nodes
         while self.ite < self.budget:
@@ -114,14 +117,9 @@ class Tree:
                 '\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
 
             # Notify the master that the buffer is ready
-            if self.ite % frequency == 0:
-                event.set()
-                # wait for the master to reset the buffer
-                while event.isSet():
-                    pass
-
-        # Set the end_event to True to notify the master that the search is done
-        end_event.set()
+            # if self.ite % frequency == 0:
+            #     Master.integrate_buffer(self.Buffer)
+            #     self.Buffer = []
 
     def reset_buffer(self):
         self.Buffer = []
@@ -156,11 +154,11 @@ class Tree:
             num_node += sum(val.h)
 
         for i, child in enumerate(node.children):
-            uct_master = self.Master.get_uct(hash(tuple(child.origins)))
-            if uct_master == 0:
-                ucts_of_children = child.get_uct(num_node)
-            else:
-                ucts_of_children = (1 - RHO) * child.get_uct(num_node) + RHO * uct_master
+            # uct_master = Master.get_uct(hash(tuple(child.origins)))
+            # if uct_master == 0:
+            ucts_of_children = child.get_uct(num_node)
+            # else:
+            #     ucts_of_children = (1 - RHO) * child.get_uct(num_node) + RHO * uct_master
 
             if ucts_of_children > max_ucts_of_children:
                 max_ucts_of_children = ucts_of_children
@@ -168,7 +166,6 @@ class Tree:
         return node.children[id_of_best_child]
 
     def default_policy(self, node):
-
         self.get_sim_to_estimate_state(node)
         dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:], self.destination)
         atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
@@ -186,7 +183,6 @@ class Tree:
                 exp(1) - 1)
         else:
             reward = 0
-            finalTime = self.TimeMax
 
         return reward
 

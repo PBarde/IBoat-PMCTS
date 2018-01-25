@@ -9,6 +9,7 @@ from worker import UCT_COEFF
 from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
+from time import sleep
 
 sys.path.append('../model/')
 from simulatorTLKT import ACTIONS, Simulator, A_DICT
@@ -68,7 +69,7 @@ class MasterTree:
             node.add_reward(scenarioId, reward)
             node.backup(scenarioId, reward)
 
-    def update(self, worker_dict, event_dict, finish_event_dict):
+    def update(self, buffers_dict, event_dict, finish_event_dict):
         """
         Background task which waits for worker buffer updates.
 
@@ -83,9 +84,9 @@ class MasterTree:
                 # If a tree is ready
                 if event.isSet():
                     # Copy the buffer
-                    buffer = worker_dict[i].copy_buffer()
+                    buffer = list(buffers_dict[i])
                     # Clear the buffer
-                    worker_dict[i].reset_buffer()
+                    buffers_dict[i] = []
                     # Set the flag to false
                     event.clear()
                     # Add the new rewards in the master tree
@@ -95,6 +96,10 @@ class MasterTree:
             if all(event.isSet() for event in finish_event_dict.values()):
                 # End of the master thread
                 stop = True
+
+            sleep(3)
+
+
 
     def get_uct(self, node_hash):
         """

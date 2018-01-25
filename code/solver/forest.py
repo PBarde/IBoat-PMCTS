@@ -19,38 +19,27 @@ class Forest:
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
 
-        self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
+        #self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
         self.workers = dict()
         for i, sim in enumerate(listsimulators):
-            self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=budget,
+            self.workers[i] = mt.Tree(workerid=i, ite=0, budget=budget,
                                       simulator=deepcopy(sim), destination=deepcopy(destination), TimeMin=timemin)
 
     def launch_search(self, root_state, frequency):
-        # Create the events
-        worker_events = dict()  # to notify the master that a buffer is ready
-        end_events = dict()  # to tell the master that the search is done
-        for worker in self.workers.values():
-            worker_events[worker.id] = th.Event()
-            end_events[worker.id] = th.Event()
-
         # Create the workers threads, passing their events in parameter
         worker_thread = dict()
         for worker in self.workers.values():
-            worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.uct_search,
-                                                 args=(deepcopy(root_state), frequency, worker_events[worker.id],
-                                                       end_events[worker.id]))
-        # Create the master thread, passing the workers and their events in parameter
-        master_thread = th.Thread(name='master', target=self.master.update,
-                                  args=(self.workers, worker_events, end_events))
+            worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.null_function, args=())
+                                                 # args=(deepcopy(root_state), frequency))#,self.master))
         # Launch the threads
-        master_thread.start()
         for w_th in worker_thread.values():
             w_th.start()
 
+
         # Wait for threads to complete
-        master_thread.join()
         for w_th in worker_thread.values():
             w_th.join()
+
 
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
@@ -264,7 +253,7 @@ class Forest:
         else:
             timemin = min(arrivaltimes)
 
-        # todo maintenant qu'on a les mean trajs il faut faire les plots depart, arrivée, mean traj par scenario
+        #todo maintenant qu on a les mean trajs il faut faire les plots depart, arrivee, mean traj par scenario
 
         return [destination, timemin]
 

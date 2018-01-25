@@ -4,9 +4,9 @@ import numpy as np
 from worker import Tree
 
 # parameters
-name = "tree_for_vis_20_20_p05"
-frequency = 10
-budget = 20
+name = "tree_for_test4CPU"
+frequency = 1000
+budget = 20000
 
 mydate = '20180108'
 
@@ -15,7 +15,7 @@ mydate = '20180108'
 Weathers = ft.Forest.load_scenarios(mydate, latBound=[40, 50], lonBound=[360 - 15, 360])
 
 # We create N simulators based on the scenarios
-NUMBER_OF_SIM = 20  # <=20
+NUMBER_OF_SIM = 4  # <=20
 SIM_TIME_STEP = 6  # in hours
 STATE_INIT = [0, 47.5, -3.5 + 360]
 N_DAYS_SIM = 8  # time horizon in days
@@ -36,8 +36,8 @@ timemin = 2.77064230129
 
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
 forest.launch_search(STATE_INIT, frequency)
-forest.master.get_children()
-forest.master.get_depth()
-forest.master.get_best_policy()
-forest.master.save_tree(name)
+# forest.master.get_children()
+# forest.master.get_depth()
+# forest.master.get_best_policy()
+# forest.master.save_tree(name)
 
