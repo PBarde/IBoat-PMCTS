@@ -8,6 +8,7 @@ from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
 import matplotlib.pyplot as plt
 import threading as th
+from copy import deepcopy
 
 
 class Forest:
@@ -18,11 +19,11 @@ class Forest:
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
 
-        self.master = ms.MasterTree(listsimulators, destination)
+        self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
         self.workers = dict()
         for i, sim in enumerate(listsimulators):
             self.workers[i] = mt.Tree(master=self.master, workerid=i, ite=0, budget=budget,
-                                      simulator=sim, destination=destination, TimeMin=timemin)
+                                      simulator=deepcopy(sim), destination=deepcopy(destination), TimeMin=timemin)
 
     def launch_search(self, root_state, frequency):
         # Create the events
@@ -36,7 +37,7 @@ class Forest:
         worker_thread = dict()
         for worker in self.workers.values():
             worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.uct_search,
-                                                 args=(root_state, frequency, worker_events[worker.id],
+                                                 args=(deepcopy(root_state), frequency, worker_events[worker.id],
                                                        end_events[worker.id]))
         # Create the master thread, passing the workers and their events in parameter
         master_thread = th.Thread(name='master', target=self.master.update,
