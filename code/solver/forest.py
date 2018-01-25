@@ -19,7 +19,7 @@ class Forest:
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
 
-        #self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
+        self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
         self.workers = dict()
         for i, sim in enumerate(listsimulators):
             self.workers[i] = mt.Tree(workerid=i, ite=0, budget=budget,
@@ -29,8 +29,8 @@ class Forest:
         # Create the workers threads, passing their events in parameter
         worker_thread = dict()
         for worker in self.workers.values():
-            worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.null_function, args=())
-                                                 # args=(deepcopy(root_state), frequency))#,self.master))
+            worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.uct_search,
+                                                 args=(deepcopy(root_state), frequency, self.master))
         # Launch the threads
         for w_th in worker_thread.values():
             w_th.start()

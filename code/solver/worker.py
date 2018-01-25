@@ -83,17 +83,12 @@ class Tree:
         self.event = None
         self.end_event = None
 
-    def null_function(self):
-        i=0
-        while True:
-            # print(i)
-            pass
-
-    def uct_search(self, rootState, frequency):#, Master):
+    def uct_search(self, rootState, frequency, Master):
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
         self.rootNode = rootNode
         self.Nodes.append(rootNode)
+        self.Master = Master
 
         # While we still have computational budget we expand nodes
         while self.ite < self.budget:
@@ -117,15 +112,9 @@ class Tree:
                 '\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
 
             # Notify the master that the buffer is ready
-            # if self.ite % frequency == 0:
-            #     Master.integrate_buffer(self.Buffer)
-            #     self.Buffer = []
-
-    def reset_buffer(self):
-        self.Buffer = []
-
-    def copy_buffer(self):
-        return list(self.Buffer)
+            if self.ite % frequency == 0:
+                Master.integrate_buffer(self.Buffer)
+                self.Buffer = []
 
     def tree_policy(self, node):
         while not self.is_node_terminal(node):
@@ -154,11 +143,11 @@ class Tree:
             num_node += sum(val.h)
 
         for i, child in enumerate(node.children):
-            # uct_master = Master.get_uct(hash(tuple(child.origins)))
-            # if uct_master == 0:
-            ucts_of_children = child.get_uct(num_node)
-            # else:
-            #     ucts_of_children = (1 - RHO) * child.get_uct(num_node) + RHO * uct_master
+            uct_master = self.Master.get_uct(hash(tuple(child.origins)))
+            if uct_master == 0:
+                ucts_of_children = child.get_uct(num_node)
+            else:
+                ucts_of_children = (1 - RHO) * child.get_uct(num_node) + RHO * uct_master
 
             if ucts_of_children > max_ucts_of_children:
                 max_ucts_of_children = ucts_of_children
