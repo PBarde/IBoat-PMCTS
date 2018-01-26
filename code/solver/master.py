@@ -36,9 +36,9 @@ class MasterTree:
 
     """
 
-    def __init__(self, sims, destination):
+    def __init__(self, sims, destination, nodes = dict()):
         num_scenarios = len(sims)
-        self.nodes = dict()
+        self.nodes = nodes
         self.Simulators = sims
         self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
         self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))

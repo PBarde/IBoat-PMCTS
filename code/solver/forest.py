@@ -1,4 +1,3 @@
-import master as ms
 import worker as mt
 import sys
 
@@ -7,9 +6,8 @@ from weatherTLKT import Weather
 from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
 import matplotlib.pyplot as plt
-import threading as th
 from copy import deepcopy
-
+from multiprocessing import Process
 
 class Forest:
     """
@@ -18,26 +16,25 @@ class Forest:
 
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         # change the constant in master module
-
-        self.master = ms.MasterTree(deepcopy(listsimulators), deepcopy(destination))
         self.workers = dict()
+        nscenario = len(listsimulators)
         for i, sim in enumerate(listsimulators):
-            self.workers[i] = mt.Tree(workerid=i, ite=0, budget=budget,
+            self.workers[i] = mt.Tree(workerid=i, nscenario = nscenario, ite=0, budget=budget,
                                       simulator=deepcopy(sim), destination=deepcopy(destination), TimeMin=timemin)
 
-    def launch_search(self, root_state, frequency):
-        # Create the workers threads, passing their events in parameter
-        worker_thread = dict()
+    def launch_search(self, root_state, frequency, master):
+        # Create the workers Process
+        worker_process = dict()
         for worker in self.workers.values():
-            worker_thread[worker.id] = th.Thread(name='worker' + str(worker.id), target=worker.uct_search,
-                                                 args=(deepcopy(root_state), frequency, self.master))
+            worker_process[worker.id] = Process(name='worker' + str(worker.id), target=worker.uct_search,
+                                                 args=(deepcopy(root_state), frequency, master))
         # Launch the threads
-        for w_th in worker_thread.values():
-            w_th.start()
+        for w_p in worker_process.values():
+            w_p.start()
 
 
-        # Wait for threads to complete
-        for w_th in worker_thread.values():
+        # Wait for process to complete
+        for w_th in worker_process.values():
             w_th.join()
 
 
