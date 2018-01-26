@@ -3,3 +3,4 @@ __pycache__
 .spyproject
 code/data/tree*
 code/solver/test*
+script_rainman.pbs
