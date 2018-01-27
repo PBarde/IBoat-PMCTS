@@ -5,7 +5,8 @@ import sys
 import numpy as np
 from utils import Hist
 import matplotlib.pyplot as plt
-from worker import UCT_COEFF
+# from worker import UCT_COEFF
+import worker
 from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
@@ -36,12 +37,15 @@ class MasterTree:
 
     """
 
-    def __init__(self, sims, destination, nodes = dict()):
+    def __init__(self, sims, destination, nodes=dict()):
         num_scenarios = len(sims)
         self.nodes = nodes
+        if len(nodes) == 0:
+            self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
+
         self.Simulators = sims
         self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
-        self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
+
         self.max_depth = None
         self.numScenarios = num_scenarios
         self.destination = destination
@@ -99,8 +103,6 @@ class MasterTree:
 
             sleep(3)
 
-
-
     def get_uct(self, node_hash):
         """
         Compute the master uct value of a worker node.
@@ -128,7 +130,7 @@ class MasterTree:
                     uct_per_scenario.append(0)
                     continue
 
-                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                exploration = worker.UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
                 for hist in reward_per_scenario:
                     uct_value = hist.get_mean()
@@ -145,10 +147,9 @@ class MasterTree:
         Add the children nodes as attribute to each master node of the master tree. \
         This method is called after the search.
         """
-        nodes = dict(self.nodes)
-        del nodes[hash(tuple([]))]  # remove the rootNode
-        for node in nodes.values():
-            node.parentNode.children.append(node)
+        for node in self.nodes.values():
+            if node.parentNode is not None:
+                node.parentNode.children.append(node)
 
     def get_depth(self):
         """
@@ -157,14 +158,17 @@ class MasterTree:
         node = self.nodes[hash(tuple([]))]
         list_nodes = [node]
         node.depth = 0
+        list_depth = []
         while list_nodes:
             node = list_nodes.pop(0)
             for n in node.children:
                 list_nodes.append(n)
                 n.depth = node.depth + 1
+                print(n.depth)
+                list_depth.append(n.depth)
 
         # get max depth of the tree
-        self.max_depth = max(map(lambda i: self.nodes[i].depth, self.nodes))
+        self.max_depth = max(list_depth)
 
     def get_best_policy(self):
         """
@@ -173,8 +177,8 @@ class MasterTree:
         # Make sure all the variable have been computed
         if not self.nodes[hash(tuple([]))].children:
             self.get_children()
-        if self.nodes[hash(tuple([]))].depth is None:
-            self.get_depth()
+        # if self.nodes[hash(tuple([]))].depth is None:
+        #     self.get_depth()
 
         # get best global policy:
         print("Global policy")

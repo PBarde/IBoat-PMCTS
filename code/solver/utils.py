@@ -25,7 +25,7 @@ class Hist:
     MEANS = np.mean(np.stack((THRESH[:-1], THRESH[1:]), axis=0), axis=0)
 
     def __init__(self):
-        self.h = np.zeros(Hist.N_BINS)
+        self.h = np.zeros(Hist.N_BINS, dtype=int)
 
     def add(self, value):
         """

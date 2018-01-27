@@ -12,11 +12,11 @@ from math import exp, sqrt, asin, log
 import random as rand
 import numpy as np
 from utils import Hist
+from master import MasterNode
 
 sys.path.append("../model/")
 import simulatorTLKT as SimC
 from simulatorTLKT import A_DICT, ACTIONS
-
 
 UCT_COEFF = 1 / 2 ** 0.5
 RHO = 0.5
@@ -69,7 +69,7 @@ class Node:
 
 class Tree:
     def __init__(self, workerid, nscenario, probability=[], ite=0, budget=1000,
-                 simulator=None, destination=[], TimeMin = 0, buffer = []):
+                 simulator=None, destination=[], TimeMin=0, buffer=[]):
         self.id = workerid
         self.ite = ite
         self.budget = budget
@@ -83,9 +83,8 @@ class Tree:
         self.numScenarios = nscenario
         if len(probability) == 0:
             self.probability = np.array([1 / nscenario for _ in range(nscenario)])
-        else :
+        else:
             self.probability = probability
-
 
     def uct_search(self, rootState, frequency, Master_nodes):
         # We create the root node and add it to the tree
@@ -137,8 +136,7 @@ class Tree:
         self.Nodes.append(newNode)
         return newNode
 
-
-    def best_child(self,node, Master_nodes):
+    def best_child(self, node, Master_nodes):
         max_ucts_of_children = -1
         id_of_best_child = -1
         num_node = 0
@@ -231,8 +229,6 @@ class Tree:
 
             return np.dot(uct_per_scenario, self.probability)
 
-
-
     def integrate_buffer(self, Master_nodes):
         """
         Integrates a list of update from a scenario. This method is to be called from a worker.
@@ -241,6 +237,13 @@ class Tree:
             [scenarioId, newNodeHash, parentHash, action, reward]
         :type buffer: list of list
         """
+
+        def back(hash, scenarioId, reward, Master_nodes):
+            node = Master_nodes.get(hash)
+            if node.parentNode is not None:
+                Master_nodes[Master_nodes.get(hash).parentNode.hash].add_reward_action(scenarioId, node.arm, reward)
+                back(Master_nodes[Master_nodes.get(hash).parentNode.hash], scenarioId, reward, Master_nodes)
+
         for update in self.buffer:
             # print(update)
             scenarioId, newNodeHash, parentHash, action, reward = update
@@ -248,13 +251,21 @@ class Tree:
 
             if node == 0:
                 node = MasterNode(self.numScenarios, nodehash=newNodeHash,
-                                            parentNode=Master_nodes[parentHash], action=action)
+                                  parentNode=Master_nodes[parentHash], action=action)
 
             node.add_reward(scenarioId, reward)
-            node.backup(scenarioId, reward)
-            #todo faire pareil dans le backup !
+
+            # todo faire pareil dans le backup !
             Master_nodes[newNodeHash] = node
-            print(Master_nodes[newNodeHash].rewards[scenarioId,1].h)
+            while node.parentNode is not None:
+                parent_hash = Master_nodes[node.hash].parentNode.hash
+                parent_node = Master_nodes[parent_hash]
+                parent_node.add_reward_action(scenarioId, node.arm, reward)
+                Master_nodes[parent_hash] = parent_node
+                node = parent_node
+
+                # back(newNodeHash, scenarioId, reward, Master_nodes)
+                # print(Master_nodes[newNodeHash].rewards[scenarioId, 1].h)
 
     @staticmethod
     def is_state_at_dest(destination, stateA, stateB):
@@ -297,66 +308,3 @@ class Tree:
 
     def is_node_terminal(self, node):
         return self.Simulator.times[node.depth] == self.TimeMax
-
-
-class MasterNode:
-    """
-    Node of a MasterTree.
-
-    :ivar int hash: hash of the node (key of the dictionary :py:attr:`MasterTree.nodes`)
-    :ivar int arm: Action taken to get to this node from its parent.
-    :ivar MasterNode parentNode: parent of this node
-    :ivar numpy.array rewards: Array of `Hist`. Its shape is (#scenario, #possible actions).
-    :ivar list children: List of children (:py:class:`MasterNode`)
-    :ivar int depth: Depth of the node.
-    """
-
-    def __init__(self, numscenarios, nodehash=None, parentNode=None, action=None):
-        self.hash = nodehash
-        self.arm = action
-        self.parentNode = parentNode
-        self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
-        self.children = []
-        self.depth = None
-
-    def add_reward(self, idscenario, reward):
-        """
-        Includes a reward into the histogram for all actions of one scenario.
-
-        :param int idscenario: id of the scenario/workertree from which the update is coming.
-        :param float reward: reward of the update.
-        """
-        for hist in self.rewards[idscenario, :]:
-            hist.add(reward)
-            # print(hist.h)
-
-    def add_reward_action(self, idscenario, action, reward):
-        """
-        Includes a reward into the histogram for one action of one scenario.
-
-        :param int idscenario: id of the scenario/workertree from which the update is coming.
-        :param int action: Action (in degree) of the update
-        :param int reward: reward of the update
-        """
-        self.rewards[idscenario, A_DICT[action]].add(reward)
-
-    def backup(self, idscenario, reward):
-        """
-        Propagates the reward through the master tree, starting from this node.
-
-        :param int idscenario: id of the scenario/workertree where the update is coming
-        :param float reward: reward of the update
-        """
-        parent = self.parentNode
-        if parent is not None:
-            parent.add_reward_action(idscenario, self.arm, reward)
-            parent.backup(idscenario, reward)
-
-    def is_expanded(self, idscenario):
-        """
-        Check if this node has been expanded by a scenario.
-
-        :param idscenario: id of the scenario
-        :return boolean: True if the scenario has expanded this node.
-        """
-        return not all(hist.is_empty() for hist in self.rewards[idscenario, :])

@@ -1,13 +1,16 @@
 import worker as mt
 import sys
-
-sys.path.append('../model/')
-from weatherTLKT import Weather
-from simulatorTLKT import Simulator, HOURS_TO_DAY
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
 from multiprocessing import Process
+from master import MasterNode
+from multiprocessing import Manager
+
+sys.path.append('../model/')
+from weatherTLKT import Weather
+from simulatorTLKT import Simulator, HOURS_TO_DAY
+
 
 class Forest:
     """
@@ -15,31 +18,35 @@ class Forest:
     """
 
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
-        # change the constant in master module
         self.workers = dict()
         nscenario = len(listsimulators)
         for i, sim in enumerate(listsimulators):
-            self.workers[i] = mt.Tree(workerid=i, nscenario = nscenario, ite=0, budget=budget,
+            self.workers[i] = mt.Tree(workerid=i, nscenario=nscenario, ite=0, budget=budget,
                                       simulator=deepcopy(sim), destination=deepcopy(destination), TimeMin=timemin)
 
-    def launch_search(self, root_state, frequency, master):
+    def launch_search(self, root_state, frequency):
+
+        # Create the manager
+        Master_nodes = Manager().dict()
+        Master_nodes[hash(tuple([]))] = MasterNode(len(self.workers), nodehash=hash(tuple([])))
+
         # Create the workers Process
         worker_process = dict()
         for worker in self.workers.values():
             worker_process[worker.id] = Process(name='worker' + str(worker.id), target=worker.uct_search,
-                                                 args=(deepcopy(root_state), frequency, master))
+                                                args=(deepcopy(root_state), frequency, Master_nodes))
         # Launch the threads
         for w_p in worker_process.values():
             w_p.start()
-
 
         # Wait for process to complete
         for w_th in worker_process.values():
             w_th.join()
 
-
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
+
+        return dict(deepcopy(Master_nodes))
 
     @staticmethod
     def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],
@@ -146,7 +153,7 @@ class Forest:
                     trajsofsim.append(list(traj))
                     traj = []
 
-                dist, dump = sim.getDistAndBearing(stateinit[1:],(sim.state[1:]))
+                dist, dump = sim.getDistAndBearing(stateinit[1:], (sim.state[1:]))
                 arrivaldistances.append(dist)
                 ii += 1
 
@@ -156,7 +163,7 @@ class Forest:
                 trajsofsim = []
 
         mindist = np.min(meanarrivaldistances)
-        destination = sim.getDestination(mindist,missionheading,stateinit[1:])
+        destination = sim.getDestination(mindist, missionheading, stateinit[1:])
 
         if plot:
             minarrivaltimes = []
@@ -250,7 +257,7 @@ class Forest:
         else:
             timemin = min(arrivaltimes)
 
-        #todo maintenant qu on a les mean trajs il faut faire les plots depart, arrivee, mean traj par scenario
+        # todo maintenant qu on a les mean trajs il faut faire les plots depart, arrivee, mean traj par scenario
 
         return [destination, timemin]
 
