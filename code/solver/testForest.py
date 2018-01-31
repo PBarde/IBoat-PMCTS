@@ -37,12 +37,15 @@ timemin = 5.2654198058866042
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
 nodes = forest.launch_search(STATE_INIT, frequency)
 print(type(nodes))
-forest.master = MasterTree(sims, destination, nodes=(nodes))
-print(len(forest.master.nodes))
+new_dict = dict()
+for k, v in nodes.items():
+    new_dict[k] = v.my_copy()
 
+forest.master = MasterTree(sims, destination, nodes=new_dict)
+print(len(forest.master.nodes))
 for i in range(4):
     print(forest.master.nodes[hash(tuple([]))].rewards[i, 6].h)
-forest.master.get_children()
+# forest.master.get_children()
 
 print(rd.choice(list(forest.master.nodes.values())).children)
 

@@ -46,7 +46,7 @@ class Forest:
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
 
-        return dict(deepcopy(Master_nodes))
+        return dict(Master_nodes)
 
     @staticmethod
     def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],

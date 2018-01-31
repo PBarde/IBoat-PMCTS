@@ -238,12 +238,6 @@ class Tree:
         :type buffer: list of list
         """
 
-        def back(hash, scenarioId, reward, Master_nodes):
-            node = Master_nodes.get(hash)
-            if node.parentNode is not None:
-                Master_nodes[Master_nodes.get(hash).parentNode.hash].add_reward_action(scenarioId, node.arm, reward)
-                back(Master_nodes[Master_nodes.get(hash).parentNode.hash], scenarioId, reward, Master_nodes)
-
         for update in self.buffer:
             # print(update)
             scenarioId, newNodeHash, parentHash, action, reward = update
@@ -261,11 +255,9 @@ class Tree:
                 parent_hash = Master_nodes[node.hash].parentNode.hash
                 parent_node = Master_nodes[parent_hash]
                 parent_node.add_reward_action(scenarioId, node.arm, reward)
+                # parent_node.children.append(node)
                 Master_nodes[parent_hash] = parent_node
                 node = parent_node
-
-                # back(newNodeHash, scenarioId, reward, Master_nodes)
-                # print(Master_nodes[newNodeHash].rewards[scenarioId, 1].h)
 
     @staticmethod
     def is_state_at_dest(destination, stateA, stateB):

@@ -11,6 +11,7 @@ from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
 from time import sleep
+from copy import deepcopy
 
 sys.path.append('../model/')
 from simulatorTLKT import ACTIONS, Simulator, A_DICT
@@ -150,6 +151,7 @@ class MasterTree:
         for node in self.nodes.values():
             if node.parentNode is not None:
                 node.parentNode.children.append(node)
+                print(node.parentNode.children)
 
     def get_depth(self):
         """
@@ -434,6 +436,11 @@ class MasterNode:
         self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
         self.children = []
         self.depth = None
+
+    def my_copy(self):
+        newnode = MasterNode(1, nodehash=self.hash, parentNode=self.parentNode, action=self.arm)
+        newnode.rewards = deepcopy(self.rewards)
+        return newnode
 
     def add_reward(self, idscenario, reward):
         """
