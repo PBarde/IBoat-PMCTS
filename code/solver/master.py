@@ -263,11 +263,88 @@ class MasterTree:
             self.plot_children(node, [x0, y0], ax, idscenario=idscenario)
         else:
             self.plot_children(node, [x0, y0], ax, 'k', idscenario=idscenario)
-
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         plt.axis('equal')
         fig.show()
         return fig, ax
+
+    def plot_tree_colored(self, idscenario=None):
+        """
+        Plot a 2D representation of a tree. CHANGE
+
+        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
+        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :return: A tuple (fig, ax) of the current plot
+        """
+        node = self.nodes[hash(tuple([]))]  # rootNode
+
+        # Make sure all the variable have been computed
+        if not node.children:
+            self.get_children()
+        if node.depth is None:
+            self.get_depth()
+
+        # Get the coordinates and the values
+        points = self.get_points(node, [], idscenario=idscenario)
+        x0 = [i[0] for i in points]
+        y0 = [i[1] for i in points]
+        x = [i[2] for i in points]
+        y = [i[3] for i in points]
+
+        # Plots
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 3, 1)
+        for i in range(len(x)):
+            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
+        sc = ax.scatter(x, y, c=[i[4] for i in points], zorder=2)
+        plt.colorbar(sc)
+        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        ax.set_title("Total utility")
+        plt.axis('equal')
+
+        ax = fig.add_subplot(1, 3, 2)
+        for i in range(len(x)):
+            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
+        sc = ax.scatter(x, y, c=[i[5] for i in points], zorder=2)
+        plt.colorbar(sc)
+        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        ax.set_title("Exploitation")
+        plt.axis('equal')
+
+        ax = fig.add_subplot(1, 3, 3)
+        for i in range(len(x)):
+            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
+        sc = ax.scatter(x, y, c=[i[6] for i in points], zorder=2)
+        plt.colorbar(sc)
+        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        ax.set_title("Exploration")
+        plt.axis('equal')
+        fig.show()
+        return fig, ax
+
+    def get_points(self, node, points, coordinate=(0, 0), idscenario=None):
+        x0, y0 = coordinate
+        for child in node.children:
+            if idscenario is not None:
+                if not child.is_expanded(idscenario):
+                    continue
+            x = x0 + 1 * sin(child.arm * pi / 180)
+            y = y0 + 1 * cos(child.arm * pi / 180)
+            if child.parentNode is not None:
+                num_parent = 0
+                num_node = 0
+                uct_per_scenario = []
+                for s, reward_per_scenario in enumerate(node.rewards):
+                    for hist in child.parentNode.rewards[s]:
+                        num_parent += sum(hist.h)
+                    num_node += sum(child.parentNode.rewards[s, A_DICT[child.arm]].h)
+                    uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
+
+                value = np.dot(uct_per_scenario, self.probability)
+                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                points.append((x0, y0, x, y, value + exploration, value, exploration))
+            points = self.get_points(child, points, coordinate=(x, y), idscenario=idscenario)
+        return points
 
     def plot_children(self, node, coordinate, ax, color=None, idscenario=None):
         """
@@ -292,9 +369,7 @@ class MasterTree:
                 col = str((child.depth / self.max_depth) * 0.8)
             else:
                 col = color
-
             ax.plot([x0, x], [y0, y], color=col, marker='o', markersize='6')
-            # ax.annotate(str(child.depth), (x, y))
             self.plot_children(child, [x, y], ax, color=color, idscenario=idscenario)
 
     def plot_best_policy(self, grey=False, idscenario=None):
