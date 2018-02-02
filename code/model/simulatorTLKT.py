@@ -17,7 +17,9 @@ from mpl_toolkits.basemap import Basemap
 from matplotlib import animation
 from math import sin,cos,asin,atan2,acos,pi
 from math import radians as rad
-
+from animation_player import Player
+import matplotlib
+matplotlib.rcParams.update({'font.size': 16})
 
 #: Actions that are authorized i.e. headings the boat can follow. Must be sorted.
 ACTIONS = tuple(np.arange(0,360,45))
@@ -65,7 +67,7 @@ class Simulator:
 
     """
   
-    def __init__(self,times,lats,lons,WeatherAvg,stateInit) : 
+    def __init__(self, times, lats, lons, WeatherAvg, stateInit) :
         """
         Class constructor
         """
@@ -300,7 +302,7 @@ class Simulator:
         x,y=basemap(posLon,posLat)
         
         if scatter :
-            basemap.scatter(x,y,zorder=0,c=color,s=100,label=label)
+            basemap.scatter(x,y,zorder=0, c=color, s=100, label=label)
             
         else:
             basemap.plot(x,y,markersize=4,zorder=0,color=color)
@@ -376,6 +378,62 @@ class Simulator:
   
   
         return anim
+
+    def play_scenario(self,idsc=0):
+        interp_u = np.zeros((len(self.times), len(self.lats), len(self.lons)))
+        interp_v = np.zeros((len(self.times), len(self.lats), len(self.lons)))
+        mag = np.zeros((len(self.times), len(self.lats), len(self.lons)))
+
+        for t, time in enumerate(self.times):
+            for i, lat in enumerate(self.lats):
+                for j, lon in enumerate(self.lons):
+                    query_pt = [time, lat, lon]
+                    interp_u[t][i][j] = self.uWindAvg(query_pt)
+                    interp_v[t][i][j] = self.vWindAvg(query_pt)
+                    mag[t][i][j] = (interp_u[t][i][j]**2+interp_v[t][i][j]**2)**0.5
+
+        # %% PLOT
+        font = {'family': 'normal',
+                'weight': 'bold',
+                'size': 22}
+        proj = 'mill'
+        res = 'i'
+        Dline = 5
+        density = 1
+        matplotlib.rc('font', **font)
+        fig = plt.figure()
+
+        m = Basemap(projection=proj, lat_ts=10, llcrnrlon=self.lons.min(), \
+                    urcrnrlon=self.lons.max(), llcrnrlat=self.lats.min(), urcrnrlat=self.lats.max(), \
+                    resolution=res)
+
+        x, y = m(*np.meshgrid(self.lons, self.lats))
+        contour = m.pcolormesh(x, y, mag[0], shading='flat', cmap=plt.cm.jet)
+        cbar = m.colorbar(location='right')
+        quiv = m.quiver(x, y, interp_u[0], interp_v[0], color='black')
+        cbar.ax.set_ylabel('Wind magnitude m/s')
+
+
+        m.drawcoastlines()
+        m.fillcontinents()
+        m.drawmapboundary()
+        m.drawparallels(self.lats[0::Dline], labels=[1, 0, 0, 0])
+        m.drawmeridians(self.lons[0::Dline], labels=[0, 0, 0, 1])
+        tit = plt.title('Scenario ' + str(idsc) + ' at time : ' + str(self.times[0]) + ' days')
+        ### using this class is as easy as using FuncAnimation:
+
+
+
+        def update(i):
+            contour.set_array(mag[i].ravel())
+            quiv.set_UVC(interp_u[i], interp_v[i])
+            tit.set_text('Scenario ' + str(idsc) + ' at time : ' + str(self.times[i]) + ' days')
+            cbar.set_clim(vmin=mag[i].min(), vmax=mag[i].max())
+            cbar.draw_all()
+
+        ani = Player(fig, update, maxi=len(interp_v) - 1)
+        plt.show()
+
 
 class Boat : 
     """
