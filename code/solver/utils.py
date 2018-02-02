@@ -1,7 +1,5 @@
 import sys
-
 sys.path.append("../model/")
-from simulatorTLKT import ACTIONS
 import numpy as np
 
 
@@ -24,8 +22,11 @@ class Hist:
     #: mean value of each bin (mean between upper and lower threshold of each bin)
     MEANS = np.mean(np.stack((THRESH[:-1], THRESH[1:]), axis=0), axis=0)
 
-    def __init__(self):
-        self.h = np.zeros(Hist.N_BINS, dtype=int)
+    def __init__(self, init=[]):
+        if len(init) == 0:
+            self.h = np.zeros(Hist.N_BINS, dtype=int)
+        else:
+            self.h = np.array(init, dtype=int)
 
     def add(self, value):
         """

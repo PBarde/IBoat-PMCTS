@@ -12,7 +12,7 @@ from math import exp, sqrt, asin, log
 import random as rand
 import numpy as np
 from utils import Hist
-from master import MasterNode
+from master_node import MasterNode
 
 sys.path.append("../model/")
 import simulatorTLKT as SimC
@@ -249,7 +249,6 @@ class Tree:
 
             node.add_reward(scenarioId, reward)
 
-            # todo faire pareil dans le backup !
             Master_nodes[newNodeHash] = node
             while node.parentNode is not None:
                 parent_hash = Master_nodes[node.hash].parentNode.hash

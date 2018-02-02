@@ -5,13 +5,12 @@ import sys
 import numpy as np
 from utils import Hist
 import matplotlib.pyplot as plt
-# from worker import UCT_COEFF
-import worker
+from worker import UCT_COEFF
 from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
 from time import sleep
-from copy import deepcopy
+from master_node import MasterNode
 
 sys.path.append('../model/')
 from simulatorTLKT import ACTIONS, Simulator, A_DICT
@@ -35,17 +34,20 @@ class MasterTree:
      The list is the sequel of action.
     :ivar dict best_global_nodes_policy: Dictionnary of list of MasterNodes encountered during the best\
      policy of one scenario. The Key of the dictionary is the scenario id.
-
     """
 
-    def __init__(self, sims, destination, nodes=dict()):
+    def __init__(self, sims, destination, nodes=dict(), proba = []):
         num_scenarios = len(sims)
         self.nodes = nodes
         if len(nodes) == 0:
             self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
 
         self.Simulators = sims
-        self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
+
+        if len(proba) != num_scenarios:
+            self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
+        else :
+            self.probability = np.array(proba)
 
         self.max_depth = None
         self.numScenarios = num_scenarios
@@ -131,7 +133,7 @@ class MasterTree:
                     uct_per_scenario.append(0)
                     continue
 
-                exploration = worker.UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
                 for hist in reward_per_scenario:
                     uct_value = hist.get_mean()
@@ -143,16 +145,6 @@ class MasterTree:
 
             return np.dot(uct_per_scenario, self.probability)
 
-    def get_children(self):
-        """
-        Add the children nodes as attribute to each master node of the master tree. \
-        This method is called after the search.
-        """
-        for node in self.nodes.values():
-            if node.parentNode is not None:
-                node.parentNode.children.append(node)
-                print(node.parentNode.children)
-
     def get_depth(self):
         """
         Compute the depth of each master node and add it in their attributes. This method is called after the search.
@@ -160,17 +152,16 @@ class MasterTree:
         node = self.nodes[hash(tuple([]))]
         list_nodes = [node]
         node.depth = 0
-        list_depth = []
+        maxd = 0
         while list_nodes:
             node = list_nodes.pop(0)
             for n in node.children:
                 list_nodes.append(n)
                 n.depth = node.depth + 1
-                print(n.depth)
-                list_depth.append(n.depth)
+                if n.depth > maxd:
+                    maxd = n.depth
 
-        # get max depth of the tree
-        self.max_depth = max(list_depth)
+        self.max_depth = maxd
 
     def get_best_policy(self):
         """
@@ -239,8 +230,9 @@ class MasterTree:
                     reward_per_action[j] = np.dot(temp, self.probability)
                 else:
                     reward_per_action[j] = child.rewards[idscenario, j].get_mean()
-            if np.max(reward_per_action) > best_reward:
-                best_reward = np.max(reward_per_action)
+            maxr = np.max(reward_per_action)
+            if maxr > best_reward:
+                best_reward = maxr
                 best_child = child
                 best_action = child.arm
         print("best reward :" + str(best_reward) + " for action :" + str(best_action))
@@ -415,88 +407,3 @@ class MasterTree:
         loaded_tree = pickle.load(filehandler)
         filehandler.close()
         return loaded_tree
-
-
-class MasterNode:
-    """
-    Node of a MasterTree.
-
-    :ivar int hash: hash of the node (key of the dictionary :py:attr:`MasterTree.nodes`)
-    :ivar int arm: Action taken to get to this node from its parent.
-    :ivar MasterNode parentNode: parent of this node
-    :ivar numpy.array rewards: Array of `Hist`. Its shape is (#scenario, #possible actions).
-    :ivar list children: List of children (:py:class:`MasterNode`)
-    :ivar int depth: Depth of the node.
-    """
-
-    def __init__(self, numscenarios, nodehash=None, parentNode=None, action=None):
-        self.hash = nodehash
-        self.arm = action
-        self.parentNode = parentNode
-        self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
-        self.children = []
-        self.depth = None
-
-    def my_copy(self):
-        newnode = MasterNode(1, nodehash=self.hash, parentNode=self.parentNode, action=self.arm)
-        newnode.rewards = deepcopy(self.rewards)
-        return newnode
-
-    def add_reward(self, idscenario, reward):
-        """
-        Includes a reward into the histogram for all actions of one scenario.
-
-        :param int idscenario: id of the scenario/workertree from which the update is coming.
-        :param float reward: reward of the update.
-        """
-        for hist in self.rewards[idscenario, :]:
-            hist.add(reward)
-
-    def add_reward_action(self, idscenario, action, reward):
-        """
-        Includes a reward into the histogram for one action of one scenario.
-
-        :param int idscenario: id of the scenario/workertree from which the update is coming.
-        :param int action: Action (in degree) of the update
-        :param int reward: reward of the update
-        """
-        self.rewards[idscenario, A_DICT[action]].add(reward)
-
-    def backup(self, idscenario, reward):
-        """
-        Propagates the reward through the master tree, starting from this node.
-
-        :param int idscenario: id of the scenario/workertree where the update is coming
-        :param float reward: reward of the update
-        """
-        parent = self.parentNode
-        if parent is not None:
-            parent.add_reward_action(idscenario, self.arm, reward)
-            parent.backup(idscenario, reward)
-
-    def is_expanded(self, idscenario):
-        """
-        Check if this node has been expanded by a scenario.
-
-        :param idscenario: id of the scenario
-        :return boolean: True if the scenario has expanded this node.
-        """
-        return not all(hist.is_empty() for hist in self.rewards[idscenario, :])
-
-    # TODO enelever les deux fonction suivantes si on ne s'en sert pas
-    def plot_hist(self, idscenario, action):
-        # print(self.rewards[idscenario, action].h)
-        fig, ax = plt.subplots()
-        plt.bar(x=Hist.MEANS, height=self.rewards[idscenario, action].h, width=Hist.THRESH[1] - Hist.THRESH[0])
-        fig.show()
-        return fig
-
-    def plot_mean_hist(self, action, probability):
-        # Mean on all the scenarios:
-        hist = sum(self.rewards[ii, action].h * probability[ii] for ii in range(len(self.rewards[:, action])))
-
-        fig, ax = plt.subplots()
-        # print(hist)
-        plt.bar(x=Hist.MEANS, height=hist, width=Hist.THRESH[1] - Hist.THRESH[0])
-        fig.show()
-        return fig

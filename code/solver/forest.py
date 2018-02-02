@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
 from multiprocessing import Process
-from master import MasterNode
+from master_node import MasterNode
 from multiprocessing import Manager
 
 sys.path.append('../model/')
@@ -20,6 +20,7 @@ class Forest:
     def __init__(self, listsimulators=[], destination=[], timemin=0, budget=100):
         self.workers = dict()
         nscenario = len(listsimulators)
+        self.nscenario = nscenario
         for i, sim in enumerate(listsimulators):
             self.workers[i] = mt.Tree(workerid=i, nscenario=nscenario, ite=0, budget=budget,
                                       simulator=deepcopy(sim), destination=deepcopy(destination), TimeMin=timemin)
@@ -27,7 +28,8 @@ class Forest:
     def launch_search(self, root_state, frequency):
 
         # Create the manager
-        Master_nodes = Manager().dict()
+        m = Manager()
+        Master_nodes = m.dict()
         Master_nodes[hash(tuple([]))] = MasterNode(len(self.workers), nodehash=hash(tuple([])))
 
         # Create the workers Process
@@ -45,8 +47,8 @@ class Forest:
 
         for worker in self.workers.values():
             print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
-
-        return dict(Master_nodes)
+        print(id(Master_nodes))
+        return deepcopy(dict(Master_nodes))
 
     @staticmethod
     def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],

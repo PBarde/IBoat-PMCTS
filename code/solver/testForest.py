@@ -1,8 +1,6 @@
 import forest as ft
 from master import MasterTree
-from multiprocessing import Manager
-from copy import deepcopy
-import random as rd
+from master_node import deepcopy_dict
 
 # parameters
 name = "tree_test4CPU"
@@ -35,20 +33,11 @@ destination = [44.62224559323147, 350.9976771826662]
 timemin = 5.2654198058866042
 
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
-nodes = forest.launch_search(STATE_INIT, frequency)
-print(type(nodes))
-new_dict = dict()
-for k, v in nodes.items():
-    new_dict[k] = v.my_copy()
+master_nodes = forest.launch_search(STATE_INIT, frequency)
+
+new_dict = deepcopy_dict(master_nodes)
 
 forest.master = MasterTree(sims, destination, nodes=new_dict)
-print(len(forest.master.nodes))
-for i in range(4):
-    print(forest.master.nodes[hash(tuple([]))].rewards[i, 6].h)
-# forest.master.get_children()
-
-print(rd.choice(list(forest.master.nodes.values())).children)
-
 forest.master.get_depth()
 forest.master.get_best_policy()
-forest.master.save_tree(name)
+# forest.master.save_tree(name)
