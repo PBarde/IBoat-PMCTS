@@ -1,7 +1,7 @@
-Package Solver
+Package solver
 =================
 
-Master
+master
 ------------------------------
 
 .. automodule:: master
@@ -9,7 +9,7 @@ Master
 	:undoc-members:
 	:show-inheritance:
 
-Worker
+worker
 ------------------------------
 
 .. automodule:: worker
@@ -17,10 +17,18 @@ Worker
 	:undoc-members:
 	:show-inheritance:
 
-Forest
+forest
 ------------------------------
 
 .. automodule:: forest
+	:members:
+	:undoc-members:
+	:show-inheritance:
+
+master_node
+---------------------------------
+
+.. automodule:: master_node
 	:members:
 	:undoc-members:
 	:show-inheritance:

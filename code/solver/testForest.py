@@ -1,6 +1,4 @@
 import forest as ft
-from master import MasterTree
-from master_node import deepcopy_dict
 
 # parameters
 name = "tree_test4CPU"
@@ -14,7 +12,7 @@ mydate = '20180108'
 Weathers = ft.load_scenarios(mydate, latBound=[40, 50], lonBound=[360 - 15, 360])
 
 # We create N simulators based on the scenarios
-NUMBER_OF_SIM = 4  # <=20
+NUMBER_OF_SIM = 1  # <=20
 SIM_TIME_STEP = 6  # in hours
 STATE_INIT = [0, 47.5, -3.5 + 360]
 N_DAYS_SIM = 8  # time horizon in days
@@ -22,7 +20,7 @@ N_DAYS_SIM = 8  # time horizon in days
 sims = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
                                    stateinit=STATE_INIT, ndaysim=N_DAYS_SIM)
 
-ft.play_multiple_scenarios(sims)
+# ft.play_multiple_scenarios(sims)
 # sims[0].play_scenario()
 # initialize the simulators to get common destination and individual time min
 #

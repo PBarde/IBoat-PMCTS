@@ -1,10 +1,10 @@
-Package Model
+Package model
 ===============
 
 This package contains the two classes useful to construct the model.
 
 
-WeatherTLKT
+weatherTLKT
 ------------------------------
 
 .. automodule:: weatherTLKT
@@ -12,7 +12,7 @@ WeatherTLKT
 	:undoc-members:
 	:show-inheritance: 
 
-SimulatorTLKT
+simulatorTLKT
 ------------------------------
 
 .. automodule:: simulatorTLKT

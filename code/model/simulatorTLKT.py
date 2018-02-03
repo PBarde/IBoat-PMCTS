@@ -7,7 +7,8 @@
 Module encapsulating all the classes required to run a simulation. 
 
 """
-
+import sys
+sys.path.append("../solver")
 import numpy as np
 import math
 import random as rand
@@ -15,10 +16,11 @@ from weatherTLKT import Weather
 import matplotlib.pyplot as plt
 from mpl_toolkits.basemap import Basemap
 from matplotlib import animation
-from math import sin,cos,asin,atan2,acos,pi
+from math import sin,cos,asin,atan2
 from math import radians as rad
-from animation_player import Player
+from utils import Player
 import matplotlib
+from matplotlib import animation
 matplotlib.rcParams.update({'font.size': 16})
 
 #: Actions that are authorized i.e. headings the boat can follow. Must be sorted.
@@ -379,18 +381,18 @@ class Simulator:
   
         return anim
 
-    def play_scenario(self,idsc=0):
+    def play_scenario(self,idsc=0, interactive=True):
         interp_u = np.zeros((len(self.times), len(self.lats), len(self.lons)))
         interp_v = np.zeros((len(self.times), len(self.lats), len(self.lons)))
         mag = np.zeros((len(self.times), len(self.lats), len(self.lons)))
 
         for t, time in enumerate(self.times):
-            for i, lat in enumerate(self.lats):
+            for ii, lat in enumerate(self.lats):
                 for j, lon in enumerate(self.lons):
                     query_pt = [time, lat, lon]
-                    interp_u[t][i][j] = self.uWindAvg(query_pt)
-                    interp_v[t][i][j] = self.vWindAvg(query_pt)
-                    mag[t][i][j] = (interp_u[t][i][j]**2+interp_v[t][i][j]**2)**0.5
+                    interp_u[t][ii][j] = self.uWindAvg(query_pt)
+                    interp_v[t][ii][j] = self.vWindAvg(query_pt)
+                    mag[t][ii][j] = (interp_u[t][ii][j]**2+interp_v[t][ii][j]**2)**0.5
 
         # %% PLOT
         font = {'family': 'normal',
@@ -408,7 +410,7 @@ class Simulator:
                     resolution=res)
 
         x, y = m(*np.meshgrid(self.lons, self.lats))
-        contour = m.pcolormesh(x, y, mag[0], shading='flat', cmap=plt.cm.jet)
+        contour = m.pcolormesh(x, y, mag[0], shading ="flat", cmap=plt.cm.jet)
         cbar = m.colorbar(location='right')
         quiv = m.quiver(x, y, interp_u[0], interp_v[0], color='black')
         cbar.ax.set_ylabel('Wind magnitude m/s')
@@ -425,14 +427,17 @@ class Simulator:
 
 
         def update(i):
-            contour.set_array(mag[i].ravel())
+            contour.set_array(mag[i][:-1, :-1].ravel())
             quiv.set_UVC(interp_u[i], interp_v[i])
             tit.set_text('Scenario ' + str(idsc) + ' at time : ' + str(self.times[i]) + ' days')
             cbar.set_clim(vmin=mag[i].min(), vmax=mag[i].max())
             cbar.draw_all()
-
-        ani = Player(fig, update, maxi=len(interp_v) - 1)
+        if interactive:
+            ani = Player(fig, update, maxi=len(interp_v) - 1)
+        else :
+            ani = animation.FuncAnimation(fig, update, frames=len(interp_v))
         plt.show()
+        return ani
 
 
 class Boat : 

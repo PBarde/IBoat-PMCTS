@@ -5,7 +5,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Package Solver &#8212; IBOAT MCTS 1.0.0 documentation</title>
+    <title>Package solver &#8212; IBOAT MCTS 1.0.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,7 +23,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Package Model" href="model.html" />
+    <link rel="next" title="Package isochrones" href="isochrones.html" />
+    <link rel="prev" title="Package model" href="model.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -40,116 +41,12 @@
           <div class="body" role="main">
             
   <div class="section" id="package-solver">
-<h1>Package Solver<a class="headerlink" href="#package-solver" title="Permalink to this headline">¶</a></h1>
+<h1>Package solver<a class="headerlink" href="#package-solver" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-master">
-<span id="master"></span><h2>Master<a class="headerlink" href="#module-master" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="master.MasterNode">
-<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parentNode=None</em>, <em>action=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Node of a MasterTree.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hash</strong> (<em>int</em>) – hash of the node (key of the dictionary <code class="xref py py-attr docutils literal"><span class="pre">MasterTree.nodes</span></code>)</li>
-<li><strong>arm</strong> (<em>int</em>) – Action taken to get to this node from its parent.</li>
-<li><strong>parentNode</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – parent of this node</li>
-<li><strong>rewards</strong> (<em>numpy.array</em>) – Array of <cite>Hist</cite>. Its shape is (#scenario, #possible actions).</li>
-<li><strong>children</strong> (<em>list</em>) – List of children (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">MasterNode</span></code></a>)</li>
-<li><strong>depth</strong> (<em>int</em>) – Depth of the node.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="master.MasterNode.add_reward">
-<code class="descname">add_reward</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Includes a reward into the histogram for all actions of one scenario.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
-<li><strong>reward</strong> (<em>float</em>) – reward of the update.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterNode.add_reward_action">
-<code class="descname">add_reward_action</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.add_reward_action" title="Permalink to this definition">¶</a></dt>
-<dd><p>Includes a reward into the histogram for one action of one scenario.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
-<li><strong>action</strong> (<em>int</em>) – Action (in degree) of the update</li>
-<li><strong>reward</strong> (<em>int</em>) – reward of the update</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterNode.backup">
-<code class="descname">backup</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.backup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagates the reward through the master tree, starting from this node.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree where the update is coming</li>
-<li><strong>reward</strong> (<em>float</em>) – reward of the update</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterNode.is_expanded">
-<code class="descname">is_expanded</code><span class="sig-paren">(</span><em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.is_expanded" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if this node has been expanded by a scenario.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> – id of the scenario</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return boolean:</th><td class="field-body">True if the scenario has expanded this node.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterNode.plot_hist">
-<code class="descname">plot_hist</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.plot_hist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterNode.plot_mean_hist">
-<code class="descname">plot_mean_hist</code><span class="sig-paren">(</span><em>action</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterNode.plot_mean_hist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<span id="master"></span><h2>master<a class="headerlink" href="#module-master" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="master.MasterTree">
-<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em>, <em>nodes={}</em>, <em>proba=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Master tree that manages ns different WorkerTree in parallel.
 Each WorkerTree is searching on a different Weather scenario.
@@ -183,7 +80,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>node</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
+<li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
 <li><strong>idscenario</strong> (<em>int</em>) – id of the considered scenario. If default (None), the method return the best child         for the global tree</li>
 </ul>
 </td>
@@ -202,26 +99,25 @@ The best policies are available after <a class="reference internal" href="#maste
 </dd></dl>
 
 <dl class="method">
-<dt id="master.MasterTree.get_children">
-<code class="descname">get_children</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add the children nodes as attribute to each master node of the master tree.         This method is called after the search.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="master.MasterTree.get_depth">
 <code class="descname">get_depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the depth of each master node and add it in their attributes. This method is called after the search.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="master.MasterTree.get_points">
+<code class="descname">get_points</code><span class="sig-paren">(</span><em>node</em>, <em>points</em>, <em>coordinate=(0</em>, <em>0)</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="master.MasterTree.get_uct">
-<code class="descname">get_uct</code><span class="sig-paren">(</span><em>worker_node</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_uct</code><span class="sig-paren">(</span><em>node_hash</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the master uct value of a worker node.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>worker_node</strong> (<em>WorkerNode</em>) – the corresponding worker node</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_hash</strong> (<em>int</em>) – the corresponding hash node</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The uct value of the worker node passed in parameter</td>
 </tr>
@@ -287,7 +183,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>node</strong> (<a class="reference internal" href="#master.MasterNode" title="master.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
+<li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
 <li><strong>coordinate</strong> (<em>list</em>) – coordinate of the parent node in the representation</li>
 <li><strong>ax</strong> – the <a class="reference external" href="https://matplotlib.org/api/axes_api.html">Axis</a> on         which the children are plotted</li>
 <li><strong>color</strong> – color of the nodes/branches plotted. If None the color of the nodes/branches is a         grey scale depending of their depth.</li>
@@ -337,6 +233,27 @@ The best policies are available after <a class="reference internal" href="#maste
 </dd></dl>
 
 <dl class="method">
+<dt id="master.MasterTree.plot_tree_colored">
+<code class="descname">plot_tree_colored</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree_colored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot a 2D representation of a tree. CHANGE</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tuple (fig, ax) of the current plot</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="master.MasterTree.save_tree">
 <code class="descname">save_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.save_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the master tree (object) in the data Folder.</p>
@@ -352,7 +269,7 @@ The best policies are available after <a class="reference internal" href="#maste
 
 <dl class="method">
 <dt id="master.MasterTree.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>worker_dict</em>, <em>event_dict</em>, <em>finish_event_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>buffers_dict</em>, <em>event_dict</em>, <em>finish_event_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Background task which waits for worker buffer updates.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -373,32 +290,37 @@ The best policies are available after <a class="reference internal" href="#maste
 
 </div>
 <div class="section" id="module-worker">
-<span id="worker"></span><h2>Worker<a class="headerlink" href="#module-worker" title="Permalink to this headline">¶</a></h2>
+<span id="worker"></span><h2>worker<a class="headerlink" href="#module-worker" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed May 31 10:06:46 2017</p>
 <p>&#64;author: paul</p>
 <dl class="class">
 <dt id="worker.Node">
 <em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>state=None</em>, <em>parent=None</em>, <em>origins=[]</em>, <em>children=[]</em>, <em>depth=0</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="worker.Node.back_up">
+<code class="descname">back_up</code><span class="sig-paren">(</span><em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.back_up" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Node.get_uct">
+<code class="descname">get_uct</code><span class="sig-paren">(</span><em>num_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.get_uct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="worker.Node.is_fully_expanded">
+<code class="descname">is_fully_expanded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.is_fully_expanded" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="class">
 <dt id="worker.Tree">
-<em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Tree</code><span class="sig-paren">(</span><em>master</em>, <em>workerid</em>, <em>ite=0</em>, <em>budget=1000</em>, <em>simulator=None</em>, <em>destination=[]</em>, <em>TimeMin=0</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Tree</code><span class="sig-paren">(</span><em>workerid</em>, <em>nscenario</em>, <em>probability=[]</em>, <em>ite=0</em>, <em>budget=1000</em>, <em>simulator=None</em>, <em>destination=[]</em>, <em>TimeMin=0</em>, <em>buffer=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="staticmethod">
-<dt id="worker.Tree.back_up">
-<em class="property">static </em><code class="descname">back_up</code><span class="sig-paren">(</span><em>node</em>, <em>Q</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.back_up" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="worker.Tree.best_child">
-<code class="descname">best_child</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.best_child" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.copy_buffer">
-<code class="descname">copy_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.copy_buffer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">best_child</code><span class="sig-paren">(</span><em>node</em>, <em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.best_child" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -412,19 +334,39 @@ The best policies are available after <a class="reference internal" href="#maste
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="worker.Tree.get_master_uct">
+<code class="descname">get_master_uct</code><span class="sig-paren">(</span><em>node_hash</em>, <em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_master_uct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the master uct value of a worker node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_hash</strong> (<em>int</em>) – the corresponding hash node</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The uct value of the worker node passed in parameter</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="worker.Tree.get_sim_to_estimate_state">
 <code class="descname">get_sim_to_estimate_state</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_sim_to_estimate_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
-<dt id="worker.Tree.get_uct">
-<em class="property">static </em><code class="descname">get_uct</code><span class="sig-paren">(</span><em>node</em>, <em>num_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_uct" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="worker.Tree.is_fully_expanded">
-<em class="property">static </em><code class="descname">is_fully_expanded</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_fully_expanded" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="worker.Tree.integrate_buffer">
+<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates a list of update from a scenario. This method is to be called from a worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> (<em>list of list</em>) – list of updates coming from the worker. One update is a list :            [scenarioId, newNodeHash, parentHash, action, reward]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.is_node_terminal">
@@ -442,63 +384,35 @@ The best policies are available after <a class="reference internal" href="#maste
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="worker.Tree.plot_bd">
-<code class="descname">plot_bd</code><span class="sig-paren">(</span><em>nBD=2</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_bd" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.plot_best_children">
-<code class="descname">plot_best_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>color</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_best_children" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.plot_children">
-<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_children" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.plot_children_bd">
-<code class="descname">plot_children_bd</code><span class="sig-paren">(</span><em>node</em>, <em>nodes</em>, <em>x</em>, <em>y</em>, <em>l</em>, <em>ax</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_children_bd" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.plot_grey_tree">
-<code class="descname">plot_grey_tree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_grey_tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.plot_tree">
-<code class="descname">plot_tree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.plot_tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.reset_buffer">
-<code class="descname">reset_buffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.reset_buffer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="worker.Tree.tree_policy">
-<code class="descname">tree_policy</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.tree_policy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">tree_policy</code><span class="sig-paren">(</span><em>node</em>, <em>master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.tree_policy" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.uct_search">
-<code class="descname">uct_search</code><span class="sig-paren">(</span><em>rootState</em>, <em>frequency</em>, <em>event</em>, <em>end_event</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.uct_search" title="Permalink to this definition">¶</a></dt>
+<code class="descname">uct_search</code><span class="sig-paren">(</span><em>rootState</em>, <em>frequency</em>, <em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.uct_search" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-forest">
-<span id="forest"></span><h2>Forest<a class="headerlink" href="#module-forest" title="Permalink to this headline">¶</a></h2>
+<span id="forest"></span><h2>forest<a class="headerlink" href="#module-forest" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="forest.Forest">
 <em class="property">class </em><code class="descclassname">forest.</code><code class="descname">Forest</code><span class="sig-paren">(</span><em>listsimulators=[]</em>, <em>destination=[]</em>, <em>timemin=0</em>, <em>budget=100</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Object coordinating a MasterTree and its WorkerTrees</p>
-<dl class="staticmethod">
-<dt id="forest.Forest.create_simulators">
-<em class="property">static </em><code class="descname">create_simulators</code><span class="sig-paren">(</span><em>weathers, numberofsim, simtimestep=6, stateinit=[0, 47.5, 356.5], ndaysim=8, delatlatlon=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.create_simulators" title="Permalink to this definition">¶</a></dt>
+<dl class="method">
+<dt id="forest.Forest.launch_search">
+<code class="descname">launch_search</code><span class="sig-paren">(</span><em>root_state</em>, <em>frequency</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.launch_search" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="forest.create_simulators">
+<code class="descclassname">forest.</code><code class="descname">create_simulators</code><span class="sig-paren">(</span><em>weathers</em>, <em>numberofsim</em>, <em>simtimestep=6</em>, <em>stateinit=(0</em>, <em>47.5</em>, <em>356.5)</em>, <em>ndaysim=8</em>, <em>deltalatlon=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.create_simulators" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -520,9 +434,9 @@ The best policies are available after <a class="reference internal" href="#maste
 </table>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="forest.Forest.download_scenarios">
-<em class="property">static </em><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="forest.download_scenarios">
+<code class="descclassname">forest.</code><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
 <dd><p>To download the scenarios (launch in real python console)
 :param mydate:
 :param latBound:
@@ -532,21 +446,134 @@ The best policies are available after <a class="reference internal" href="#maste
 :return:</p>
 </dd></dl>
 
-<dl class="staticmethod">
-<dt id="forest.Forest.initialize_simulators">
-<em class="property">static </em><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="forest.initialize_simulators">
+<code class="descclassname">forest.</code><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="forest.load_scenarios">
+<code class="descclassname">forest.</code><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="forest.play_multiple_scenarios">
+<code class="descclassname">forest.</code><code class="descname">play_multiple_scenarios</code><span class="sig-paren">(</span><em>sims</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.play_multiple_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-master_node">
+<span id="master-node"></span><h2>master_node<a class="headerlink" href="#module-master_node" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="master_node.MasterNode">
+<em class="property">class </em><code class="descclassname">master_node.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parentNode=None</em>, <em>action=None</em>, <em>rewards=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Node of a MasterTree.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hash</strong> (<em>int</em>) – hash of the node (key of the dictionary <code class="xref py py-attr docutils literal"><span class="pre">MasterTree.nodes</span></code>)</li>
+<li><strong>arm</strong> (<em>int</em>) – Action taken to get to this node from its parent.</li>
+<li><strong>parentNode</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – parent of this node</li>
+<li><strong>rewards</strong> (<em>numpy.array</em>) – Array of <cite>Hist</cite>. Its shape is (#scenario, #possible actions).</li>
+<li><strong>children</strong> (<em>list</em>) – List of children (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">MasterNode</span></code></a>)</li>
+<li><strong>depth</strong> (<em>int</em>) – Depth of the node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="master_node.MasterNode.add_reward">
+<code class="descname">add_reward</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.add_reward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Includes a reward into the histogram for all actions of one scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
+<li><strong>reward</strong> (<em>float</em>) – reward of the update.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master_node.MasterNode.add_reward_action">
+<code class="descname">add_reward_action</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.add_reward_action" title="Permalink to this definition">¶</a></dt>
+<dd><p>Includes a reward into the histogram for one action of one scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
+<li><strong>action</strong> (<em>int</em>) – Action (in degree) of the update</li>
+<li><strong>reward</strong> (<em>int</em>) – reward of the update</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master_node.MasterNode.backup">
+<code class="descname">backup</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.backup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Propagates the reward through the master tree, starting from this node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree where the update is coming</li>
+<li><strong>reward</strong> (<em>float</em>) – reward of the update</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master_node.MasterNode.is_expanded">
+<code class="descname">is_expanded</code><span class="sig-paren">(</span><em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.is_expanded" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if this node has been expanded by a scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> – id of the scenario</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return boolean:</th><td class="field-body">True if the scenario has expanded this node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="master_node.MasterNode.plot_hist">
+<code class="descname">plot_hist</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.plot_hist" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="forest.Forest.launch_search">
-<code class="descname">launch_search</code><span class="sig-paren">(</span><em>root_state</em>, <em>frequency</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.launch_search" title="Permalink to this definition">¶</a></dt>
+<dt id="master_node.MasterNode.plot_mean_hist">
+<code class="descname">plot_mean_hist</code><span class="sig-paren">(</span><em>action</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.plot_mean_hist" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="staticmethod">
-<dt id="forest.Forest.load_scenarios">
-<em class="property">static </em><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
+<dl class="function">
+<dt id="master_node.deepcopy_dict">
+<code class="descclassname">master_node.</code><code class="descname">deepcopy_dict</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.deepcopy_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fais la copie et le get children en meme temps !
+:param nodes:
+:return:</p>
 </dd></dl>
 
 </div>
@@ -563,10 +590,11 @@ The best policies are available after <a class="reference internal" href="#maste
             </a></p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Package Solver</a><ul>
-<li><a class="reference internal" href="#module-master">Master</a></li>
-<li><a class="reference internal" href="#module-worker">Worker</a></li>
-<li><a class="reference internal" href="#module-forest">Forest</a></li>
+<li><a class="reference internal" href="#">Package solver</a><ul>
+<li><a class="reference internal" href="#module-master">master</a></li>
+<li><a class="reference internal" href="#module-worker">worker</a></li>
+<li><a class="reference internal" href="#module-forest">forest</a></li>
+<li><a class="reference internal" href="#module-master_node">master_node</a></li>
 </ul>
 </li>
 </ul>
@@ -574,7 +602,8 @@ The best policies are available after <a class="reference internal" href="#maste
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="model.html" title="previous chapter">Package Model</a></li>
+      <li>Previous: <a href="model.html" title="previous chapter">Package model</a></li>
+      <li>Next: <a href="isochrones.html" title="next chapter">Package isochrones</a></li>
   </ul></li>
 </ul>
 </div>

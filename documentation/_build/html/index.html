@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Package Model" href="model.html" />
+    <link rel="next" title="Package model" href="model.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -41,7 +41,20 @@
             
   <div class="section" id="welcome-to-iboat-mcts-s-documentation">
 <h1>Welcome to IBOAT MCTS’s documentation!<a class="headerlink" href="#welcome-to-iboat-mcts-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>IBOAT MCTS is a python implementation of the MCTS algorithm for the IBOAT trajectory planning.</p>
+<div class="section" id="context">
+<h2>Context<a class="headerlink" href="#context" title="Permalink to this headline">¶</a></h2>
+<p>In this project we develop <strong>a reinforcement learning algorithm</strong> based on <strong>parallel Monte-Carlo tree search</strong>
+to tackle the problem of <strong>long-term path planning under uncertainty</strong> for offshore sailing. This domain of application
+is challenging as it combines unreliable and time varying wind conditions with complex and uncertain boat performances.
+Contrarily to state of the art approaches applied to the sailing problem, we build a generator that models state transitions
+considering these two types of uncertainty. The first one is on the boat dynamics : given a environment state the boat performances
+are not deterministic. And the second one is uncertain weather forecasts. In practice, the wind is estimated from multiple
+weather forecasts (each one of them being a weather scenario with a given probability of happening). The boat’s dynamics are evaluated with
+a noisy Velocity Prediction Program (VPP). Then, a Monte Carlo Tree Search (MCTS) algorithm is applied in parallel to all the weather
+scenarios to find the sequence of headings that minimizes the travel time between two points.</p>
+<p>Here you will find the documentation of the <strong>parallel MCTS</strong> and the <strong>isochrones</strong> routing methods. But also all the tools to
+<strong>download and visualize weather forecasts</strong>.</p>
+</div>
 <div class="section" id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The project depends on the following extensions :</p>
@@ -58,14 +71,19 @@
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="model.html">model</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="model.html#module-weatherTLKT">WeatherTLKT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model.html#module-simulatorTLKT">SimulatorTLKT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#module-weatherTLKT">weatherTLKT</a></li>
+<li class="toctree-l2"><a class="reference internal" href="model.html#module-simulatorTLKT">simulatorTLKT</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="solver.html">solver</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="solver.html#module-master">Master</a></li>
-<li class="toctree-l2"><a class="reference internal" href="solver.html#module-worker">Worker</a></li>
-<li class="toctree-l2"><a class="reference internal" href="solver.html#module-forest">Forest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#module-master">master</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#module-worker">worker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#module-forest">forest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solver.html#module-master_node">master_node</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="isochrones.html">isochrones</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="isochrones.html#module-IsochroneClass">isochrones</a></li>
 </ul>
 </li>
 </ul>
@@ -93,6 +111,7 @@
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to IBOAT MCTS’s documentation!</a><ul>
+<li><a class="reference internal" href="#context">Context</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#contents">Contents</a></li>
 </ul>
@@ -103,7 +122,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="model.html" title="next chapter">Package Model</a></li>
+      <li>Next: <a href="model.html" title="next chapter">Package model</a></li>
   </ul></li>
 </ul>
 </div>
