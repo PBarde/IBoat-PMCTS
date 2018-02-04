@@ -28,10 +28,13 @@ sys.path.append("../solver")
 from worker import Tree
 
 # %% We load the forecast files
+
+#ATTENTION il faudra prendre le fichier de vent moyen à terme!!!
 mydate = '20180108'
 modelcycle = '0100z'
 pathToSaveObj = '../data/' + mydate + '_gep_' + modelcycle + '.obj'
 Wavg = Weather.load(pathToSaveObj)
+Wavg=Wavg.crop(latBound=[40, 50], lonBound=[360 - 15, 360])
 
 #mydate = '20170519'
 #modelcycle = '00'
@@ -46,9 +49,9 @@ Wavg.time = Wavg.time - Tini
 # %% We set up the parameters of the simulation
 # times=np.arange(0,min([Wavg.time[-1],Wspr.time[-1]]),1*HOURS_TO_DAY)
 # Tf=len(times)
-Tf = 24 * 5
+Tf = 24 * 8
 HOURS_TO_DAY = 1/24
-times = np.arange(0, Tf * HOURS_TO_DAY, 1 * HOURS_TO_DAY)
+times = np.arange(0, Tf * HOURS_TO_DAY, 6 * HOURS_TO_DAY)
 lats = np.arange(Wavg.lat[0],Wavg.lat[-1], 0.05)
 lons = np.arange(Wavg.lon[0], Wavg.lon[-1], 0.05)
 
@@ -160,11 +163,16 @@ solver_iso.reset(stateInit[1:3],destination)
 #Sim.reset(stateInit)
 #solver_iso = IC.Isochrone(Sim,stateInit[1:3],destination)
 
-temps,politique,trajectoire = solver_iso.isochrone_methode() 
+temps,politique,politique_finale,trajectoire = solver_iso.isochrone_methode() 
 
 
 print(temps) #attention manière de le calculer
 print(tours*solver_iso.delta_t) #temps obtenu en faisant la ligne droite (sur 8 pas de temps on est moins bon mais sur la simu plus longue on gagne une demie journée)
 print(politique)
+print(politique_finale)
 print(trajectoire)
 print(destination)
+
+states = solver_iso.positions_to_states()
+basemap = solver_iso.sim.prepareBaseMap()
+solver_iso.sim.plotTraj(states,basemap,quiv=True)

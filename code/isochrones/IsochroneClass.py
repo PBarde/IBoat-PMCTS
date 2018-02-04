@@ -17,7 +17,6 @@ from math import atan2
 #Simulator.Boat.Uncertainitycoeff=0
 
 # PB = delta_S à corriger (fait par trigo simple)
-# attention calcul du temps total?
 
 class Node():
     
@@ -59,7 +58,57 @@ class Secteur():
 
 class Isochrone():
     
+    """
+    Class making the determinist isochrone method described by Hideki Hagiwara.
+
+    :ivar sim simulateur: Object Simulator which have to be initialized \
+        with the geographic position of the problem and the weather forcast desired.
+
+    :ivar list dep: Latitude and longitude in degree of the starting \
+        point. For instance, [47.5, 356.5].
+
+    :ivar list arr: Latitude and longitude in degree of the destination \
+        point. For instance, [47.8, 352.3].
+
+    :ivar list isochrone_actuelle: List of the nodes which constitute the \
+        current isochrone shape.
+
+    :ivar list isochrone_future: List of the nodes which are made in order \
+        to find the shape of the next isochrone.
+        
+    :ivar list isochrone_stock : List of used isochrone (list of list of states)
+        
+    :ivar float distance_moy_iso: Average distance of the current isochrone from \
+        the starting point in meters.
+        
+    :ivar float reso: Resolution of the current isochrone (average distance \
+        between nodes of the isochrone shape in meters).
+    
+    :ivar int p: Half of the number of sectors used by the ischrone algorithm \
+        (half of the maximal number of nodes of the current isochrone).
+        
+    :ivar float constante: Used to change units.
+    
+    :ivar float delta_t: Time step of the simulator in days.
+    
+    :ivar list liste_actions: List of the bearings in degree that the ship can \
+        use to join its destination. After solving the problem, it become the \
+        policy to follow to reach the destination.
+        
+    :ivar list liste_positions: List of the positions (lat,lon) where the ship \
+        goes and changes its bearing in order to reach the destination.
+        
+    :ivar float temps_transit: Time spend during the trip in days.
+    
+    :ivar float C0: Bearing between the departure and the arrival in degree.
+
+    """
+    
     def __init__(self,simulateur,coord_depart,coord_arrivee,delta_cap=10,increment_cap=9,nb_secteur=10,resolution=200):
+        
+        """
+        Class constructor
+        """
 
         self.sim=simulateur
         self.dep=coord_depart   #liste des coord de départ (lat,lon)
@@ -74,6 +123,7 @@ class Isochrone():
         self.delta_t = (self.sim.times[noeuddep.time+1]-self.sim.times[noeuddep.time])
         self.liste_actions = []
         self.liste_positions = []
+        self.isochrone_stock = []
         self.temps_transit = 0
         for l in range(-increment_cap,increment_cap+1):
             self.liste_actions.append(l*delta_cap)
@@ -83,19 +133,40 @@ class Isochrone():
         for action in self.liste_actions:
             C.append(self.recentrage_cap(C0+action))
         self.isochrone_actuelle=[]
+        liste_etats = []
         for cap in C:
             self.sim.reset(noeuddep.give_state())
             state = self.sim.doStep(cap)
             D1,C1 = self.sim.getDistAndBearing(self.dep,state[1:3])
             current_node = Node(state[0],state[1],state[2],noeuddep,cap,C1,D1)
             self.isochrone_actuelle.append(current_node)
+            liste_etats.append(current_node.give_state())
+        self.isochrone_stock.append(liste_etats)
         
     
     def recentrage_cap(self,cap):
+        """
+        Keep the bearing in degree between 0 and 360.
+        
+        :param float cap: Bearing to correct.
+        """
         return cap%360
     
         
     def reset(self,coord_depart=None,coord_arrivee=None):
+        
+        """
+        Reset the problem to slove with a different departure and arrival but \
+        the same weather forcast. To change the weather forcast, change self.sim \
+        and reset the Isochrone.
+        
+        :param list coord_depart: Latitude and longitude in degree of the starting \
+        point.
+        
+        :param list coord_arrivee: Latitude and longitude in degree of the destination \
+        point.
+        """
+        
         if (not coord_depart==None):
             self.dep=coord_depart   #liste des coord de départ (lat,lon)
         if (not coord_arrivee==None):
@@ -106,7 +177,10 @@ class Isochrone():
         self.isochrone_future=[]
         self.distance_moy_iso = 0
         self.liste_positions = []
+        self.isochrone_stock = []
         self.temps_transit = 0
+        D0,C0 = self.sim.getDistAndBearing(self.dep,self.arr)
+        self.C0 = C0
         C = []
         for action in self.liste_actions:
             C.append(self.recentrage_cap(self.C0+action))
@@ -120,6 +194,13 @@ class Isochrone():
         return None
 
     def isochrone_brouillon(self):
+        
+        """
+        Generates all the future nodes reachable from the current isochrone by \
+        doing the different actions allowed.
+        
+        """
+        
         self.isochrone_future=[]
         compteur = 0
         self.distance_moy_iso=0
@@ -139,6 +220,13 @@ class Isochrone():
         return None
     
     def secteur_liste(self):
+        
+        """
+        Creates all the angular sectors used to select the nodes of the future \
+        isochrone and return a list of them. Returns also the width of a sector.
+        
+        """
+        
         #delta_S = self.constante*self.reso/np.sin(self.constante*self.distance_moy_iso) #pb définition delta_S
         delta_S = atan2(self.reso,self.distance_moy_iso)*180/np.pi
         liste_S = []
@@ -150,6 +238,13 @@ class Isochrone():
         return liste_S,delta_S
     
     def associer_xij_a_S(self,liste_S,delta_S):
+        
+        """
+        Associates to all the nodes reachable from the current isochrone an \
+        angular sector and returns the list of those sectors.
+        
+        """
+        
         for xij in self.isochrone_future:
             Cij = xij.C
             borne_sup = liste_S[-1].cap_sup
@@ -169,6 +264,13 @@ class Isochrone():
         return liste_S
         
     def nouvelle_isochrone_propre(self,liste_S):
+        
+        """
+        Keep, for each sector, only the farthest node reachable from the current \
+        isochrone and so create the new current isochrone.
+        
+        """
+        liste_etats = []
         self.isochrone_actuelle = []
         for Sect in liste_S:
             noeud_a_garder = Sect.recherche_meilleur_noeud()
@@ -176,69 +278,96 @@ class Isochrone():
                 pass
             else:
                 self.isochrone_actuelle.append(noeud_a_garder)
+                liste_etats.append(noeud_a_garder.give_state())
+        self.isochrone_stock.append(liste_etats)
         return None
     
     def isochrone_proche_arrivee(self):
         Top_noeud = []
-        Top_dist = []
-        Top_cap = []
         arrive = False
         for xi in self.isochrone_actuelle:
             Ddest,Cdest = self.sim.getDistAndBearing([xi.lat,xi.lon],self.arr)
             if Ddest <= 10000:
                 Top_noeud.append(xi)
-                Top_dist.append(Ddest)
-                Top_cap.append(Cdest)
                 arrive = True
-        return arrive,Top_noeud,Top_dist,Top_cap
+        return arrive,Top_noeud
         
-    def aller_point_arrivee(self,Top_noeud,Top_dist,Top_cap):
+    def aller_point_arrivee(self,Top_noeud):
         Top_time = []
+        Top_finish_caps = []
         for i in range(len(Top_noeud)):
             atDest = False
             frac = 0
             noeud_final = Top_noeud[i]
-            cap_a_suivre = Top_cap[i]
+            cap_a_suivre = 0
+            finish_caps = []
             self.sim.reset([noeud_final.time,noeud_final.lat,noeud_final.lon])
             while (not atDest):
+                Ddest,cap_a_suivre = self.sim.getDistAndBearing([noeud_final.lat,noeud_final.lon],self.arr)
+                finish_caps.append(cap_a_suivre)
                 self.sim.doStep(cap_a_suivre)
                 atDest,frac =Tree.is_state_at_dest(self.arr,self.sim.prevState,self.sim.state)
-            #temps_total = self.sim.times[self.sim.state[0]]-(1-frac)
-            temps_total = self.sim.times[self.sim.state[0]] + frac*self.delta_t
+            temps_total = self.sim.times[self.sim.state[0]]-(1-frac)*self.delta_t
             Top_time.append(temps_total)
+            Top_finish_caps.append(finish_caps)
         indice_solution = Top_time.index(min(Top_time))
         meilleur_noeud_final = Top_noeud[indice_solution]
         temps_total = Top_time[indice_solution]
-        cap_final = Top_cap[indice_solution]
-        return meilleur_noeud_final,temps_total,cap_final
+        liste_caps_fin = Top_finish_caps[indice_solution]
+        return meilleur_noeud_final,temps_total,liste_caps_fin
         
     def isochrone_methode(self):
         temps_total = 0
         liste_point_passage = []
         liste_de_caps_solution = []
         arrive = False
-        while (not arrive):
-            self.isochrone_brouillon()
-            liste_S,delta_S = self.secteur_liste()
-            liste_S = self.associer_xij_a_S(liste_S,delta_S)
-            self.nouvelle_isochrone_propre(liste_S)
-            print(self.isochrone_actuelle[0])
-            arrive,Top_noeud,Top_dist,Top_cap = self.isochrone_proche_arrivee()
-            print(arrive)
-            #pour chaque noeud Top faire simu jusqu'à isstateatdest et calculer temps pour discriminer le meilleur noeud
-            #remonter les noeuds parents
-        meilleur_noeud_final,temps_total,cap_final = self.aller_point_arrivee(Top_noeud,Top_dist,Top_cap)
-        liste_de_caps_solution.append(cap_final)
-        while meilleur_noeud_final.pere is not None:
-            liste_point_passage.append([meilleur_noeud_final.lat,meilleur_noeud_final.lon])
-            liste_de_caps_solution.append(meilleur_noeud_final.act)
-            meilleur_noeud_final = meilleur_noeud_final.pere
-        liste_point_passage.append([meilleur_noeud_final.lat,meilleur_noeud_final.lon])
+        try:
+            
+            while (not arrive):
+                self.isochrone_brouillon()
+                liste_S,delta_S = self.secteur_liste()
+                liste_S = self.associer_xij_a_S(liste_S,delta_S)
+                self.nouvelle_isochrone_propre(liste_S)
+                arrive,Top_noeud = self.isochrone_proche_arrivee()
+                #pour chaque noeud Top faire simu jusqu'à isstateatdest et calculer temps pour discriminer le meilleur noeud
+                #remonter les noeuds parents
+            try:
+                
+                meilleur_noeud_final,temps_total,liste_caps_fin = self.aller_point_arrivee(Top_noeud)
+                while meilleur_noeud_final.pere is not None:
+                    liste_point_passage.append([meilleur_noeud_final.lat,meilleur_noeud_final.lon])
+                    liste_de_caps_solution.append(meilleur_noeud_final.act)
+                    meilleur_noeud_final = meilleur_noeud_final.pere
+                liste_point_passage.append([meilleur_noeud_final.lat,meilleur_noeud_final.lon])
+                
+                self.liste_positions = liste_point_passage[::-1]
+                self.liste_positions.append(self.arr)
+                self.liste_actions = liste_de_caps_solution[::-1]
+                self.temps_transit = temps_total
+            
+            except IndexError:
+                
+                print('Pas de solution trouvée dans le temps imparti.\nVeuillez raffiner vous paramètres de recherche.')
+                self.temps_transit = None
+                self.liste_actions = None
+                liste_caps_fin = None
+                self.liste_positions = None
+            
+        except IndexError:
+            
+            print('Pas de solution trouvée dans le temps imparti.\nVeuillez raffiner vous paramètres de recherche.')
+            self.temps_transit = None
+            self.liste_actions = None
+            liste_caps_fin = None
+            self.liste_positions = None
         
-        self.liste_positions = liste_point_passage[::-1]
-        self.liste_positions.append(self.arr)
-        self.liste_actions = liste_de_caps_solution[::-1]
-        self.temps_transit = temps_total
-        
-        return self.temps_transit,self.liste_actions,self.liste_positions
+        return self.temps_transit,self.liste_actions,liste_caps_fin,self.liste_positions
+    
+    def positions_to_states(self):
+        liste_states = []
+        for i in range(len(self.liste_positions)):
+            liste_states.append(np.array([i,self.liste_positions[i][0],self.liste_positions[i][1]]))
+        return liste_states
+    
+    # condition arret temps depasse, recalculer heading finale, nombre de pas temps tout droit, faire visu de la trajectoire
         
