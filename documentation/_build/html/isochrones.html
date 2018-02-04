@@ -1,0 +1,190 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Package isochrones &#8212; IBOAT MCTS 1.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Package solver" href="solver.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="package-isochrones">
+<h1>Package isochrones<a class="headerlink" href="#package-isochrones" title="Permalink to this headline">¶</a></h1>
+<p>This package contains the implementation of the isochrones routing method.</p>
+<div class="section" id="module-IsochroneClass">
+<span id="isochrones"></span><h2>isochrones<a class="headerlink" href="#module-IsochroneClass" title="Permalink to this headline">¶</a></h2>
+<p>Created on Wed Dec 20 13:48:13 2017</p>
+<p>&#64;author: j.belley</p>
+<dl class="class">
+<dt id="IsochroneClass.Isochrone">
+<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Isochrone</code><span class="sig-paren">(</span><em>simulateur</em>, <em>coord_depart</em>, <em>coord_arrivee</em>, <em>delta_cap=10</em>, <em>increment_cap=9</em>, <em>nb_secteur=10</em>, <em>resolution=200</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.aller_point_arrivee">
+<code class="descname">aller_point_arrivee</code><span class="sig-paren">(</span><em>Top_noeud</em>, <em>Top_dist</em>, <em>Top_cap</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.aller_point_arrivee" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.associer_xij_a_S">
+<code class="descname">associer_xij_a_S</code><span class="sig-paren">(</span><em>liste_S</em>, <em>delta_S</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.associer_xij_a_S" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.isochrone_brouillon">
+<code class="descname">isochrone_brouillon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_brouillon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.isochrone_methode">
+<code class="descname">isochrone_methode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_methode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.isochrone_proche_arrivee">
+<code class="descname">isochrone_proche_arrivee</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_proche_arrivee" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.nouvelle_isochrone_propre">
+<code class="descname">nouvelle_isochrone_propre</code><span class="sig-paren">(</span><em>liste_S</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.nouvelle_isochrone_propre" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.recentrage_cap">
+<code class="descname">recentrage_cap</code><span class="sig-paren">(</span><em>cap</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.recentrage_cap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>coord_depart=None</em>, <em>coord_arrivee=None</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="IsochroneClass.Isochrone.secteur_liste">
+<code class="descname">secteur_liste</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.secteur_liste" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="IsochroneClass.Node">
+<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>time</em>, <em>lat</em>, <em>lon</em>, <em>parent=None</em>, <em>action=None</em>, <em>C=None</em>, <em>D=None</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="IsochroneClass.Node.give_state">
+<code class="descname">give_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Node.give_state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="IsochroneClass.Secteur">
+<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Secteur</code><span class="sig-paren">(</span><em>cap_sup</em>, <em>cap_inf</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Secteur" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="IsochroneClass.Secteur.recherche_meilleur_noeud">
+<code class="descname">recherche_meilleur_noeud</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Secteur.recherche_meilleur_noeud" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Pour mettre une jolie note.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/IBOAT_logo1.png" alt="Logo"/>
+            </a></p>
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Package isochrones</a><ul>
+<li><a class="reference internal" href="#module-IsochroneClass">isochrones</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="solver.html" title="previous chapter">Package solver</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/isochrones.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Fabien Brulport, Paul Barde, Jean-Michel Bellay.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/isochrones.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

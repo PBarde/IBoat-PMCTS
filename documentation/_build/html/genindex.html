@@ -68,17 +68,21 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="model.html#simulatorTLKT.ACTIONS">ACTIONS (in module simulatorTLKT)</a>
 </li>
-      <li><a href="solver.html#master.MasterNode.add_reward">add_reward() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.add_reward">add_reward() (master_node.MasterNode method)</a>
 </li>
-      <li><a href="solver.html#master.MasterNode.add_reward_action">add_reward_action() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.add_reward_action">add_reward_action() (master_node.MasterNode method)</a>
+</li>
+      <li><a href="model.html#simulatorTLKT.Boat.addUncertainty">addUncertainty() (simulatorTLKT.Boat static method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="model.html#simulatorTLKT.Boat.addUncertainty">addUncertainty() (simulatorTLKT.Boat static method)</a>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.aller_point_arrivee">aller_point_arrivee() (IsochroneClass.Isochrone method)</a>
 </li>
       <li><a href="model.html#weatherTLKT.Weather.animateQuiver">animateQuiver() (weatherTLKT.Weather method)</a>
 </li>
       <li><a href="model.html#simulatorTLKT.Simulator.animateTraj">animateTraj() (simulatorTLKT.Simulator method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.associer_xij_a_S">associer_xij_a_S() (IsochroneClass.Isochrone method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -86,9 +90,9 @@
 <h2 id="B">B</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Tree.back_up">back_up() (worker.Tree static method)</a>
+      <li><a href="solver.html#worker.Node.back_up">back_up() (worker.Node method)</a>
 </li>
-      <li><a href="solver.html#master.MasterNode.backup">backup() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.backup">backup() (master_node.MasterNode method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -102,12 +106,10 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Tree.copy_buffer">copy_buffer() (worker.Tree method)</a>
+      <li><a href="solver.html#forest.create_simulators">create_simulators() (in module forest)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#forest.Forest.create_simulators">create_simulators() (forest.Forest static method)</a>
-</li>
       <li><a href="model.html#weatherTLKT.Weather.crop">crop() (weatherTLKT.Weather method)</a>
 </li>
   </ul></td>
@@ -118,17 +120,19 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="model.html#simulatorTLKT.DAY_TO_SEC">DAY_TO_SEC (in module simulatorTLKT)</a>
 </li>
-      <li><a href="solver.html#worker.Tree.default_policy">default_policy() (worker.Tree method)</a>
+      <li><a href="solver.html#master_node.deepcopy_dict">deepcopy_dict() (in module master_node)</a>
 </li>
-      <li><a href="model.html#simulatorTLKT.DESTINATION_ANGLE">DESTINATION_ANGLE (in module simulatorTLKT)</a>
+      <li><a href="solver.html#worker.Tree.default_policy">default_policy() (worker.Tree method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="model.html#simulatorTLKT.DESTINATION_ANGLE">DESTINATION_ANGLE (in module simulatorTLKT)</a>
+</li>
       <li><a href="model.html#simulatorTLKT.Simulator.doStep">doStep() (simulatorTLKT.Simulator method)</a>
 </li>
       <li><a href="model.html#weatherTLKT.Weather.download">download() (weatherTLKT.Weather class method)</a>
 </li>
-      <li><a href="solver.html#forest.Forest.download_scenarios">download_scenarios() (forest.Forest static method)</a>
+      <li><a href="solver.html#forest.download_scenarios">download_scenarios() (in module forest)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -168,16 +172,18 @@
 </li>
       <li><a href="solver.html#master.MasterTree.get_best_policy">get_best_policy() (master.MasterTree method)</a>
 </li>
-      <li><a href="solver.html#master.MasterTree.get_children">get_children() (master.MasterTree method)</a>
-</li>
       <li><a href="solver.html#master.MasterTree.get_depth">get_depth() (master.MasterTree method)</a>
+</li>
+      <li><a href="solver.html#worker.Tree.get_master_uct">get_master_uct() (worker.Tree method)</a>
+</li>
+      <li><a href="solver.html#master.MasterTree.get_points">get_points() (master.MasterTree method)</a>
 </li>
       <li><a href="solver.html#worker.Tree.get_sim_to_estimate_state">get_sim_to_estimate_state() (worker.Tree method)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.get_uct">get_uct() (master.MasterTree method)</a>
 
       <ul>
-        <li><a href="solver.html#worker.Tree.get_uct">(worker.Tree static method)</a>
+        <li><a href="solver.html#worker.Node.get_uct">(worker.Node method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -191,6 +197,8 @@
       <li><a href="model.html#weatherTLKT.Weather.getPolarVel">getPolarVel() (weatherTLKT.Weather method)</a>
 </li>
       <li><a href="model.html#simulatorTLKT.Simulator.getWind">getWind() (simulatorTLKT.Simulator method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Node.give_state">give_state() (IsochroneClass.Node method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -206,23 +214,37 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#forest.Forest.initialize_simulators">initialize_simulators() (forest.Forest static method)</a>
+      <li><a href="solver.html#forest.initialize_simulators">initialize_simulators() (in module forest)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.integrate_buffer">integrate_buffer() (master.MasterTree method)</a>
+
+      <ul>
+        <li><a href="solver.html#worker.Tree.integrate_buffer">(worker.Tree method)</a>
 </li>
+      </ul></li>
       <li><a href="model.html#weatherTLKT.Weather.Interpolators">Interpolators() (weatherTLKT.Weather method)</a>
 </li>
-      <li><a href="solver.html#master.MasterNode.is_expanded">is_expanded() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.is_expanded">is_expanded() (master_node.MasterNode method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Tree.is_fully_expanded">is_fully_expanded() (worker.Tree static method)</a>
+      <li><a href="solver.html#worker.Node.is_fully_expanded">is_fully_expanded() (worker.Node method)</a>
 </li>
       <li><a href="solver.html#worker.Tree.is_node_terminal">is_node_terminal() (worker.Tree method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="solver.html#worker.Tree.is_state_at_dest">is_state_at_dest() (worker.Tree static method)</a>
 </li>
       <li><a href="solver.html#worker.Tree.is_state_terminal">is_state_terminal() (worker.Tree static method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone">Isochrone (class in IsochroneClass)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.isochrone_brouillon">isochrone_brouillon() (IsochroneClass.Isochrone method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.isochrone_methode">isochrone_methode() (IsochroneClass.Isochrone method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.isochrone_proche_arrivee">isochrone_proche_arrivee() (IsochroneClass.Isochrone method)</a>
+</li>
+      <li><a href="isochrones.html#module-IsochroneClass">IsochroneClass (module)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -236,7 +258,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#forest.Forest.load_scenarios">load_scenarios() (forest.Forest static method)</a>
+      <li><a href="solver.html#forest.load_scenarios">load_scenarios() (in module forest)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.load_tree">load_tree() (master.MasterTree class method)</a>
 </li>
@@ -248,9 +270,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="solver.html#module-master">master (module)</a>
 </li>
+      <li><a href="solver.html#module-master_node">master_node (module)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#master.MasterNode">MasterNode (class in master)</a>
+      <li><a href="solver.html#master_node.MasterNode">MasterNode (class in master_node)</a>
 </li>
       <li><a href="solver.html#master.MasterTree">MasterTree (class in master)</a>
 </li>
@@ -260,7 +284,15 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Node">Node (class in worker)</a>
+      <li><a href="isochrones.html#IsochroneClass.Node">Node (class in IsochroneClass)</a>
+
+      <ul>
+        <li><a href="solver.html#worker.Node">(class in worker)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.nouvelle_isochrone_propre">nouvelle_isochrone_propre() (IsochroneClass.Isochrone method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -268,36 +300,26 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Tree.plot_bd">plot_bd() (worker.Tree method)</a>
+      <li><a href="solver.html#forest.play_multiple_scenarios">play_multiple_scenarios() (in module forest)</a>
 </li>
-      <li><a href="solver.html#worker.Tree.plot_best_children">plot_best_children() (worker.Tree method)</a>
+      <li><a href="model.html#simulatorTLKT.Simulator.play_scenario">play_scenario() (simulatorTLKT.Simulator method)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.plot_best_policy">plot_best_policy() (master.MasterTree method)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.plot_children">plot_children() (master.MasterTree method)</a>
-
-      <ul>
-        <li><a href="solver.html#worker.Tree.plot_children">(worker.Tree method)</a>
 </li>
-      </ul></li>
-      <li><a href="solver.html#worker.Tree.plot_children_bd">plot_children_bd() (worker.Tree method)</a>
-</li>
-      <li><a href="solver.html#worker.Tree.plot_grey_tree">plot_grey_tree() (worker.Tree method)</a>
-</li>
-      <li><a href="solver.html#master.MasterNode.plot_hist">plot_hist() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.plot_hist">plot_hist() (master_node.MasterNode method)</a>
 </li>
       <li><a href="solver.html#master.MasterTree.plot_hist_best_policy">plot_hist_best_policy() (master.MasterTree method)</a>
 </li>
-      <li><a href="solver.html#master.MasterNode.plot_mean_hist">plot_mean_hist() (master.MasterNode method)</a>
+      <li><a href="solver.html#master_node.MasterNode.plot_mean_hist">plot_mean_hist() (master_node.MasterNode method)</a>
+</li>
+      <li><a href="solver.html#master.MasterTree.plot_tree">plot_tree() (master.MasterTree method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#master.MasterTree.plot_tree">plot_tree() (master.MasterTree method)</a>
-
-      <ul>
-        <li><a href="solver.html#worker.Tree.plot_tree">(worker.Tree method)</a>
+      <li><a href="solver.html#master.MasterTree.plot_tree_colored">plot_tree_colored() (master.MasterTree method)</a>
 </li>
-      </ul></li>
       <li><a href="model.html#weatherTLKT.Weather.plotColorQuiver">plotColorQuiver() (weatherTLKT.Weather method)</a>
 </li>
       <li><a href="model.html#weatherTLKT.Weather.plotMultipleQuiver">plotMultipleQuiver() (weatherTLKT.Weather method)</a>
@@ -320,12 +342,18 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="model.html#simulatorTLKT.Simulator.reset">reset() (simulatorTLKT.Simulator method)</a>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.recentrage_cap">recentrage_cap() (IsochroneClass.Isochrone method)</a>
+</li>
+      <li><a href="isochrones.html#IsochroneClass.Secteur.recherche_meilleur_noeud">recherche_meilleur_noeud() (IsochroneClass.Secteur method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="solver.html#worker.Tree.reset_buffer">reset_buffer() (worker.Tree method)</a>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.reset">reset() (IsochroneClass.Isochrone method)</a>
+
+      <ul>
+        <li><a href="model.html#simulatorTLKT.Simulator.reset">(simulatorTLKT.Simulator method)</a>
 </li>
+      </ul></li>
       <li><a href="model.html#weatherTLKT.Weather.returnPolarVel">returnPolarVel() (weatherTLKT.Weather static method)</a>
 </li>
   </ul></td>
@@ -336,8 +364,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="solver.html#master.MasterTree.save_tree">save_tree() (master.MasterTree method)</a>
 </li>
+      <li><a href="isochrones.html#IsochroneClass.Secteur">Secteur (class in IsochroneClass)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="isochrones.html#IsochroneClass.Isochrone.secteur_liste">secteur_liste() (IsochroneClass.Isochrone method)</a>
+</li>
       <li><a href="model.html#simulatorTLKT.Simulator">Simulator (class in simulatorTLKT)</a>
 </li>
       <li><a href="model.html#module-simulatorTLKT">simulatorTLKT (module)</a>
