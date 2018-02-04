@@ -337,7 +337,8 @@ class MasterTree:
                 for s, reward_per_scenario in enumerate(node.rewards):
                     for hist in child.parentNode.rewards[s]:
                         num_parent += sum(hist.h)
-                    num_node += sum(child.parentNode.rewards[s, A_DICT[child.arm]].h)
+                    for hist in child.rewards[s]:
+                        num_node += sum(hist.h)
                     uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
 
                 value = np.dot(uct_per_scenario, self.probability)

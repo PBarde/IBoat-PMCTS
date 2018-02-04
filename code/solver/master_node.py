@@ -31,13 +31,15 @@ class MasterNode:
 
     def add_reward(self, idscenario, reward):
         """
-        Includes a reward into the histogram for all actions of one scenario.
+        Includes a reward into the histogram for a random action of one scenario.
 
         :param int idscenario: id of the scenario/workertree from which the update is coming.
         :param float reward: reward of the update.
         """
-        for hist in self.rewards[idscenario, :]:
-            hist.add(reward)
+        # choose a random action
+        action = np.random.randint(len(ACTIONS))
+        # add the reward
+        self.rewards[idscenario, action].add(reward)
 
     def add_reward_action(self, idscenario, action, reward):
         """
@@ -45,7 +47,7 @@ class MasterNode:
 
         :param int idscenario: id of the scenario/workertree from which the update is coming.
         :param int action: Action (in degree) of the update
-        :param int reward: reward of the update
+        :param float reward: reward of the update
         """
         self.rewards[idscenario, A_DICT[action]].add(reward)
 

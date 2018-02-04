@@ -38,9 +38,10 @@ class Node:
         self.depth = depth
 
     def back_up(self, reward):
-        # the first reward of a node is shared by all the actions
-        for hist in self.Values:
-            hist.add(reward)
+        # the first reward of a node is put in a random action
+        action = np.random.randint(len(ACTIONS))
+        self.Values[action].add(reward)
+
         # then the reward is propagated to the parent node according to the action that expanded the
         # child
         node = self
@@ -54,8 +55,10 @@ class Node:
 
     def get_uct(self, num_parent):
         uct_max_on_actions = 0
-        ii = SimC.A_DICT[self.origins[-1]]
-        num_node = sum(self.parent.Values[ii].h)
+        num_node = 0
+        for val in self.Values:
+            num_node += sum(val.h)
+
         exploration = UCT_COEFF * (2 * math.log(num_parent) / num_node) ** 0.5
 
         for hist in self.Values:
@@ -206,12 +209,15 @@ class Tree:
             # print("Node " + str(node_hash) + " is in the master")
             uct_per_scenario = []
             for s, reward_per_scenario in enumerate(master_node.rewards):
-                num_parent = 0
                 uct_max_on_actions = 0
+
+                num_parent = 0
                 for hist in master_node.parentNode.rewards[s]:
                     num_parent += sum(hist.h)
 
-                num_node = sum(master_node.parentNode.rewards[s, A_DICT[master_node.arm]].h)
+                num_node = 0
+                for hist in master_node.rewards[s]:
+                    num_node += sum(hist.h)
 
                 if (num_parent == 0) or (num_node == 0):
                     uct_per_scenario.append(0)
