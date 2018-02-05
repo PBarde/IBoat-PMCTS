@@ -36,7 +36,7 @@ class MasterTree:
      policy of one scenario. The Key of the dictionary is the scenario id.
     """
 
-    def __init__(self, sims, destination, nodes=dict(), proba = []):
+    def __init__(self, sims, destination, nodes=dict(), proba=[]):
         num_scenarios = len(sims)
         self.nodes = nodes
         if len(nodes) == 0:
@@ -46,7 +46,7 @@ class MasterTree:
 
         if len(proba) != num_scenarios:
             self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
-        else :
+        else:
             self.probability = np.array(proba)
 
         self.max_depth = None
@@ -56,94 +56,6 @@ class MasterTree:
         self.best_global_nodes_policy = []
         self.best_policy = dict()
         self.best_nodes_policy = dict()
-
-    def integrate_buffer(self, buffer):
-        """
-        Integrates a list of update from a scenario. This method is to be called from a worker.
-
-        :param buffer: list of updates coming from the worker. One update is a list :\
-            [scenarioId, newNodeHash, parentHash, action, reward]
-        :type buffer: list of list
-        """
-        for update in buffer:
-            scenarioId, newNodeHash, parentHash, action, reward = update
-            node = self.nodes.get(newNodeHash, 0)
-            if node == 0:
-                self.nodes[newNodeHash] = MasterNode(self.numScenarios, nodehash=newNodeHash,
-                                                     parentNode=self.nodes[parentHash], action=action)
-                node = self.nodes[newNodeHash]
-
-            node.add_reward(scenarioId, reward)
-            node.backup(scenarioId, reward)
-
-    def update(self, buffers_dict, event_dict, finish_event_dict):
-        """
-        Background task which waits for worker buffer updates.
-
-        :param worker_dict: Dictionary of worker tree (the key is their id).
-        :param event_dict: Dictionary of event (one per scenario) to notify the master that a buffer is ready.
-        :param finish_event_dict: Dictionary of event (one per scenario) to notify the \
-        master that the search of a scenario is ended.
-        """
-        stop = False
-        while not stop:
-            for i, event in enumerate(event_dict.values()):
-                # If a tree is ready
-                if event.isSet():
-                    # Copy the buffer
-                    buffer = list(buffers_dict[i])
-                    # Clear the buffer
-                    buffers_dict[i] = []
-                    # Set the flag to false
-                    event.clear()
-                    # Add the new rewards in the master tree
-                    self.integrate_buffer(buffer)
-
-            # Test if all the workers are done
-            if all(event.isSet() for event in finish_event_dict.values()):
-                # End of the master thread
-                stop = True
-
-            sleep(3)
-
-    def get_uct(self, node_hash):
-        """
-        Compute the master uct value of a worker node.
-
-        :param int node_hash: the corresponding hash node
-        :return float: The uct value of the worker node passed in parameter
-        """
-        master_node = self.nodes.get(node_hash, 0)
-        if master_node == 0:
-            # print("Node " + str(node_hash) + " is not in the master")
-            return 0
-
-        else:
-            # print("Node " + str(node_hash) + " is in the master")
-            uct_per_scenario = []
-            for s, reward_per_scenario in enumerate(master_node.rewards):
-                num_parent = 0
-                uct_max_on_actions = 0
-                for hist in master_node.parentNode.rewards[s]:
-                    num_parent += sum(hist.h)
-
-                num_node = sum(master_node.parentNode.rewards[s, A_DICT[master_node.arm]].h)
-
-                if (num_parent == 0) or (num_node == 0):
-                    uct_per_scenario.append(0)
-                    continue
-
-                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
-
-                for hist in reward_per_scenario:
-                    uct_value = hist.get_mean()
-
-                    if uct_value > uct_max_on_actions:
-                        uct_max_on_actions = uct_value
-
-                uct_per_scenario.append(uct_max_on_actions + exploration)
-
-            return np.dot(uct_per_scenario, self.probability)
 
     def get_depth(self):
         """
@@ -270,12 +182,49 @@ class MasterTree:
 
     def plot_tree_colored(self, idscenario=None):
         """
-        Plot a 2D representation of a tree. CHANGE
+        Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
+        , the second one represents the exploitation and the third one the exploration.
 
-        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
         :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
         :return: A tuple (fig, ax) of the current plot
         """
+
+        def get_points(node, points, probability, coordinate=(0, 0), idscenario=None):
+            """
+            Recursive function used in :py:meth:`plot_tree_colored` to compute the exploration, exploitation,
+            and the coordinates of a node in the plot.
+
+            :param node: a MasterNode object
+            :param list points: the previous list of points
+            :param np.array probability: probability of each scenario
+            :param tuple coordinate: coordinates of the previous point
+            :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+            :return: the expanded list of points
+            """
+            x0, y0 = coordinate
+            for child in node.children:
+                if idscenario is not None:
+                    if not child.is_expanded(idscenario):
+                        continue
+                x = x0 + 1 * sin(child.arm * pi / 180)
+                y = y0 + 1 * cos(child.arm * pi / 180)
+                if child.parentNode is not None:
+                    num_parent = 0
+                    num_node = 0
+                    uct_per_scenario = []
+                    for s, reward_per_scenario in enumerate(node.rewards):
+                        for hist in child.parentNode.rewards[s]:
+                            num_parent += sum(hist.h)
+                        for hist in child.rewards[s]:
+                            num_node += sum(hist.h)
+                        uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
+
+                    value = np.dot(uct_per_scenario, probability)
+                    exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                    points.append((x0, y0, x, y, value + exploration, value, exploration))
+                points = get_points(child, points, probability, coordinate=(x, y), idscenario=idscenario)
+            return points
+
         node = self.nodes[hash(tuple([]))]  # rootNode
 
         # Make sure all the variable have been computed
@@ -285,18 +234,21 @@ class MasterTree:
             self.get_depth()
 
         # Get the coordinates and the values
-        points = self.get_points(node, [], idscenario=idscenario)
+        points = get_points(node, [], self.probability, idscenario=idscenario)
         x0 = [i[0] for i in points]
         y0 = [i[1] for i in points]
         x = [i[2] for i in points]
         y = [i[3] for i in points]
+        total = [i[4] for i in points]
+        exploitation = [i[5] for i in points]
+        exploration = [i[6] for i in points]
 
         # Plots
         fig = plt.figure()
         ax = fig.add_subplot(1, 3, 1)
         for i in range(len(x)):
             ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-        sc = ax.scatter(x, y, c=[i[4] for i in points], zorder=2)
+        sc = ax.scatter(x, y, c=total, s=np.dot(total, 16 / max(total)), zorder=2, cmap="Reds")
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         ax.set_title("Total utility")
@@ -305,7 +257,7 @@ class MasterTree:
         ax = fig.add_subplot(1, 3, 2)
         for i in range(len(x)):
             ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-        sc = ax.scatter(x, y, c=[i[5] for i in points], zorder=2)
+        sc = ax.scatter(x, y, c=exploitation, s=np.dot(exploitation, 16 / max(exploitation)), zorder=2, cmap="Reds")
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         ax.set_title("Exploitation")
@@ -314,38 +266,13 @@ class MasterTree:
         ax = fig.add_subplot(1, 3, 3)
         for i in range(len(x)):
             ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-        sc = ax.scatter(x, y, c=[i[6] for i in points], zorder=2)
+        sc = ax.scatter(x, y, c=exploration, s=np.dot(exploration, 16 / max(exploration)), zorder=2, cmap="Reds")
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         ax.set_title("Exploration")
         plt.axis('equal')
         fig.show()
         return fig, ax
-
-    def get_points(self, node, points, coordinate=(0, 0), idscenario=None):
-        x0, y0 = coordinate
-        for child in node.children:
-            if idscenario is not None:
-                if not child.is_expanded(idscenario):
-                    continue
-            x = x0 + 1 * sin(child.arm * pi / 180)
-            y = y0 + 1 * cos(child.arm * pi / 180)
-            if child.parentNode is not None:
-                num_parent = 0
-                num_node = 0
-                uct_per_scenario = []
-                for s, reward_per_scenario in enumerate(node.rewards):
-                    for hist in child.parentNode.rewards[s]:
-                        num_parent += sum(hist.h)
-                    for hist in child.rewards[s]:
-                        num_node += sum(hist.h)
-                    uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
-
-                value = np.dot(uct_per_scenario, self.probability)
-                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
-                points.append((x0, y0, x, y, value + exploration, value, exploration))
-            points = self.get_points(child, points, coordinate=(x, y), idscenario=idscenario)
-        return points
 
     def plot_children(self, node, coordinate, ax, color=None, idscenario=None):
         """
