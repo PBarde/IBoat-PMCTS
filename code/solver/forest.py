@@ -214,7 +214,8 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
                 atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
 
             if atDest:
-                finalTime = sim.times[sim.state[0]] - (1 - frac)
+                finalTime = sim.times[sim.state[0]] - \
+                            (1 - frac)*(sim.times[sim.state[0]] - sim.times[sim.state[0] - 1])
                 arrivaltimes.append(finalTime)
 
             if plot:

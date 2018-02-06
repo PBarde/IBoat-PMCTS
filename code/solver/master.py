@@ -274,6 +274,7 @@ class MasterTree:
         ax = fig.add_subplot(1, 3, 3)
         for i in range(len(x)):
             ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
+
         sc = ax.scatter(x, y, c=exploration, s=np.dot(exploration, 16 / max(exploration)), zorder=2, cmap="Reds")
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')

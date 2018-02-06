@@ -8,25 +8,25 @@ Created on Wed May 31 11:36:10 2017
 
 
 import sys
-import MyTree as mt
+import worker as mt
 sys.path.append("../model")
 import pickle
 import sys
-from WeatherTLKT import Weather
+from weatherTLKT import Weather
 import numpy as np
-from SimulatorTLKT import Simulator
+from simulatorTLKT import Simulator
 import matplotlib.pyplot as plt
 import matplotlib
-from MyTree import Tree
+from worker import Tree
 matplotlib.rcParams.update({'font.size': 16})
 
 
 
 HOURS_TO_DAY = 1 / 24
 # %% We load the forecast files
-mydate = '20170519'
+mydate = '20180108'
 modelcycle = '00'
-pathToSaveObj = './data/' + mydate + '_' + modelcycle + '.obj'
+pathToSaveObj = '../data/20180108_gep_0100z.obj'
 Wavg = Weather.load(pathToSaveObj)
 
 # %% We shift the times so that all times are in the correct bounds for interpolations
