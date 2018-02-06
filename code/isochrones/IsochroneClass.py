@@ -104,7 +104,7 @@ class Isochrone():
 
     """
     
-    def __init__(self,simulateur,coord_depart,coord_arrivee,delta_cap=10,increment_cap=9,nb_secteur=10,resolution=200):
+    def __init__(self,simulateur,coord_depart,coord_arrivee,delta_cap=10,increment_cap=9,nb_secteur=10,resolution=200,temps=0):
         
         """
         Class constructor
@@ -113,7 +113,8 @@ class Isochrone():
         self.sim=simulateur
         self.dep=coord_depart   #liste des coord de départ (lat,lon)
         self.arr=coord_arrivee  #liste des coord d'arrivée (lat,lon)
-        noeuddep=Node(0,coord_depart[0],coord_depart[1]) #attention si référence par parentée n'empêche pas le rammase miette de le supprimer
+        self.temps_dep=temps
+        noeuddep=Node(temps,coord_depart[0],coord_depart[1]) #attention si référence par parentée n'empêche pas le rammase miette de le supprimer
         self.isochrone_actuelle=[noeuddep]
         self.isochrone_future=[]
         self.distance_moy_iso = 0
@@ -249,18 +250,32 @@ class Isochrone():
             Cij = xij.C
             borne_sup = liste_S[-1].cap_sup
             borne_inf = liste_S[0].cap_inf
-            if (Cij < borne_inf or Cij > borne_sup):
-                pass
-            else:
-                if (Cij-self.C0) <= -180:
-                    diff = (Cij-self.C0)+360
-                elif (Cij-self.C0) >=180:
-                    diff = (Cij-self.C0)-360
+            if borne_sup > borne_inf:
+                if (Cij < borne_inf or Cij > borne_sup):
+                    pass
                 else:
-                    diff = (Cij-self.C0)
-                indice_S = int(diff/delta_S + self.p)
-                liste_S[indice_S].liste_noeud.append(xij)
-                liste_S[indice_S].liste_distance.append(xij.D)
+                    if (Cij-self.C0) <= -180:
+                        diff = (Cij-self.C0)+360
+                    elif (Cij-self.C0) >=180:
+                        diff = (Cij-self.C0)-360
+                    else:
+                        diff = (Cij-self.C0)
+                    indice_S = int(diff/delta_S + self.p)
+                    liste_S[indice_S].liste_noeud.append(xij)
+                    liste_S[indice_S].liste_distance.append(xij.D)
+            else:
+                if (0 <= Cij < borne_sup or 360 > Cij > borne_inf):
+                    if (Cij-self.C0) <= -180:
+                        diff = (Cij-self.C0)+360
+                    elif (Cij-self.C0) >=180:
+                        diff = (Cij-self.C0)-360
+                    else:
+                        diff = (Cij-self.C0)
+                    indice_S = int(diff/delta_S + self.p)
+                    liste_S[indice_S].liste_noeud.append(xij)
+                    liste_S[indice_S].liste_distance.append(xij.D)
+                else:
+                    pass
         return liste_S
         
     def nouvelle_isochrone_propre(self,liste_S):
@@ -307,7 +322,7 @@ class Isochrone():
                 finish_caps.append(cap_a_suivre)
                 self.sim.doStep(cap_a_suivre)
                 atDest,frac =Tree.is_state_at_dest(self.arr,self.sim.prevState,self.sim.state)
-            temps_total = self.sim.times[self.sim.state[0]]-(1-frac)*self.delta_t
+            temps_total = self.sim.times[self.sim.state[0]]-(1-frac)*self.delta_t-self.sim.times[self.temps_dep]
             Top_time.append(temps_total)
             Top_finish_caps.append(finish_caps)
         indice_solution = Top_time.index(min(Top_time))

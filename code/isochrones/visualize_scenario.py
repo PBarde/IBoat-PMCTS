@@ -25,15 +25,16 @@ mydate = '20180130'
 modelcycle = '00z'
 url = (website + 'gfs_1p00/gfs' + mydate + '/gfs_1p00_' + modelcycle)
 pathToSaveObj = '../data/' + mydate + '_gfs_1p00_' + modelcycle + '.obj'
-Weather.download(url, pathToSaveObj, latBound=[40, 50], lonBound=[360 - 15, 360])
+# Weather.download(url, pathToSaveObj, latBound=[40, 50], lonBound=[360 - 15, 360])
 
 Wavg = Weather.load(pathToSaveObj)
-sim = forest.create_simulators([Wavg], 1)[0]
+
+stateInit = [0, 42.5, -10 + 360]
+destination = [45.5, -10 + 360]
+sim = forest.create_simulators([Wavg], 1, deltalatlon=0.05, stateinit=stateInit)[0]
 SimC.Boat.UNCERTAINTY_COEFF = 0
 # sim.play_scenario()
 
-stateInit = [0, 42.5, -10 + 360]
-destination = [45.5, -8.5 + 360]
 
 # Create the solver
 sim.reset(stateInit)
