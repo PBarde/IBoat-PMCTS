@@ -136,10 +136,14 @@ class MasterTree:
             reward_per_action = np.zeros(shape=len(ACTIONS))
             for j in range(len(ACTIONS)):
                 if idscenario is None:
-                    temp = np.zeros(shape=self.numScenarios)
+                    reward_per_action_per_scenario = []
+                    idx_scenarios = []
                     for i in range(self.numScenarios):
-                        temp[i] = child.rewards[i, j].get_mean()
-                    reward_per_action[j] = np.dot(temp, self.probability)
+                        if child.is_expanded(i):
+                            idx_scenarios.append(i)
+                            reward_per_action_per_scenario.append(child.rewards[i, j].get_mean())
+                    reward_per_action[j] = np.dot(reward_per_action_per_scenario,
+                                                  [self.probability[i] for i in idx_scenarios])
                 else:
                     reward_per_action[j] = child.rewards[idscenario, j].get_mean()
             maxr = np.max(reward_per_action)
@@ -212,14 +216,18 @@ class MasterTree:
                     num_parent = 0
                     num_node = 0
                     uct_per_scenario = []
+                    idx_scenarios = []
                     for s, reward_per_scenario in enumerate(node.rewards):
                         for hist in child.parentNode.rewards[s]:
                             num_parent += sum(hist.h)
                         for hist in child.rewards[s]:
                             num_node += sum(hist.h)
-                        uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
 
-                    value = np.dot(uct_per_scenario, probability)
+                        if child.is_expanded(s):
+                            uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
+                            idx_scenarios.append(s)
+
+                    value = np.dot(uct_per_scenario, [probability[i] for i in idx_scenarios])
                     exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
                     points.append((x0, y0, x, y, value + exploration, value, exploration))
                 points = get_points(child, points, probability, coordinate=(x, y), idscenario=idscenario)

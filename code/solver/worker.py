@@ -201,6 +201,7 @@ class Tree:
         :return float: The uct value of the worker node passed in parameter
         """
         master_node = Master_nodes.get(node_hash, 0)
+        idx_scenarios = []
         if master_node == 0:
             # print("Node " + str(node_hash) + " is not in the master")
             return 0
@@ -219,21 +220,22 @@ class Tree:
                 for hist in master_node.rewards[s]:
                     num_node += sum(hist.h)
 
-                if (num_parent == 0) or (num_node == 0):
-                    uct_per_scenario.append(0)
-                    continue
+                if (num_parent != 0) and (num_node != 0):
+                    exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
 
-                exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                    for hist in reward_per_scenario:
+                        uct_value = hist.get_mean()
 
-                for hist in reward_per_scenario:
-                    uct_value = hist.get_mean()
+                        if uct_value > uct_max_on_actions:
+                            uct_max_on_actions = uct_value
 
-                    if uct_value > uct_max_on_actions:
-                        uct_max_on_actions = uct_value
+                    uct_per_scenario.append(uct_max_on_actions + exploration)
+                    idx_scenarios.append(s)
 
-                uct_per_scenario.append(uct_max_on_actions + exploration)
+            # mean on the scenarios that expanded this node
+            mean = np.dot(uct_per_scenario, [self.probability[i] for i in idx_scenarios])
 
-            return np.dot(uct_per_scenario, self.probability)
+            return mean
 
     def integrate_buffer(self, Master_nodes):
         """
