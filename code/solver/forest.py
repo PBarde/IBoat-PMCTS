@@ -145,36 +145,42 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
 
     if plot:
         meantrajs_dest = []
-        trajsofsim = []
+        trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
         traj = []
 
     for sim in sims:
         arrivaldistances = []
 
-        for _ in range(ntra):
+        for ii in range(ntra):
             sim.reset(stateinit)
 
             if plot:
                 traj.append(list(sim.state))
 
             for t in sim.times[0:-1]:
-                sim.doStep(missionheading)
+
+                if not mt.Tree.is_state_terminal(sim, sim.state):
+                    sim.doStep(missionheading)
+                else: break
 
                 if plot:
                     traj.append(list(sim.state))
 
             if plot:
-                trajsofsim.append(list(traj))
+                trajsofsim[ii][:len(traj)] = traj
+                buff = traj[-1]
+                fillstates = [[kk] + buff[1:] for kk in range(len(traj), len(sim.times))]
+                if fillstates:
+                    trajsofsim[ii][len(traj):] = fillstates
                 traj = []
 
             dist, dump = sim.getDistAndBearing(stateinit[1:], (sim.state[1:]))
             arrivaldistances.append(dist)
-            ii += 1
 
         meanarrivaldistances.append(np.mean(arrivaldistances))
         if plot:
             meantrajs_dest.append(np.mean(trajsofsim, 0))
-            trajsofsim = []
+            trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
 
     mindist = np.min(meanarrivaldistances)
     destination = sim.getDestination(mindist, missionheading, stateinit[1:])
@@ -238,7 +244,7 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
 
     if plot:
         timemin = min(minarrivaltimes)
-        basemap_dest = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
+        basemap_dest = sims[0].prepareBaseMap()
         plt.title('Mean initialization trajectory for distance estimation')
         colors = plt.get_cmap("tab20")
         colors = colors.colors[:len(sims)]
@@ -254,7 +260,7 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
             sim.plotTraj(meantrajs_dest[ii], basemap_dest, color=colors[ii], label="Scen. num : " + str(ii))
         plt.legend()
 
-        basemap_time = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
+        basemap_time = sims[0].prepareBaseMap()
         plt.title('Mean trajectory for minimal travel time estimation')
         basemap_time.scatter(xd, yd, zorder=0, c="red", s=100)
         plt.annotate("destination", (xd, yd))
@@ -265,6 +271,7 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
             sim.plotTraj(meantrajs[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
 
         plt.legend()
+        plt.show()
 
     else:
         timemin = min(arrivaltimes)

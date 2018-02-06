@@ -123,9 +123,9 @@ class Tree:
 
     def tree_policy(self, node, master_nodes):
         while not self.is_node_terminal(node):
-            if (random.random() < 0.5) and node.children:
-                node = self.best_child(node, master_nodes)
-            elif not node.is_fully_expanded():
+            # if (random.random() < 0.5) and node.children:
+                # node = self.best_child(node, master_nodes)
+            if not node.is_fully_expanded():
                 return self.expand(node)
             else:
                 node = self.best_child(node, master_nodes)
