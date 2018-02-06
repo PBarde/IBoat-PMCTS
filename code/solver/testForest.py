@@ -3,9 +3,10 @@ from master_node import deepcopy_dict
 from master import MasterTree
 
 # parameters
-name = "tree_0130_test"
+
+name = "tree_4scen_10000_freq100_uct5"
 frequency = 100
-budget = 1000
+budget = 10000
 
 mydate = '20180130'
 
@@ -28,16 +29,23 @@ sims = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM
 # sims[0].play_scenario()
 # initialize the simulators to get common destination and individual time min
 
-missionheading = 0
+
+missionheading = 235
 ntra = 50
 
-destination, timemin = ft.initialize_simulators(sims, ntra, STATE_INIT, missionheading, plot=True)
+destination, timemin = ft.initialize_simulators(sims, ntra, STATE_INIT, missionheading)
 print("destination : " + str(destination) + "  &  timemin : " + str(timemin) + "\n")
-# destination = [44.90198407864892, 350.5981540154125]
-# timemin = 5.75739048005
-
+# destination = [44.62224559323147, 350.9976771826662]
+# timemin = 5.2654198058866042
+#
 forest = ft.Forest(listsimulators=sims, destination=destination, timemin=timemin, budget=budget)
 master_nodes = forest.launch_search(STATE_INIT, frequency)
+
 new_dict = deepcopy_dict(master_nodes)
+
 forest.master = MasterTree(sims, destination, nodes=new_dict)
+forest.master.get_depth()
+forest.master.get_best_policy()
 forest.master.save_tree(name)
+forest.master.plot_tree_colored()
+#

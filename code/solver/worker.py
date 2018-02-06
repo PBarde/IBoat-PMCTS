@@ -18,7 +18,7 @@ sys.path.append("../model/")
 import simulatorTLKT as SimC
 from simulatorTLKT import A_DICT, ACTIONS
 
-UCT_COEFF = 1 / 2 ** 0.5
+UCT_COEFF = 1/5 * 1 / 2 ** 0.5
 RHO = 0.5
 
 
