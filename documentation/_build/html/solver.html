@@ -104,41 +104,6 @@ The best policies are available after <a class="reference internal" href="#maste
 <dd><p>Compute the depth of each master node and add it in their attributes. This method is called after the search.</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="master.MasterTree.get_points">
-<code class="descname">get_points</code><span class="sig-paren">(</span><em>node</em>, <em>points</em>, <em>coordinate=(0</em>, <em>0)</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_uct">
-<code class="descname">get_uct</code><span class="sig-paren">(</span><em>node_hash</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_uct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the master uct value of a worker node.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_hash</strong> (<em>int</em>) – the corresponding hash node</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The uct value of the worker node passed in parameter</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.integrate_buffer">
-<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>buffer</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrates a list of update from a scenario. This method is to be called from a worker.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>buffer</strong> (<em>list of list</em>) – list of updates coming from the worker. One update is a list :            [scenarioId, newNodeHash, parentHash, action, reward]</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="classmethod">
 <dt id="master.MasterTree.load_tree">
 <em class="property">classmethod </em><code class="descname">load_tree</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.load_tree" title="Permalink to this definition">¶</a></dt>
@@ -235,19 +200,15 @@ The best policies are available after <a class="reference internal" href="#maste
 <dl class="method">
 <dt id="master.MasterTree.plot_tree_colored">
 <code class="descname">plot_tree_colored</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree_colored" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a 2D representation of a tree. CHANGE</p>
+<dd><p>Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
+, the second one represents the exploitation and the third one the exploration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A tuple (fig, ax) of the current plot</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A tuple (fig, ax) of the current plot</td>
 </tr>
 </tbody>
 </table>
@@ -262,25 +223,6 @@ The best policies are available after <a class="reference internal" href="#maste
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – Name of the file.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>buffers_dict</em>, <em>event_dict</em>, <em>finish_event_dict</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Background task which waits for worker buffer updates.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>worker_dict</strong> – Dictionary of worker tree (the key is their id).</li>
-<li><strong>event_dict</strong> – Dictionary of event (one per scenario) to notify the master that a buffer is ready.</li>
-<li><strong>finish_event_dict</strong> – Dictionary of event (one per scenario) to notify the         master that the search of a scenario is ended.</li>
-</ul>
-</td>
 </tr>
 </tbody>
 </table>
@@ -488,7 +430,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <dl class="method">
 <dt id="master_node.MasterNode.add_reward">
 <code class="descname">add_reward</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.add_reward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Includes a reward into the histogram for all actions of one scenario.</p>
+<dd><p>Includes a reward into the histogram for a random action of one scenario.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -514,7 +456,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree from which the update is coming.</li>
 <li><strong>action</strong> (<em>int</em>) – Action (in degree) of the update</li>
-<li><strong>reward</strong> (<em>int</em>) – reward of the update</li>
+<li><strong>reward</strong> (<em>float</em>) – reward of the update</li>
 </ul>
 </td>
 </tr>
