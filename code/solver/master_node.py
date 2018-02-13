@@ -23,6 +23,7 @@ class MasterNode:
         self.parentNode = parentNode
         self.children = []
         self.depth = None
+        self.guessed_rewards = dict()
         if len(rewards) == 0:
             self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
         else:
