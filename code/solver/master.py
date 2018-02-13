@@ -49,38 +49,16 @@ class MasterTree:
         else:
             self.probability = np.array(proba)
 
-        self.max_depth = None
+        self.max_depth = max(nodes.values(), key=lambda x: x.depth).depth
         self.numScenarios = num_scenarios
         self.destination = destination
         self.best_policy = dict()
         self.best_nodes_policy = dict()
 
-    def get_depth(self):
-        """
-        Compute the depth of each master node and add it in their attributes. This method is called after the search.
-        """
-        node = self.nodes[hash(tuple([]))]
-        list_nodes = [node]
-        node.depth = 0
-        maxd = 0
-        while list_nodes:
-            node = list_nodes.pop(0)
-            for n in node.children:
-                list_nodes.append(n)
-                n.depth = node.depth + 1
-                if n.depth > maxd:
-                    maxd = n.depth
-
-        self.max_depth = maxd
-
     def get_best_policy(self):
         """
         Compute the best policy for each scenario and the global best policy. This method is called after the search.
         """
-        # Make sure all the variable have been computed
-        if not self.nodes[hash(tuple([]))].children:
-            self.get_children()
-
         # get best global policy:
         print("Global policy")
         nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
@@ -162,12 +140,6 @@ class MasterTree:
         y0 = 0
         node = self.nodes[hash(tuple([]))]  # rootNode
 
-        # Make sure all the variable have been computed
-        if not node.children:
-            self.get_children()
-        if node.depth is None:
-            self.get_depth()
-
         fig = plt.figure()
         ax = fig.add_subplot(1, 2, 1)
 
@@ -246,12 +218,6 @@ class MasterTree:
             return points
 
         node = self.nodes[hash(tuple([]))]  # rootNode
-
-        # Make sure all the variable have been computed
-        if not node.children:
-            self.get_children()
-        if node.depth is None:
-            self.get_depth()
 
         # Get the coordinates and the values
         points = get_points(node, [], self.probability, idscenario=idscenario)

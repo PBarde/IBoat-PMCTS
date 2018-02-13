@@ -1,9 +1,11 @@
 import sys
+
 sys.path.append("../model/")
 from utils import Hist
 from simulatorTLKT import A_DICT, ACTIONS
 import numpy as np
 import matplotlib.pyplot as plt
+
 
 class MasterNode:
     """
@@ -27,7 +29,6 @@ class MasterNode:
         if len(rewards) == 0:
             self.rewards = np.array([[Hist() for _ in range(len(ACTIONS))] for _ in range(numscenarios)])
         else:
-
             self.rewards = np.array([[Hist(init.h) for init in rewards[ii]] for ii in range(len(rewards))])
 
     def add_reward(self, idscenario, reward):
@@ -52,18 +53,6 @@ class MasterNode:
         """
         self.rewards[idscenario, A_DICT[action]].add(reward)
 
-    def backup(self, idscenario, reward):
-        """
-        Propagates the reward through the master tree, starting from this node.
-
-        :param int idscenario: id of the scenario/workertree where the update is coming
-        :param float reward: reward of the update
-        """
-        parent = self.parentNode
-        if parent is not None:
-            parent.add_reward_action(idscenario, self.arm, reward)
-            parent.backup(idscenario, reward)
-
     def is_expanded(self, idscenario):
         """
         Check if this node has been expanded by a scenario.
@@ -73,33 +62,18 @@ class MasterNode:
         """
         return not all(hist.is_empty() for hist in self.rewards[idscenario, :])
 
-    # TODO enelever les deux fonction suivantes si on ne s'en sert pas
-    def plot_hist(self, idscenario, action):
-        # print(self.rewards[idscenario, action].h)
-        fig, ax = plt.subplots()
-        plt.bar(x=Hist.MEANS, height=self.rewards[idscenario, action].h, width=Hist.THRESH[1] - Hist.THRESH[0])
-        fig.show()
-        return fig
-
-    def plot_mean_hist(self, action, probability):
-        # Mean on all the scenarios:
-        hist = sum(self.rewards[ii, action].h * probability[ii] for ii in range(len(self.rewards[:, action])))
-
-        fig, ax = plt.subplots()
-        # print(hist)
-        plt.bar(x=Hist.MEANS, height=hist, width=Hist.THRESH[1] - Hist.THRESH[0])
-        fig.show()
-        return fig
-
 
 def deepcopy_dict(nodes):
     """
-    Fais la copie et le get children en meme temps !
-    :param nodes:
-    :return:
+    Return a deep copy of a MasterNode dictionary.
+    Add also the children, the parentNode and the depth of each node.
+    This method is called after the search before saving the result.
+
+    :param dict nodes: a dictionary with MasterNode object
+    :return: the deep copy of the input dictionary
     """
     new_dict = dict()
-    n = len(nodes[hash(tuple([]))].rewards)
+    n = len(nodes[hash(tuple([]))].rewards)  # compute the number of scenario
 
     for k, node in nodes.items():
         new_dict[k] = MasterNode(n, nodehash=node.hash, parentNode=None, action=node.arm,
@@ -110,11 +84,25 @@ def deepcopy_dict(nodes):
         else:
             new_node.parentHash = node.parentNode.hash
 
+        # Remove the node to optimize memory
+        del nodes[k]
+
+    # Add the parentNode and the children for each node of the dictionary
     for node in new_dict.values():
         if not node.parentHash:
             node.parentNode = None
         else:
             node.parentNode = new_dict[node.parentHash]
             node.parentNode.children.append(node)
+
+    # Add the depth of each node as attribute
+    node = new_dict[hash(tuple([]))]
+    list_nodes = [node]
+    node.depth = 0
+    while list_nodes:
+        node = list_nodes.pop(0)
+        for n in node.children:
+            list_nodes.append(n)
+            n.depth = node.depth + 1
 
     return new_dict
