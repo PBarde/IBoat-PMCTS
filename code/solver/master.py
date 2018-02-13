@@ -52,8 +52,6 @@ class MasterTree:
         self.max_depth = None
         self.numScenarios = num_scenarios
         self.destination = destination
-        self.best_global_policy = []
-        self.best_global_nodes_policy = []
         self.best_policy = dict()
         self.best_nodes_policy = dict()
 
@@ -95,8 +93,8 @@ class MasterTree:
             nodes_policy.append(child)
             policy.append(action)
             node = child
-        self.best_global_policy = policy
-        self.best_global_nodes_policy = nodes_policy
+        self.best_policy[-1] = policy
+        self.best_nodes_policy[-1] = nodes_policy
 
         # get best policy for each scenario:
         for id_scenario in range(len(self.Simulators)):
@@ -318,12 +316,12 @@ class MasterTree:
         :return: A tuple (fig, ax) of the current plot
         """
         # check if the best_policy has been computed
-        if not self.best_global_policy:
+        if len(self.best_policy) == 0:
             self.get_best_policy()
 
         # Get the right policy
         if idscenario is None:
-            nodes_policy = self.best_global_nodes_policy
+            nodes_policy = self.best_nodes_policy[-1]
         else:
             nodes_policy = self.best_nodes_policy[idscenario]
 
@@ -348,13 +346,13 @@ class MasterTree:
         :return: the `figure <https://matplotlib.org/api/figure_api.html>`_ of the current plot
         """
         # check if the best_policy has been computed
-        if not self.best_global_policy:
+        if len(self.best_policy) == 0:
             self.get_best_policy()
 
         # Get the right policy
         if idscenario is None:
-            nodes_policy = self.best_global_nodes_policy
-            policy = self.best_global_policy
+            nodes_policy = self.best_nodes_policy[-1]
+            policy = self.best_policy[-1]
         else:
             nodes_policy = self.best_nodes_policy[idscenario]
             policy = self.best_policy[idscenario]
