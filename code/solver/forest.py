@@ -55,11 +55,12 @@ def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],
                        website='http://nomads.ncep.noaa.gov:9090/dods/',
                        modelcycle=range(1, 21)):
     """
-    To download the scenarios (launch in real python console)
-    :param mydate:
-    :param latBound:
-    :param lonBound:
-    :param website:
+    To download the scenarios for a MCTS (launch in real python console)
+
+    :param string mydate:
+    :param list latBound:
+    :param list lonBound:
+    :param string website:
     :param modelcycle:
     :return:
     """

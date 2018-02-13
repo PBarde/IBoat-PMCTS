@@ -18,7 +18,7 @@ sys.path.append("../model/")
 import simulatorTLKT as SimC
 from simulatorTLKT import A_DICT, ACTIONS
 
-UCT_COEFF = 1/5 * 1 / 2 ** 0.5
+UCT_COEFF = 1 / 5 * 1 / 2 ** 0.5
 RHO = 0.5
 
 
@@ -34,7 +34,7 @@ class Node:
         self.children = list(children)
         self.actions = list(SimC.ACTIONS)
         rand.shuffle(self.actions)
-        self.Values = np.array([Hist() for i in SimC.ACTIONS])
+        self.Values = np.array([Hist() for _ in SimC.ACTIONS])
         self.depth = depth
 
     def back_up(self, reward):
@@ -42,8 +42,7 @@ class Node:
         action = np.random.randint(len(ACTIONS))
         self.Values[action].add(reward)
 
-        # then the reward is propagated to the parent node according to the action that expanded the
-        # child
+        # then the reward is propagated to the parent node according to the action that expanded the child
         node = self
         while node.parent:
             ii = SimC.A_DICT[node.origins[-1]]
@@ -124,7 +123,7 @@ class Tree:
     def tree_policy(self, node, master_nodes):
         while not self.is_node_terminal(node):
             # if (random.random() < 0.5) and node.children:
-                # node = self.best_child(node, master_nodes)
+            # node = self.best_child(node, master_nodes)
             if not node.is_fully_expanded():
                 return self.expand(node)
             else:
@@ -195,19 +194,20 @@ class Tree:
 
     def get_master_uct(self, node_hash, Master_nodes):
         """
-        Compute the master uct value of a worker node.
+        Compute the uct value seen by the master tree.
 
-        :param int node_hash: the corresponding hash node
-        :return float: The uct value of the worker node passed in parameter
+        :param int node_hash: the corresponding hash node.
+        :param dict Master_nodes: dictionary of MasterNode objects.
+        :return float: The uct value of the corresponding node passed in parameter.
         """
         master_node = Master_nodes.get(node_hash, 0)
         idx_scenarios = []
+
+        # If the node is not in the the master dictionary, the uct is 0
         if master_node == 0:
-            # print("Node " + str(node_hash) + " is not in the master")
             return 0
 
         else:
-            # print("Node " + str(node_hash) + " is in the master")
             uct_per_scenario = []
             for s, reward_per_scenario in enumerate(master_node.rewards):
                 uct_max_on_actions = 0
@@ -232,37 +232,38 @@ class Tree:
                     uct_per_scenario.append(uct_max_on_actions + exploration)
                     idx_scenarios.append(s)
 
-            # mean on the scenarios that expanded this node
+            # mean on the scenarios which expanded this node
             mean = np.dot(uct_per_scenario, [self.probability[i] for i in idx_scenarios])
 
             return mean
 
     def integrate_buffer(self, Master_nodes):
         """
-        Integrates a list of update from a scenario. This method is to be called from a worker.
+        Integrates the buffer of update from this scenario. The buffer is a list of updates coming from the worker. \
+        One update is a list : [scenarioId, newNodeHash, parentHash, action, reward]
 
-        :param buffer: list of updates coming from the worker. One update is a list :\
-            [scenarioId, newNodeHash, parentHash, action, reward]
-        :type buffer: list of list
+        :param dict Master_nodes: dictionary of MasterNode objects.
         """
 
         for update in self.buffer:
-            # print(update)
-            scenarioId, newNodeHash, parentHash, action, reward = update
-            node = Master_nodes.get(newNodeHash, 0)
 
+            scenarioId, newNodeHash, parentHash, action, reward = update
+
+            node = Master_nodes.get(newNodeHash, 0)
+            # new node if it doesn't exist
             if node == 0:
                 node = MasterNode(self.numScenarios, nodehash=newNodeHash,
                                   parentNode=Master_nodes[parentHash], action=action)
 
+            # add the reward in the expanded node
             node.add_reward(scenarioId, reward)
 
+            # Back propagation
             Master_nodes[newNodeHash] = node
             while node.parentNode is not None:
                 parent_hash = Master_nodes[node.hash].parentNode.hash
                 parent_node = Master_nodes[parent_hash]
                 parent_node.add_reward_action(scenarioId, node.arm, reward)
-                # parent_node.children.append(node)
                 Master_nodes[parent_hash] = parent_node
                 node = parent_node
 
