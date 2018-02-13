@@ -80,8 +80,6 @@ class MasterTree:
         # Make sure all the variable have been computed
         if not self.nodes[hash(tuple([]))].children:
             self.get_children()
-        # if self.nodes[hash(tuple([]))].depth is None:
-        #     self.get_depth()
 
         # get best global policy:
         print("Global policy")
@@ -131,26 +129,26 @@ class MasterTree:
                 return best_child, best_action
 
         for child in node.children:
-            reward_per_action = np.zeros(shape=len(ACTIONS))
-            for j in range(len(ACTIONS)):
-                if idscenario is None:
-                    reward_per_action_per_scenario = []
-                    idx_scenarios = []
-                    for i in range(self.numScenarios):
-                        if child.is_expanded(i):
-                            idx_scenarios.append(i)
-                            reward_per_action_per_scenario.append(child.rewards[i, j].get_mean())
-                    reward_per_action[j] = np.dot(reward_per_action_per_scenario,
-                                                  [self.probability[i] for i in idx_scenarios])
-                else:
-                    reward_per_action[j] = child.rewards[idscenario, j].get_mean()
-            maxr = np.max(reward_per_action)
-            if maxr > best_reward:
-                best_reward = maxr
+            value, _ = self.get_utility(child, idscenario)
+            if value > best_reward:
+                best_reward = value
                 best_child = child
                 best_action = child.arm
         print("best reward :" + str(best_reward) + " for action :" + str(best_action))
         return best_child, best_action
+
+    def guess_reward(self, node, idscenario):
+        father = node.parentNode
+        if father.is_expanded(idscenario):
+            _, exploration = self.get_utility(father, idscenario)
+            grandfather = father.parentNode
+            best_child_grandfather, _ = self.get_best_child(grandfather, idscenario)
+            value_grd, expl_grd = self.get_utility(best_child_grandfather, idscenario)
+            guessed_reward = value_grd + expl_grd - exploration
+        else:
+            guessed_reward = father.guessed_rewards[idscenario]
+
+        return guessed_reward
 
     def plot_tree(self, grey=False, idscenario=None):
         """
@@ -182,6 +180,35 @@ class MasterTree:
         fig.show()
         return fig, ax
 
+    def get_utility(self, node, idscenario):
+
+        num_parent = 0
+        num_node = 0
+        reward_per_action = np.zeros(shape=len(ACTIONS))
+        for j in range(len(ACTIONS)):
+            if idscenario is None:
+                reward_per_action_per_scenario = []
+                for i in range(self.numScenarios):
+                    if node.is_expanded(i):
+                        reward_per_action_per_scenario.append(node.rewards[i, j].get_mean())
+                        num_node += sum(node.rewards[i, j].h)
+                        num_parent += sum(node.parentNode.rewards[i, j].h)
+                    else:
+                        reward_guess = self.guess_reward(node, i)
+                        node.guessed_rewards[i] = reward_guess
+                        reward_per_action_per_scenario.append(reward_guess)
+
+                reward_per_action[j] = np.dot(reward_per_action_per_scenario,
+                                              self.probability)
+            else:
+                num_node += sum(node.rewards[idscenario, j].h)
+                num_parent += sum(node.parentNode.rewards[idscenario, j].h)
+                reward_per_action[j] = node.rewards[idscenario, j].get_mean()
+
+        value = np.max(reward_per_action)
+        exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+        return value, exploration
+
     def plot_tree_colored(self, idscenario=None):
         """
         Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
@@ -210,24 +237,11 @@ class MasterTree:
                         continue
                 x = x0 + 1 * sin(child.arm * pi / 180)
                 y = y0 + 1 * cos(child.arm * pi / 180)
+
                 if child.parentNode is not None:
-                    num_parent = 0
-                    num_node = 0
-                    uct_per_scenario = []
-                    idx_scenarios = []
-                    for s, reward_per_scenario in enumerate(node.rewards):
-                        for hist in child.parentNode.rewards[s]:
-                            num_parent += sum(hist.h)
-                        for hist in child.rewards[s]:
-                            num_node += sum(hist.h)
-
-                        if child.is_expanded(s):
-                            uct_per_scenario.append(child.parentNode.rewards[s, A_DICT[child.arm]].get_mean())
-                            idx_scenarios.append(s)
-
-                    value = np.dot(uct_per_scenario, [probability[i] for i in idx_scenarios])
-                    exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+                    value, exploration = self.get_utility(child,idscenario)
                     points.append((x0, y0, x, y, value + exploration, value, exploration))
+
                 points = get_points(child, points, probability, coordinate=(x, y), idscenario=idscenario)
             return points
 
