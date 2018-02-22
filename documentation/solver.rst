@@ -28,6 +28,7 @@ forest
 Basic use example of the forest class:
 ::
 
+	""""""""""""""""""""""""""""""TO BE TESTED PLEASE """"""""""""""""""""""""""""""""""""""""""""""""
 	import forest as ft
 	from master_node import deepcopy_dict
 	from master import MasterTree
@@ -36,9 +37,11 @@ Basic use example of the forest class:
 	date = '20180130' # January 30, 2018
 	latBounds = [40, 50]
 	lonBounds = [360 - 15, 360]
-	
-	# Download and save the 20 scenarios 
-	ft.download_scenarios(date, latBound=latBounds, lonBound=lonBounds)
+
+
+	## Download and save the 20 scenarios
+	## run this in a terminal if you actually want to download anything
+	# ft.download_scenarios(date, latBound=latBounds, lonBound=lonBounds)
 
 	# Load the weathers scnearios
 	Weathers = ft.load_scenarios(date, latBound=latBounds, lonBound=lonBounds)
@@ -74,6 +77,11 @@ Basic use example of the forest class:
 	new_dict = deepcopy_dict(master_nodes)
 	forest.master = MasterTree(sims, destination, nodes=new_dict)
 	forest.master.save_tree(name)
+
+	# Displays some juicy results
+	forest.master.get_depth()
+	forest.master.get_best_policy()
+	forest.master.plot_tree_colored()
 
 master_node
 ---------------------------------

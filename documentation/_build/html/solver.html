@@ -59,7 +59,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash</li>
 <li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario</li>
 <li><strong>Simulators</strong> (<em>list</em>) – List of the simulators used during the search</li>
-<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <a class="reference internal" href="#master.MasterTree.get_depth" title="master.MasterTree.get_depth"><code class="xref py py-meth docutils literal"><span class="pre">get_depth()</span></code></a> has been called</li>
+<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <code class="xref py py-meth docutils literal"><span class="pre">get_depth()</span></code> has been called</li>
 <li><strong>numScenarios</strong> (<em>int</em>) – Number of scenarios</li>
 <li><strong>destination</strong> (<em>list</em>) – Destination state [lat, long]</li>
 <li><strong>best_global_policy</strong> (<em>list</em>) – List of actions corresponding to the average best policy</li>
@@ -96,12 +96,6 @@ The best policies are available after <a class="reference internal" href="#maste
 <dt id="master.MasterTree.get_best_policy">
 <code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute the best policy for each scenario and the global best policy. This method is called after the search.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="master.MasterTree.get_depth">
-<code class="descname">get_depth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_depth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the depth of each master node and add it in their attributes. This method is called after the search.</p>
 </dd></dl>
 
 <dl class="method">
@@ -359,32 +353,74 @@ The best policies are available after <a class="reference internal" href="#maste
 <dt id="forest.Forest">
 <em class="property">class </em><code class="descclassname">forest.</code><code class="descname">Forest</code><span class="sig-paren">(</span><em>listsimulators=[]</em>, <em>destination=[]</em>, <em>timemin=0</em>, <em>budget=100</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Object coordinating a MasterTree and its WorkerTrees</p>
+<p>Object coordinating a MasterTree and its WorkerTrees during a parallel MCTS search.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>listsimulators</strong> (<em>list</em>) – a list of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a> objects, each simulator should correspond to a different weather scenario</li>
+<li><strong>destination</strong> (<em>list</em><em>(</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [lat,lon], destination to reach</li>
+<li><strong>timemin</strong> (<em>float</em>) – reference time to define the reward model, comes from the <a class="reference internal" href="#forest.initialize_simulators" title="forest.initialize_simulators"><code class="xref py py-func docutils literal"><span class="pre">initialize_simulators()</span></code></a> function</li>
+<li><strong>budget</strong> (<em>int</em>) – number of nodes in each worker at the end of the search</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="forest.Forest.launch_search">
 <code class="descname">launch_search</code><span class="sig-paren">(</span><em>root_state</em>, <em>frequency</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.launch_search" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Launches a parallel MCTS search. It uses multiprocessing class. Each worker is a <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.Process</span></code>
+object. The master is a <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.Manager</span></code> hosting a dict() (called Master_nodes)
+that can be read and written into by each worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>root_state</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [time index, lat, lon], state of the root node of the sea</li>
+<li><strong>frequency</strong> (<em>int</em>) – number of node that are expanded in a worker before this one updates the corresponding nodes in the master.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">dictionnary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> the keys are the nodes’ hashes. These results must be
+deep copied with <a class="reference internal" href="#master_node.deepcopy_dict" title="master_node.deepcopy_dict"><code class="xref py py-func docutils literal"><span class="pre">master_node.deepcopy_dict()</span></code></a> if you want to do anything with them.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><code class="xref py py-class docutils literal"><span class="pre">multiprocessing.Manager.dict</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="forest.create_simulators">
 <code class="descclassname">forest.</code><code class="descname">create_simulators</code><span class="sig-paren">(</span><em>weathers</em>, <em>numberofsim</em>, <em>simtimestep=6</em>, <em>stateinit=(0</em>, <em>47.5</em>, <em>356.5)</em>, <em>ndaysim=8</em>, <em>deltalatlon=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.create_simulators" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
+<dd><p>Creates and returns a list of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>weathers</strong> – </li>
-<li><strong>numberofsim</strong> – </li>
-<li><strong>simtimestep</strong> – </li>
-<li><strong>stateinit</strong> – </li>
-<li><strong>ndaysim</strong> – </li>
-<li><strong>delatlatlon</strong> – </li>
+<li><strong>weathers</strong> (<em>list</em><em>(</em><em>)</em>) – List of <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects, each one is the wind scenario of the
+<a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a> object to be created</li>
+<li><strong>numberofsim</strong> (<em>int</em>) – number of simulator we want to create. Must be lower or equal to len(weathers). The simulators
+are created by chronologically browsing the weathers list</li>
+<li><strong>simtimestep</strong> (<em>float</em>) – time step in hours of the simulator</li>
+<li><strong>stateinit</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [t_index, lat, lon], initial state of the simulators</li>
+<li><strong>ndaysim</strong> (<em>int</em>) – time horizon of the search. Must be smaller or equal to the weather object time horizon.</li>
+<li><strong>deltalatlon</strong> (<em>float</em>) – latitude and longitude discretization of the simulators. Just for plotting purposes</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list()</p>
 </td>
 </tr>
 </tbody>
@@ -393,22 +429,21 @@ The best policies are available after <a class="reference internal" href="#maste
 
 <dl class="function">
 <dt id="forest.download_scenarios">
-<code class="descclassname">forest.</code><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd><p>To download the scenarios for a MCTS (launch in real python console)</p>
+<code class="descclassname">forest.</code><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', scenario_ids=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd><p>To download the weathers scenarios for a MCTS ** /!: needs to be launched in the terminal**.
+Scenarios are saved as ‘../data/’ + mydate + ‘_gep_’ + s_id + ‘00z.obj’ where s_id is the scenario id. They are
+stored as <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>mydate</strong> (<em>string</em>) – </li>
-<li><strong>latBound</strong> (<em>list</em>) – </li>
-<li><strong>lonBound</strong> (<em>list</em>) – </li>
-<li><strong>website</strong> (<em>string</em>) – </li>
-<li><strong>modelcycle</strong> – </li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>mydate</strong> (<em>string</em>) – ‘yyyymmdd’ date of the day starting the weather forecast in US format</li>
+<li><strong>latBound</strong> (<em>list</em><em>(</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [latmin, latmax], latitude boundaries of the domain on which the forecast is desired</li>
+<li><strong>lonBound</strong> (<em>list</em><em>(</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [lonmin, lonmax], longitude boundaries of the domain on which the forecast is desired</li>
+<li><strong>website</strong> (<em>string</em>) – url of the server hosting the forecasts</li>
+<li><strong>scenario_ids</strong> (<em>range</em>) – range covering the forecasts scenarios we want to download</li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
 </td>
 </tr>
 </tbody>
@@ -418,20 +453,81 @@ The best policies are available after <a class="reference internal" href="#maste
 <dl class="function">
 <dt id="forest.initialize_simulators">
 <code class="descclassname">forest.</code><code class="descname">initialize_simulators</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>missionheading</em>, <em>plot=False</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.initialize_simulators" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Find the destination point and the reference time for a list of simulators. These quantities are mandatory in order
+to carry out a MCTS parallel search.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sims</strong> (<em>list</em><em>(</em><em>)</em>) – List of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a></li>
+<li><strong>ntra</strong> (<em>int</em>) – Number of trajectories used to estimate the initialization</li>
+<li><strong>stateinit</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>float</em><em>,</em><em>float</em><em>)</em>) – t_index, lat, lon], starting point of the MCTS search</li>
+<li><strong>missionheading</strong> (<em>float</em>) – angle in deg wrt true North of the desired destination from stateinit</li>
+<li><strong>plot</strong> (<em>bool</em>) – if True displays the initialization trajectories</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[destination, timemin], destination are the coordinates of the destination point and timemin is in days</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list(list(float,float), float)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="forest.load_scenarios">
-<code class="descclassname">forest.</code><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, website='http://nomads.ncep.noaa.gov:9090/dods/', modelcycle=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">forest.</code><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, scenario_ids=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads previously downloaded scenarios and returns the corresponding list of <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>mydate</strong> (<em>string</em>) – ‘yyyymmdd’ date of the day starting the weather forecast in US format</li>
+<li><strong>scenario_ids</strong> – range covering the forecasts scenarios we want to download</li>
+<li><strong>latBound</strong> (<em>list</em><em>(</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [latmin, latmax], latitude boundaries of the domain on which the forecast is desired.
+If smaller than domain of stored object, returns a cropped object.
+Returns stored object otherwise</li>
+<li><strong>lonBound</strong> (<em>list</em><em>(</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [lonmin, lonmax], longitude boundaries of the domain on which the forecast is desired.
+If smaller than domain of stored object, returns a cropped object.
+Returns stored object otherwise</li>
+<li><strong>timeSteps</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>int</em><em>)</em>) – [min_t_index, max_t_index], time span of the desired forecast.
+If smaller than domain of stored object, returns a cropped object.
+Returns stored object otherwise</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of of <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list()</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="forest.play_multiple_scenarios">
 <code class="descclassname">forest.</code><code class="descname">play_multiple_scenarios</code><span class="sig-paren">(</span><em>sims</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.play_multiple_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Display an interactive representation of the wind conditions of a list of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a> objects.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sims</strong> (<em>list</em><em>(</em><em>)</em>) – List of the <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a> objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <p>Basic use example of the forest class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">forest</span> <span class="k">as</span> <span class="nn">ft</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span><span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span><span class="n">TO</span> <span class="n">BE</span> <span class="n">TESTED</span> <span class="n">PLEASE</span> <span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">forest</span> <span class="k">as</span> <span class="nn">ft</span>
 <span class="kn">from</span> <span class="nn">master_node</span> <span class="k">import</span> <span class="n">deepcopy_dict</span>
 <span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">MasterTree</span>
 
@@ -440,8 +536,10 @@ The best policies are available after <a class="reference internal" href="#maste
 <span class="n">latBounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
 <span class="n">lonBounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">360</span> <span class="o">-</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">360</span><span class="p">]</span>
 
-<span class="c1"># Download and save the 20 scenarios</span>
-<span class="n">ft</span><span class="o">.</span><span class="n">download_scenarios</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">latBound</span><span class="o">=</span><span class="n">latBounds</span><span class="p">,</span> <span class="n">lonBound</span><span class="o">=</span><span class="n">lonBounds</span><span class="p">)</span>
+
+<span class="c1">## Download and save the 20 scenarios</span>
+<span class="c1">## run this in a terminal if you actually want to download anything</span>
+<span class="c1"># ft.download_scenarios(date, latBound=latBounds, lonBound=lonBounds)</span>
 
 <span class="c1"># Load the weathers scnearios</span>
 <span class="n">Weathers</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">load_scenarios</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">latBound</span><span class="o">=</span><span class="n">latBounds</span><span class="p">,</span> <span class="n">lonBound</span><span class="o">=</span><span class="n">lonBounds</span><span class="p">)</span>
@@ -477,6 +575,11 @@ The best policies are available after <a class="reference internal" href="#maste
 <span class="n">new_dict</span> <span class="o">=</span> <span class="n">deepcopy_dict</span><span class="p">(</span><span class="n">master_nodes</span><span class="p">)</span>
 <span class="n">forest</span><span class="o">.</span><span class="n">master</span> <span class="o">=</span> <span class="n">MasterTree</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">destination</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="n">new_dict</span><span class="p">)</span>
 <span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">save_tree</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+<span class="c1"># Displays some juicy results</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">get_depth</span><span class="p">()</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">get_best_policy</span><span class="p">()</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">plot_tree_colored</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -541,24 +644,6 @@ The best policies are available after <a class="reference internal" href="#maste
 </dd></dl>
 
 <dl class="method">
-<dt id="master_node.MasterNode.backup">
-<code class="descname">backup</code><span class="sig-paren">(</span><em>idscenario</em>, <em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.backup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagates the reward through the master tree, starting from this node.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario/workertree where the update is coming</li>
-<li><strong>reward</strong> (<em>float</em>) – reward of the update</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="master_node.MasterNode.is_expanded">
 <code class="descname">is_expanded</code><span class="sig-paren">(</span><em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.is_expanded" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if this node has been expanded by a scenario.</p>
@@ -574,24 +659,24 @@ The best policies are available after <a class="reference internal" href="#maste
 </table>
 </dd></dl>
 
-<dl class="method">
-<dt id="master_node.MasterNode.plot_hist">
-<code class="descname">plot_hist</code><span class="sig-paren">(</span><em>idscenario</em>, <em>action</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.plot_hist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="master_node.MasterNode.plot_mean_hist">
-<code class="descname">plot_mean_hist</code><span class="sig-paren">(</span><em>action</em>, <em>probability</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode.plot_mean_hist" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="function">
 <dt id="master_node.deepcopy_dict">
 <code class="descclassname">master_node.</code><code class="descname">deepcopy_dict</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.deepcopy_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fais la copie et le get children en meme temps !
-:param nodes:
-:return:</p>
+<dd><p>Return a deep copy of a MasterNode dictionary.
+Add also the children, the parentNode and the depth of each node.
+This method is called after the search before saving the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodes</strong> (<em>dict</em>) – a dictionary with MasterNode object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the deep copy of the input dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
