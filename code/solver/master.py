@@ -3,13 +3,12 @@
 
 import sys
 import numpy as np
-from utils import Hist
 import matplotlib.pyplot as plt
-from worker import UCT_COEFF
 from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
-from time import sleep
+from utils import Hist
+from worker import UCT_COEFF
 from master_node import MasterNode
 
 sys.path.append('../model/')
@@ -18,22 +17,17 @@ from simulatorTLKT import ACTIONS, Simulator, A_DICT
 
 class MasterTree:
     """
-    Master tree that manages ns different WorkerTree in parallel.
-    Each WorkerTree is searching on a different Weather scenario.
-    The best policies are available after :py:meth:`get_best_policy` has been called.
+    Tree that represent the final result of a MCTS parallel search on multiple scenarios.
 
     :ivar dict nodes: dictionary containing `MasterNode`, the keys are their corresponding hash
     :ivar numpy.array probability: array containing the probability of each scenario
     :ivar list Simulators: List of the simulators used during the search
-    :ivar int max_depth: Maximum depth of the master tree computed after :py:meth:`get_depth` has been called
     :ivar int numScenarios: Number of scenarios
     :ivar list destination: Destination state [lat, long]
-    :ivar list best_global_policy: List of actions corresponding to the average best policy
-    :ivar list best_global_nodes_policy: List of MasterNodes encountered during the global best policy
     :ivar dict best_policy: Dictionary of list of actions. Key of the dictionary is the scenario id.\
-     The list is the sequel of action.
-    :ivar dict best_global_nodes_policy: Dictionnary of list of MasterNodes encountered during the best\
-     policy of one scenario. The Key of the dictionary is the scenario id.
+    Key -1 is for the average policy. The list is the sequel of action.
+    :ivar dict best_global_nodes_policy: Dictionary of list of MasterNodes encountered during the best\
+     policy of one scenario. The Key of the dictionary is the scenario id. Key -1 is for the average policy.
     """
 
     def __init__(self, sims, destination, nodes=dict(), proba=[]):
@@ -43,58 +37,52 @@ class MasterTree:
             self.nodes[hash(tuple([]))] = MasterNode(num_scenarios, nodehash=hash(tuple([])))
 
         self.Simulators = sims
-
+        self.numScenarios = num_scenarios
+        self.destination = destination
+        self.best_policy = dict()
+        self.best_nodes_policy = dict()
         if len(proba) != num_scenarios:
             self.probability = np.array([1 / num_scenarios for _ in range(num_scenarios)])
         else:
             self.probability = np.array(proba)
 
-        self.max_depth = max(nodes.values(), key=lambda x: x.depth).depth
-        self.numScenarios = num_scenarios
-        self.destination = destination
-        self.best_policy = dict()
-        self.best_nodes_policy = dict()
-
     def get_best_policy(self):
         """
-        Compute the best policy for each scenario and the global best policy. This method is called after the search.
+        Compute the best policy for each scenario and the global best policy.
         """
-        # get best global policy:
-        print("Global policy")
-        nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
-        policy = []
-        node = nodes_policy[0]
-        while node.children:
-            child, action = self.get_best_child(node, idscenario=None)
-            nodes_policy.append(child)
-            policy.append(action)
-            node = child
-        self.best_policy[-1] = policy
-        self.best_nodes_policy[-1] = nodes_policy
 
-        # get best policy for each scenario:
-        for id_scenario in range(len(self.Simulators)):
-            print("Policy for scenario " + str(id_scenario))
+        # Get best policy for each scenario and the global one:
+        for id_scenario in range(-1, len(self.Simulators)):
+            if id_scenario == -1:
+                print("Global policy")
+            else:
+                print("Policy for scenario {}".format(id_scenario))
             nodes_policy = [self.nodes[hash(tuple([]))]]  # rootNode
             policy = []
             node = nodes_policy[0]
             while node.children:
-                child, action = self.get_best_child(node, idscenario=id_scenario)
+                child, action = self.get_best_child(node, idscenario=id_scenario, verbose=True)
+
+                # If in this scenario the node has zero child, stop the loop
                 if child is None:
                     break
+
+                # Save the best node and the best action
                 nodes_policy.append(child)
                 policy.append(action)
                 node = child
+
             self.best_policy[id_scenario] = policy
             self.best_nodes_policy[id_scenario] = nodes_policy
 
-    def get_best_child(self, node, idscenario=None):
+    def get_best_child(self, node, idscenario=-1, verbose=False):
         """
         Compare the children of a node based on their reward and return the best one.
 
         :param MasterNode node: the parent node
         :param int idscenario: id of the considered scenario. If default (None), the method return the best child\
          for the global tree
+        :param bool verbose: If True, print the best reward and the best action.
         :return: A tuple: (the best child, the action taken to go from the node to its best child)
         """
         best_reward = 0
@@ -102,7 +90,7 @@ class MasterTree:
         best_child = None
 
         # Test if at least one node has been expanded by the scenario
-        if idscenario is not None:
+        if idscenario is not -1:
             if all(not child.is_expanded(idscenario) for child in node.children):
                 return best_child, best_action
 
@@ -112,7 +100,8 @@ class MasterTree:
                 best_reward = value
                 best_child = child
                 best_action = child.arm
-        print("best reward :" + str(best_reward) + " for action :" + str(best_action))
+        if verbose:
+            print("Depth {}: best reward = {} for action = {}".format(best_child.depth, best_reward, best_action))
         return best_child, best_action
 
     def guess_reward(self, node, idscenario):
@@ -128,37 +117,18 @@ class MasterTree:
 
         return guessed_reward
 
-    def plot_tree(self, grey=False, idscenario=None):
-        """
-        Plot a 2D representation of a tree.
-
-        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
-        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
-        :return: A tuple (fig, ax) of the current plot
-        """
-        x0 = 0
-        y0 = 0
-        node = self.nodes[hash(tuple([]))]  # rootNode
-
-        fig = plt.figure()
-        ax = fig.add_subplot(1, 2, 1)
-
-        if grey:
-            self.plot_children(node, [x0, y0], ax, idscenario=idscenario)
-        else:
-            self.plot_children(node, [x0, y0], ax, 'k', idscenario=idscenario)
-        ax.plot(0, 0, color="blue", marker='o', markersize='10')
-        plt.axis('equal')
-        fig.show()
-        return fig, ax
-
     def get_utility(self, node, idscenario):
+
+        # Test if the node has been expanded by the scenario
+        if idscenario is not -1:
+            if not node.is_expanded(idscenario):
+                return 0, 0
 
         num_parent = 0
         num_node = 0
         reward_per_action = np.zeros(shape=len(ACTIONS))
         for j in range(len(ACTIONS)):
-            if idscenario is None:
+            if idscenario is -1:
                 reward_per_action_per_scenario = []
                 for i in range(self.numScenarios):
                     if node.is_expanded(i):
@@ -179,52 +149,87 @@ class MasterTree:
 
         value = np.max(reward_per_action)
         exploration = UCT_COEFF * (2 * log(num_parent) / num_node) ** 0.5
+
         return value, exploration
 
-    def plot_tree_colored(self, idscenario=None):
+    def get_points(self, node, points, probability, coordinate=(0, 0), idscenario=-1, objective="depth"):
+        """
+        Recursive function used in :py:meth:`plot_tree` and :py:meth:`plot_tree_colored` to compute the coordinates\
+        of a node in the plot, and another value
+
+        :param node: a MasterNode object
+        :param list points: the previous list of points
+        :param np.array probability: probability of each scenario
+        :param tuple coordinate: coordinates of the previous point
+        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :return: the expanded list of points
+        """
+        x0, y0 = coordinate
+        for child in node.children:
+            if idscenario is not -1:
+                if not child.is_expanded(idscenario):
+                    continue
+            x = x0 + sin(child.arm * pi / 180)
+            y = y0 + cos(child.arm * pi / 180)
+
+            if child.parentNode is not None:
+                if objective == "uct":
+                    value, exploration = self.get_utility(child, idscenario)
+                    points.append((x0, y0, x, y, value + exploration, value, exploration))
+                elif objective == "depth":
+                    points.append((x0, y0, x, y, child.depth))
+
+            points = self.get_points(child, points, probability, coordinate=(x, y), idscenario=idscenario,
+                                     objective=objective)
+        return points
+
+    def plot_tree(self, idscenario=-1, number_subplots=1):
+        """
+        Plot a 2D representation of a tree.
+
+        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
+        :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
+        :return: A tuple (fig, ax) of the current plot
+        """
+        node = self.nodes[hash(tuple([]))]  # rootNode
+        # Get the coordinates and the depth
+        points = self.get_points(node, [], self.probability, idscenario=idscenario, objective="depth")
+        coordinates = [[i[0] for i in points], [i[1] for i in points], [i[2] for i in points], [i[3] for i in points]]
+        depth = [i[4] for i in points]
+
+        # Plots
+        fig = plt.figure()
+        ax = fig.add_subplot(1, number_subplots, 1)
+        self.draw_points(ax, coordinates, depth)
+        ax.set_title("Depth")
+        fig.show()
+        return fig, ax
+
+    def draw_points(self, ax, coordinates, values):
+        for i in range(len(values)):
+            ax.plot([coordinates[0][i], coordinates[2][i]], [coordinates[1][i], coordinates[3][i]], color="grey",
+                    linewidth=0.5, zorder=1)
+        sc = ax.scatter(coordinates[2], coordinates[3], c=values,
+                        s=np.dot(np.power(values, 2), 32 / np.power(max(values), 2)), zorder=2,
+                        cmap="Reds")
+        plt.colorbar(sc)
+        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        plt.axis('equal')
+
+    def plot_tree_uct(self, idscenario=-1):
         """
         Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
         , the second one represents the exploitation and the third one the exploration.
 
-        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
         :return: A tuple (fig, ax) of the current plot
         """
-
-        def get_points(node, points, probability, coordinate=(0, 0), idscenario=None):
-            """
-            Recursive function used in :py:meth:`plot_tree_colored` to compute the exploration, exploitation,
-            and the coordinates of a node in the plot.
-
-            :param node: a MasterNode object
-            :param list points: the previous list of points
-            :param np.array probability: probability of each scenario
-            :param tuple coordinate: coordinates of the previous point
-            :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
-            :return: the expanded list of points
-            """
-            x0, y0 = coordinate
-            for child in node.children:
-                if idscenario is not None:
-                    if not child.is_expanded(idscenario):
-                        continue
-                x = x0 + 1 * sin(child.arm * pi / 180)
-                y = y0 + 1 * cos(child.arm * pi / 180)
-
-                if child.parentNode is not None:
-                    value, exploration = self.get_utility(child,idscenario)
-                    points.append((x0, y0, x, y, value + exploration, value, exploration))
-
-                points = get_points(child, points, probability, coordinate=(x, y), idscenario=idscenario)
-            return points
 
         node = self.nodes[hash(tuple([]))]  # rootNode
 
         # Get the coordinates and the values
-        points = get_points(node, [], self.probability, idscenario=idscenario)
-        x0 = [i[0] for i in points]
-        y0 = [i[1] for i in points]
-        x = [i[2] for i in points]
-        y = [i[3] for i in points]
+        points = self.get_points(node, [], self.probability, idscenario=idscenario, objective="uct")
+        coordinates = [[i[0] for i in points], [i[1] for i in points], [i[2] for i in points], [i[3] for i in points]]
         total = [i[4] for i in points]
         exploitation = [i[5] for i in points]
         exploration = [i[6] for i in points]
@@ -232,67 +237,26 @@ class MasterTree:
         # Plots
         fig = plt.figure()
         ax = fig.add_subplot(1, 3, 1)
-        for i in range(len(x)):
-            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-        sc = ax.scatter(x, y, c=total, s=np.dot(total, 16 / max(total)), zorder=2, cmap="Reds")
-        plt.colorbar(sc)
-        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        self.draw_points(ax, coordinates, total)
         ax.set_title("Total utility")
-        plt.axis('equal')
 
         ax = fig.add_subplot(1, 3, 2)
-        for i in range(len(x)):
-            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-        sc = ax.scatter(x, y, c=exploitation, s=np.dot(exploitation, 16 / max(exploitation)), zorder=2, cmap="Reds")
-        plt.colorbar(sc)
-        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        self.draw_points(ax, coordinates, exploitation)
         ax.set_title("Exploitation")
-        plt.axis('equal')
 
         ax = fig.add_subplot(1, 3, 3)
-        for i in range(len(x)):
-            ax.plot([x0[i], x[i]], [y0[i], y[i]], color="grey", linewidth=1, zorder=1)
-
-        sc = ax.scatter(x, y, c=exploration, s=np.dot(exploration, 16 / max(exploration)), zorder=2, cmap="Reds")
-        plt.colorbar(sc)
-        ax.plot(0, 0, color="blue", marker='o', markersize='10')
+        self.draw_points(ax, coordinates, exploration)
         ax.set_title("Exploration")
-        plt.axis('equal')
+
         fig.show()
         return fig, ax
 
-    def plot_children(self, node, coordinate, ax, color=None, idscenario=None):
-        """
-        Recursive function to plot the children of a master node.
-
-        :param MasterNode node: the parent node
-        :param list coordinate: coordinate of the parent node in the representation
-        :param ax: the `Axis <https://matplotlib.org/api/axes_api.html>`_ on \
-        which the children are plotted
-        :param color: color of the nodes/branches plotted. If None the color of the nodes/branches is a\
-         grey scale depending of their depth.
-        :param int idscenario: id of the scenario plotted. If None the global tree is plotted.
-        """
-        x0, y0 = coordinate
-        for child in node.children:
-            if idscenario is not None:
-                if not child.is_expanded(idscenario):
-                    continue
-            x = x0 + 1 * sin(child.arm * pi / 180)
-            y = y0 + 1 * cos(child.arm * pi / 180)
-            if color is None:
-                col = str((child.depth / self.max_depth) * 0.8)
-            else:
-                col = color
-            ax.plot([x0, x], [y0, y], color=col, marker='o', markersize='6')
-            self.plot_children(child, [x, y], ax, color=color, idscenario=idscenario)
-
-    def plot_best_policy(self, grey=False, idscenario=None):
+    def plot_best_policy(self, idscenario=-1, number_subplots=1):
         """
         Plot a representation of a tree and its best policy.
 
         :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
-        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
         :return: A tuple (fig, ax) of the current plot
         """
         # check if the best_policy has been computed
@@ -300,12 +264,9 @@ class MasterTree:
             self.get_best_policy()
 
         # Get the right policy
-        if idscenario is None:
-            nodes_policy = self.best_nodes_policy[-1]
-        else:
-            nodes_policy = self.best_nodes_policy[idscenario]
+        nodes_policy = self.best_nodes_policy[idscenario]
 
-        fig, ax = self.plot_tree(grey=grey, idscenario=idscenario)
+        fig, ax = self.plot_tree(idscenario=idscenario, number_subplots=number_subplots)
         x0 = 0
         y0 = 0
         length = 1
@@ -317,30 +278,26 @@ class MasterTree:
             y0 = y
         return fig, ax
 
-    def plot_hist_best_policy(self, idscenario=None):
+    def plot_hist_best_policy(self, idscenario=-1):
         """
         Plot the best policy as in :py:meth:`plot_best_policy`, with the histogram of the best action at each node\
          (`Animation <https://matplotlib.org/api/animation_api.html>`_)
 
-        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
+        :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
         :return: the `figure <https://matplotlib.org/api/figure_api.html>`_ of the current plot
         """
         # check if the best_policy has been computed
         if len(self.best_policy) == 0:
             self.get_best_policy()
 
-        # Get the right policy
-        if idscenario is None:
-            nodes_policy = self.best_nodes_policy[-1]
-            policy = self.best_policy[-1]
-        else:
-            nodes_policy = self.best_nodes_policy[idscenario]
-            policy = self.best_policy[idscenario]
+        # Get the right policy:
+        nodes_policy = self.best_nodes_policy[idscenario]
+        policy = self.best_policy[idscenario]
 
         # Plot
-        fig, ax1 = self.plot_best_policy(grey=True, idscenario=idscenario)
+        fig, ax1 = self.plot_best_policy(idscenario=idscenario, number_subplots=2)
+
         ax2 = fig.add_subplot(1, 2, 2)
-        # ax2.set_ylim([0, 30])
         barcollection = ax2.bar(x=Hist.MEANS, height=[0 for _ in Hist.MEANS],
                                 width=Hist.THRESH[1] - Hist.THRESH[0])
         pt, = ax1.plot(0, 0, color="green", marker='o', markersize='7')
@@ -361,7 +318,7 @@ class MasterTree:
                 a = 0
             else:
                 a = A_DICT[policy[i]]
-            if idscenario is None:
+            if idscenario is -1:
                 hist = sum(n.rewards[ii, a].h * self.probability[ii] for ii in range(len(n.rewards[:, a])))
             else:
                 hist = n.rewards[idscenario, a].h
