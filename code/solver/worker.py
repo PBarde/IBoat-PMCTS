@@ -23,6 +23,18 @@ RHO = 0.5
 
 
 class Node:
+    """
+    Node of a :class:`worker.Tree`.
+
+    :ivar tuple state: Only for the root Node: initial state (time, lat, lon), None for other node.
+    :ivar worker.Node parent: Reference to the parent of this node.
+    :ivar list origins: sequel of actions taken from to root node to this node.
+    :ivar list children: Child nodes of this node.
+    :ivar list actions: Remaining actions available (not expanded) from this node in random order.
+    :ivar numpy.array Values: Array of :class:`utils.Hist` to save the rewards. Its size is the number of possible actions.
+    :ivar int depth: Depth of the node in the Tree.
+
+    """
     def __init__(self, state=None, parent=None, origins=[], children=[], depth=0):
         # the list() enables to copy the state in a new list and not just copy the reference
         if state is not None:
@@ -38,6 +50,11 @@ class Node:
         self.depth = depth
 
     def back_up(self, reward):
+        """
+        Propagates the reward through the Tree, starting from this :class:`worker.Node`.
+
+        :param float reward: The reward corresponding to the expansion of this :class:`worker.Node`.
+        """
         # the first reward of a node is put in a random action
         action = np.random.randint(len(ACTIONS))
         self.Values[action].add(reward)
@@ -50,9 +67,21 @@ class Node:
             node = node.parent
 
     def is_fully_expanded(self):
+        """
+        Returns True if this :class:`worker.Node` is fully expanded (if there is not remaining actions)
+
+        :return boolean: True if fully expanded, False otherwise.
+        """
         return len(self.actions) == 0
 
     def get_uct(self, num_parent):
+        """
+        Computes the uct values of this :class:`worker.Node` (combination of exploration and exploitation)
+
+        :param int num_parent: Number of times the parent of the :class:`worker.Node` has been explored.
+
+        :return float: The uct value.
+        """
         uct_max_on_actions = 0
         num_node = 0
         for val in self.Values:

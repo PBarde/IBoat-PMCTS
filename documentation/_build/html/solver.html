@@ -295,20 +295,67 @@ as the lower reward such that its father node would be expanded next.</p>
 <dt id="worker.Node">
 <em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>state=None</em>, <em>parent=None</em>, <em>origins=[]</em>, <em>children=[]</em>, <em>depth=0</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Node of a <a class="reference internal" href="#worker.Tree" title="worker.Tree"><code class="xref py py-class docutils literal"><span class="pre">worker.Tree</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>state</strong> (<em>tuple</em>) – Only for the root Node: initial state (time, lat, lon), None for other node.</li>
+<li><strong>parent</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – Reference to the parent of this node.</li>
+<li><strong>origins</strong> (<em>list</em>) – sequel of actions taken from to root node to this node.</li>
+<li><strong>children</strong> (<em>list</em>) – Child nodes of this node.</li>
+<li><strong>actions</strong> (<em>list</em>) – Remaining actions available (not expanded) from this node in random order.</li>
+<li><strong>Values</strong> (<em>numpy.array</em>) – Array of <code class="xref py py-class docutils literal"><span class="pre">utils.Hist</span></code> to save the rewards. Its size is the number of possible actions.</li>
+<li><strong>depth</strong> (<em>int</em>) – Depth of the node in the Tree.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="worker.Node.back_up">
 <code class="descname">back_up</code><span class="sig-paren">(</span><em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.back_up" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Propagates the reward through the Tree, starting from this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reward</strong> (<em>float</em>) – The reward corresponding to the expansion of this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Node.get_uct">
 <code class="descname">get_uct</code><span class="sig-paren">(</span><em>num_parent</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.get_uct" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the uct values of this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> (combination of exploration and exploitation)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>num_parent</strong> (<em>int</em>) – Number of times the parent of the <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> has been explored.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The uct value.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Node.is_fully_expanded">
 <code class="descname">is_fully_expanded</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.is_fully_expanded" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns True if this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> is fully expanded (if there is not remaining actions)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return boolean:</th><td class="field-body">True if fully expanded, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
