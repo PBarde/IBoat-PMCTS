@@ -6,7 +6,6 @@ master
 
 .. automodule:: master
 	:members:
-	:undoc-members:
 	:show-inheritance:
 
 worker

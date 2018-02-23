@@ -17,17 +17,25 @@ from simulatorTLKT import ACTIONS, Simulator, A_DICT
 
 class MasterTree:
     """
-    Tree that represent the final result of a MCTS parallel search on multiple scenarios.
+    Tree that stores the final result of a MCTS parallel search on multiple scenarios. Is not the direct
+    output of the search but already incorporates some post-processing.
 
-    :ivar dict nodes: dictionary containing `MasterNode`, the keys are their corresponding hash
+    :ivar dict nodes: dictionary containing :class:`master_node.MasterNode`, the keys are their corresponding hash
+
     :ivar numpy.array probability: array containing the probability of each scenario
-    :ivar list Simulators: List of the simulators used during the search
+
+    :ivar list Simulators: List of the :class:`simulatorTLKT.Simulator`objects used during the search
+
     :ivar int numScenarios: Number of scenarios
+
     :ivar list destination: Destination state [lat, long]
-    :ivar dict best_policy: Dictionary of list of actions. Key of the dictionary is the scenario id.\
-    Key -1 is for the average policy. The list is the sequel of action.
-    :ivar dict best_global_nodes_policy: Dictionary of list of MasterNodes encountered during the best\
-     policy of one scenario. The Key of the dictionary is the scenario id. Key -1 is for the average policy.
+
+    :ivar dict best_policy: Dictionary of list of actions. Key of the dictionary is the scenario id.
+                            Key -1 is for the average policy. The list is the sequel of action.
+
+    :ivar dict best_global_nodes_policy: Dictionary of list of :class:`master_node.MasterNode` encountered during the best
+                                        policy of one scenario. The Key of the dictionary is the scenario id.
+                                        Key -1 is for the average policy.
     """
 
     def __init__(self, sims, destination, nodes=dict(), proba=[]):
@@ -48,7 +56,7 @@ class MasterTree:
 
     def get_best_policy(self):
         """
-        Compute the best policy for each scenario and the global best policy.
+        Computes the best policy for each scenario and the global best policy. And add it to the object.
         """
 
         # Get best policy for each scenario and the global one:
@@ -77,12 +85,14 @@ class MasterTree:
 
     def get_best_child(self, node, idscenario=-1, verbose=False):
         """
-        Compare the children of a node based on their reward and return the best one.
+        Compares the children of a node based on their rewards and return the best one.
 
-        :param MasterNode node: the parent node
-        :param int idscenario: id of the considered scenario. If default (None), the method return the best child\
-         for the global tree
-        :param bool verbose: If True, print the best reward and the best action.
+        :param MasterNode node: the parent :class:`master_node.MasterNode`
+
+        :param int idscenario: id of the considered scenario. If default (-1), the method returns the best child
+                                for the global tree
+        :param bool verbose: If True, prints the best reward and the best action.
+
         :return: A tuple: (the best child, the action taken to go from the node to its best child)
         """
         best_reward = 0
@@ -105,6 +115,16 @@ class MasterTree:
         return best_child, best_action
 
     def guess_reward(self, node, idscenario):
+        """
+        Estimates the reward of an unexplored node (for a given scenario)
+        as the lower reward such that its father node would be expanded next.
+
+        :param node: The :class:`master_node.MasterNode` whose reward we want to estimate
+
+        :param int idscenario: scenario's id
+        :return: The estimated reward
+        :rtype: float
+        """
         father = node.parentNode
         if father.is_expanded(idscenario):
             _, exploration = self.get_utility(father, idscenario)
@@ -118,6 +138,15 @@ class MasterTree:
         return guessed_reward
 
     def get_utility(self, node, idscenario):
+        """
+        Computes the utility of an node as the sum of the exploration and exploitation term. It done either
+        for a given scenario or as the weighted mean over all the scenario (global utility) if idscenario = -1
+
+        :param node: The :class:`master_node.MasterNode` whose utility we want to compute
+        :param idscenario: scenario's id
+        :return: exploitation term, exploration term
+        :rtype: float, float
+        """
 
         # Test if the node has been expanded by the scenario
         if idscenario is not -1:
@@ -157,15 +186,19 @@ class MasterTree:
 
     def get_points(self, node, points, probability, coordinate=(0, 0), idscenario=-1, objective="depth"):
         """
-        Recursive function used in :py:meth:`plot_tree` and :py:meth:`plot_tree_colored` to compute the coordinates\
-        of a node in the plot, and another value
+        Recursive function used in :func:`plot_tree` and :func:`plot_tree_colored` to compute the coordinates\
+        of a node in the plot and other node properties depending on the objective parameter
 
-        :param node: a MasterNode object
+        :param node: a :class:`master_node.MasterNode` object
         :param list points: the previous list of points
         :param np.array probability: probability of each scenario
         :param tuple coordinate: coordinates of the previous point
-        :param int idscenario: id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.
-        :return: the expanded list of points
+        :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default),
+                                the global tree is plotted.
+        :param string objective: "uct" to compute exploration, explotation and utility. "depth" to compute the
+                                depth of each node.
+
+        :return: the expanded list of points, a point being a tuple
         """
         x0, y0 = coordinate
         for child in node.children:
@@ -232,7 +265,7 @@ class MasterTree:
 
     def plot_tree_uct(self, idscenario=-1):
         """
-        Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
+        Plot the tree 3 times: for the first one the colormap represents the sum of exploitation and exploration for each node
         , the second one represents the exploitation and the third one the exploration.
 
         :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
@@ -298,6 +331,7 @@ class MasterTree:
          (`Animation <https://matplotlib.org/api/animation_api.html>`_)
 
         :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
+        :param bool interactive: if True the plot is not an animation but can be browsed step by step
         :return: the `figure <https://matplotlib.org/api/figure_api.html>`_ of the current plot
         """
         # check if the best_policy has been computed

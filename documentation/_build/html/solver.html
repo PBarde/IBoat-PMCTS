@@ -48,41 +48,41 @@
 <dt id="master.MasterTree">
 <em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em>, <em>nodes={}</em>, <em>proba=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Tree that represent the final result of a MCTS parallel search on multiple scenarios.</p>
+<p>Tree that stores the final result of a MCTS parallel search on multiple scenarios. Is not the direct
+output of the search but already incorporates some post-processing.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash</li>
+<li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>, the keys are their corresponding hash</li>
 <li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario</li>
-<li><strong>Simulators</strong> (<em>list</em>) – List of the simulators used during the search</li>
+<li><strong>Simulators</strong> (<em>list</em>) – List of the :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>simulatorTLKT.Simulator`objects used during the search</li>
 <li><strong>numScenarios</strong> (<em>int</em>) – Number of scenarios</li>
 <li><strong>destination</strong> (<em>list</em>) – Destination state [lat, long]</li>
-<li><strong>best_policy</strong> (<em>dict</em>) – Dictionary of list of actions. Key of the dictionary is the scenario id.    Key -1 is for the average policy. The list is the sequel of action.</li>
-<li><strong>best_global_nodes_policy</strong> (<em>dict</em>) – Dictionary of list of MasterNodes encountered during the best     policy of one scenario. The Key of the dictionary is the scenario id. Key -1 is for the average policy.</li>
+<li><strong>best_policy</strong> (<em>dict</em>) – Dictionary of list of actions. Key of the dictionary is the scenario id.
+Key -1 is for the average policy. The list is the sequel of action.</li>
+<li><strong>best_global_nodes_policy</strong> (<em>dict</em>) – Dictionary of list of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> encountered during the best
+policy of one scenario. The Key of the dictionary is the scenario id.
+Key -1 is for the average policy.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="master.MasterTree.draw_points">
-<code class="descname">draw_points</code><span class="sig-paren">(</span><em>ax</em>, <em>coordinates</em>, <em>values</em>, <em>gray</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.draw_points" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="master.MasterTree.get_best_child">
 <code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=-1</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare the children of a node based on their reward and return the best one.</p>
+<dd><p>Compares the children of a node based on their rewards and return the best one.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the considered scenario. If default (None), the method return the best child         for the global tree</li>
-<li><strong>verbose</strong> (<em>bool</em>) – If True, print the best reward and the best action.</li>
+<li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a></li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the considered scenario. If default (-1), the method returns the best child
+for the global tree</li>
+<li><strong>verbose</strong> (<em>bool</em>) – If True, prints the best reward and the best action.</li>
 </ul>
 </td>
 </tr>
@@ -96,27 +96,30 @@
 <dl class="method">
 <dt id="master.MasterTree.get_best_policy">
 <code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the best policy for each scenario and the global best policy.</p>
+<dd><p>Computes the best policy for each scenario and the global best policy. And add it to the object.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="master.MasterTree.get_points">
 <code class="descname">get_points</code><span class="sig-paren">(</span><em>node</em>, <em>points</em>, <em>probability</em>, <em>coordinate=(0</em>, <em>0)</em>, <em>idscenario=-1</em>, <em>objective='depth'</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recursive function used in <a class="reference internal" href="#master.MasterTree.plot_tree" title="master.MasterTree.plot_tree"><code class="xref py py-meth docutils literal"><span class="pre">plot_tree()</span></code></a> and <code class="xref py py-meth docutils literal"><span class="pre">plot_tree_colored()</span></code> to compute the coordinates        of a node in the plot, and another value</p>
+<dd><p>Recursive function used in <a class="reference internal" href="#master.MasterTree.plot_tree" title="master.MasterTree.plot_tree"><code class="xref py py-func docutils literal"><span class="pre">plot_tree()</span></code></a> and <code class="xref py py-func docutils literal"><span class="pre">plot_tree_colored()</span></code> to compute the coordinates        of a node in the plot and other node properties depending on the objective parameter</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>node</strong> – a MasterNode object</li>
+<li><strong>node</strong> – a <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> object</li>
 <li><strong>points</strong> (<em>list</em>) – the previous list of points</li>
 <li><strong>probability</strong> (<em>np.array</em>) – probability of each scenario</li>
 <li><strong>coordinate</strong> (<em>tuple</em>) – coordinates of the previous point</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default),
+the global tree is plotted.</li>
+<li><strong>objective</strong> (<em>string</em>) – “uct” to compute exploration, explotation and utility. “depth” to compute the
+depth of each node.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the expanded list of points</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the expanded list of points, a point being a tuple</p>
 </td>
 </tr>
 </tbody>
@@ -126,12 +129,52 @@
 <dl class="method">
 <dt id="master.MasterTree.get_utility">
 <code class="descname">get_utility</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_utility" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Computes the utility of an node as the sum of the exploration and exploitation term. It done either
+for a given scenario or as the weighted mean over all the scenario (global utility) if idscenario = -1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> – The <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> whose utility we want to compute</li>
+<li><strong>idscenario</strong> – scenario’s id</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">exploitation term, exploration term</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float, float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="master.MasterTree.guess_reward">
 <code class="descname">guess_reward</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.guess_reward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Estimates the reward of an unexplored node (for a given scenario)
+as the lower reward such that its father node would be expanded next.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> – The <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> whose reward we want to estimate</li>
+<li><strong>idscenario</strong> (<em>int</em>) – scenario’s id</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">The estimated reward</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="classmethod">
 <dt id="master.MasterTree.load_tree">
@@ -176,9 +219,14 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</li>
+<li><strong>interactive</strong> (<em>bool</em>) – if True the plot is not an animation but can be browsed step by step</li>
+</ul>
+</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the <a class="reference external" href="https://matplotlib.org/api/figure_api.html">figure</a> of the current plot</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the <a class="reference external" href="https://matplotlib.org/api/figure_api.html">figure</a> of the current plot</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -208,7 +256,7 @@
 <dl class="method">
 <dt id="master.MasterTree.plot_tree_uct">
 <code class="descname">plot_tree_uct</code><span class="sig-paren">(</span><em>idscenario=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree_uct" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
+<dd><p>Plot the tree 3 times: for the first one the colormap represents the sum of exploitation and exploration for each node
 , the second one represents the exploitation and the third one the exploration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
