@@ -48,9 +48,7 @@
 <dt id="master.MasterTree">
 <em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em>, <em>nodes={}</em>, <em>proba=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Master tree that manages ns different WorkerTree in parallel.
-Each WorkerTree is searching on a different Weather scenario.
-The best policies are available after <a class="reference internal" href="#master.MasterTree.get_best_policy" title="master.MasterTree.get_best_policy"><code class="xref py py-meth docutils literal"><span class="pre">get_best_policy()</span></code></a> has been called.</p>
+<p>Tree that represent the final result of a MCTS parallel search on multiple scenarios.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -59,21 +57,23 @@ The best policies are available after <a class="reference internal" href="#maste
 <li><strong>nodes</strong> (<em>dict</em>) – dictionary containing <cite>MasterNode</cite>, the keys are their corresponding hash</li>
 <li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario</li>
 <li><strong>Simulators</strong> (<em>list</em>) – List of the simulators used during the search</li>
-<li><strong>max_depth</strong> (<em>int</em>) – Maximum depth of the master tree computed after <code class="xref py py-meth docutils literal"><span class="pre">get_depth()</span></code> has been called</li>
 <li><strong>numScenarios</strong> (<em>int</em>) – Number of scenarios</li>
 <li><strong>destination</strong> (<em>list</em>) – Destination state [lat, long]</li>
-<li><strong>best_global_policy</strong> (<em>list</em>) – List of actions corresponding to the average best policy</li>
-<li><strong>best_global_nodes_policy</strong> (<em>dict</em>) – List of MasterNodes encountered during the global best policy</li>
-<li><strong>best_policy</strong> (<em>dict</em>) – Dictionary of list of actions. Key of the dictionary is the scenario id.     The list is the sequel of action.</li>
-<li><strong>best_global_nodes_policy</strong> – Dictionnary of list of MasterNodes encountered during the best     policy of one scenario. The Key of the dictionary is the scenario id.</li>
+<li><strong>best_policy</strong> (<em>dict</em>) – Dictionary of list of actions. Key of the dictionary is the scenario id.    Key -1 is for the average policy. The list is the sequel of action.</li>
+<li><strong>best_global_nodes_policy</strong> (<em>dict</em>) – Dictionary of list of MasterNodes encountered during the best     policy of one scenario. The Key of the dictionary is the scenario id. Key -1 is for the average policy.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
+<dt id="master.MasterTree.draw_points">
+<code class="descname">draw_points</code><span class="sig-paren">(</span><em>ax</em>, <em>coordinates</em>, <em>values</em>, <em>gray</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.draw_points" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="master.MasterTree.get_best_child">
-<code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_best_child</code><span class="sig-paren">(</span><em>node</em>, <em>idscenario=-1</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_child" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare the children of a node based on their reward and return the best one.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -82,6 +82,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
 <li><strong>idscenario</strong> (<em>int</em>) – id of the considered scenario. If default (None), the method return the best child         for the global tree</li>
+<li><strong>verbose</strong> (<em>bool</em>) – If True, print the best reward and the best action.</li>
 </ul>
 </td>
 </tr>
@@ -95,7 +96,31 @@ The best policies are available after <a class="reference internal" href="#maste
 <dl class="method">
 <dt id="master.MasterTree.get_best_policy">
 <code class="descname">get_best_policy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_best_policy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute the best policy for each scenario and the global best policy. This method is called after the search.</p>
+<dd><p>Compute the best policy for each scenario and the global best policy.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="master.MasterTree.get_points">
+<code class="descname">get_points</code><span class="sig-paren">(</span><em>node</em>, <em>points</em>, <em>probability</em>, <em>coordinate=(0</em>, <em>0)</em>, <em>idscenario=-1</em>, <em>objective='depth'</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.get_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive function used in <a class="reference internal" href="#master.MasterTree.plot_tree" title="master.MasterTree.plot_tree"><code class="xref py py-meth docutils literal"><span class="pre">plot_tree()</span></code></a> and <code class="xref py py-meth docutils literal"><span class="pre">plot_tree_colored()</span></code> to compute the coordinates        of a node in the plot, and another value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> – a MasterNode object</li>
+<li><strong>points</strong> (<em>list</em>) – the previous list of points</li>
+<li><strong>probability</strong> (<em>np.array</em>) – probability of each scenario</li>
+<li><strong>coordinate</strong> (<em>tuple</em>) – coordinates of the previous point</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the expanded list of points</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -124,7 +149,7 @@ The best policies are available after <a class="reference internal" href="#maste
 
 <dl class="method">
 <dt id="master.MasterTree.plot_best_policy">
-<code class="descname">plot_best_policy</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_best_policy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_best_policy</code><span class="sig-paren">(</span><em>idscenario=-1</em>, <em>number_subplots=1</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_best_policy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a representation of a tree and its best policy.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -132,7 +157,7 @@ The best policies are available after <a class="reference internal" href="#maste
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</li>
 </ul>
 </td>
 </tr>
@@ -144,35 +169,14 @@ The best policies are available after <a class="reference internal" href="#maste
 </dd></dl>
 
 <dl class="method">
-<dt id="master.MasterTree.plot_children">
-<code class="descname">plot_children</code><span class="sig-paren">(</span><em>node</em>, <em>coordinate</em>, <em>ax</em>, <em>color=None</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_children" title="Permalink to this definition">¶</a></dt>
-<dd><p>Recursive function to plot the children of a master node.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>node</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – the parent node</li>
-<li><strong>coordinate</strong> (<em>list</em>) – coordinate of the parent node in the representation</li>
-<li><strong>ax</strong> – the <a class="reference external" href="https://matplotlib.org/api/axes_api.html">Axis</a> on         which the children are plotted</li>
-<li><strong>color</strong> – color of the nodes/branches plotted. If None the color of the nodes/branches is a         grey scale depending of their depth.</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the scenario plotted. If None the global tree is plotted.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
 <dt id="master.MasterTree.plot_hist_best_policy">
-<code class="descname">plot_hist_best_policy</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_hist_best_policy" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_hist_best_policy</code><span class="sig-paren">(</span><em>idscenario=-1</em>, <em>interactive=False</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_hist_best_policy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the best policy as in <a class="reference internal" href="#master.MasterTree.plot_best_policy" title="master.MasterTree.plot_best_policy"><code class="xref py py-meth docutils literal"><span class="pre">plot_best_policy()</span></code></a>, with the histogram of the best action at each node         (<a class="reference external" href="https://matplotlib.org/api/animation_api.html">Animation</a>)</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the <a class="reference external" href="https://matplotlib.org/api/figure_api.html">figure</a> of the current plot</td>
 </tr>
@@ -182,15 +186,15 @@ The best policies are available after <a class="reference internal" href="#maste
 
 <dl class="method">
 <dt id="master.MasterTree.plot_tree">
-<code class="descname">plot_tree</code><span class="sig-paren">(</span><em>grey=False</em>, <em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree" title="Permalink to this definition">¶</a></dt>
+<code class="descname">plot_tree</code><span class="sig-paren">(</span><em>idscenario=-1</em>, <em>number_subplots=1</em>, <em>gray=True</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a 2D representation of a tree.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>grey</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
-<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</li>
+<li><strong>gray</strong> (<em>boolean</em>) – if True, each node/branch are plot with a color (grey scale) depending of the depth of the node</li>
+<li><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</li>
 </ul>
 </td>
 </tr>
@@ -202,15 +206,15 @@ The best policies are available after <a class="reference internal" href="#maste
 </dd></dl>
 
 <dl class="method">
-<dt id="master.MasterTree.plot_tree_colored">
-<code class="descname">plot_tree_colored</code><span class="sig-paren">(</span><em>idscenario=None</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree_colored" title="Permalink to this definition">¶</a></dt>
+<dt id="master.MasterTree.plot_tree_uct">
+<code class="descname">plot_tree_uct</code><span class="sig-paren">(</span><em>idscenario=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree.plot_tree_uct" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot a the tree 3 times: first one the colormap represents the sum of exploitation and exploration for each node
 , the second one represents the exploitation and the third one the exploration.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If None (default), the global tree is plotted.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>idscenario</strong> (<em>int</em>) – id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A tuple (fig, ax) of the current plot</td>
 </tr>
@@ -526,28 +530,26 @@ Returns stored object otherwise</li>
 </dd></dl>
 
 <p>Basic use example of the forest class:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span><span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span><span class="n">TO</span> <span class="n">BE</span> <span class="n">TESTED</span> <span class="n">PLEASE</span> <span class="s2">&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">forest</span> <span class="k">as</span> <span class="nn">ft</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">forest</span> <span class="k">as</span> <span class="nn">ft</span>
 <span class="kn">from</span> <span class="nn">master_node</span> <span class="k">import</span> <span class="n">deepcopy_dict</span>
 <span class="kn">from</span> <span class="nn">master</span> <span class="k">import</span> <span class="n">MasterTree</span>
 
 <span class="c1"># Scenario parameters</span>
-<span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;20180130&#39;</span> <span class="c1"># January 30, 2018</span>
+<span class="n">date</span> <span class="o">=</span> <span class="s1">&#39;20180223&#39;</span>  <span class="c1"># January 30, 2018</span>
 <span class="n">latBounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">50</span><span class="p">]</span>
 <span class="n">lonBounds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">360</span> <span class="o">-</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">360</span><span class="p">]</span>
 
-
-<span class="c1">## Download and save the 20 scenarios</span>
+<span class="c1">## Download and saves the 5 scenarios</span>
 <span class="c1">## run this in a terminal if you actually want to download anything</span>
-<span class="c1"># ft.download_scenarios(date, latBound=latBounds, lonBound=lonBounds)</span>
+<span class="c1"># ft.download_scenarios(date, latBound=latBounds, lonBound=lonBounds, scenario_ids=range(1, 5))</span>
 
 <span class="c1"># Load the weathers scnearios</span>
-<span class="n">Weathers</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">load_scenarios</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">latBound</span><span class="o">=</span><span class="n">latBounds</span><span class="p">,</span> <span class="n">lonBound</span><span class="o">=</span><span class="n">lonBounds</span><span class="p">)</span>
+<span class="n">Weathers</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">load_scenarios</span><span class="p">(</span><span class="n">date</span><span class="p">,</span> <span class="n">latBound</span><span class="o">=</span><span class="n">latBounds</span><span class="p">,</span> <span class="n">lonBound</span><span class="o">=</span><span class="n">lonBounds</span><span class="p">,</span> <span class="n">scenario_ids</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
 <span class="c1"># Simulators parameters</span>
 <span class="n">NUMBER_OF_SIM</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># &lt;=20</span>
 <span class="n">SIM_TIME_STEP</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># in hours</span>
-<span class="n">STATE_INIT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">42.5</span><span class="p">,</span> <span class="mi">360</span> <span class="o">-</span> <span class="mf">11.5</span><span class="p">]</span> <span class="c1"># first state</span>
+<span class="n">STATE_INIT</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">42.5</span><span class="p">,</span> <span class="mi">360</span> <span class="o">-</span> <span class="mf">11.5</span><span class="p">]</span>  <span class="c1"># first state</span>
 <span class="n">N_DAYS_SIM</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># time horizon in days</span>
 <span class="n">missionheading</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">n_trajectories</span> <span class="o">=</span> <span class="mi">50</span>
@@ -557,13 +559,13 @@ Returns stored object otherwise</li>
                             <span class="n">stateinit</span><span class="o">=</span><span class="n">STATE_INIT</span><span class="p">,</span> <span class="n">ndaysim</span><span class="o">=</span><span class="n">N_DAYS_SIM</span><span class="p">)</span>
 
 <span class="c1"># Initialize the simulators to get common destination and individual time min</span>
-<span class="n">destination</span><span class="p">,</span> <span class="n">timemin</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">initialize_simulators</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">ntra</span><span class="p">,</span> <span class="n">STATE_INIT</span><span class="p">,</span> <span class="n">missionheading</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">destination</span><span class="p">,</span> <span class="n">timemin</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">initialize_simulators</span><span class="p">(</span><span class="n">sims</span><span class="p">,</span> <span class="n">n_trajectories</span><span class="p">,</span> <span class="n">STATE_INIT</span><span class="p">,</span> <span class="n">missionheading</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;destination : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;  &amp;  timemin : &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">timemin</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="c1"># Search parameters</span>
 <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;tree_exemple&quot;</span>
-<span class="n">frequency</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">budget</span> <span class="o">=</span> <span class="mi">1000</span>
+<span class="n">frequency</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">budget</span> <span class="o">=</span> <span class="mi">100</span>
 
 <span class="c1"># Initialize the forest</span>
 <span class="n">forest</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">Forest</span><span class="p">(</span><span class="n">listsimulators</span><span class="o">=</span><span class="n">sims</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">,</span> <span class="n">timemin</span><span class="o">=</span><span class="n">timemin</span><span class="p">,</span> <span class="n">budget</span><span class="o">=</span><span class="n">budget</span><span class="p">)</span>
@@ -577,9 +579,10 @@ Returns stored object otherwise</li>
 <span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">save_tree</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
 <span class="c1"># Displays some juicy results</span>
-<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">get_depth</span><span class="p">()</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">plot_tree_uct</span><span class="p">()</span>
 <span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">get_best_policy</span><span class="p">()</span>
-<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">plot_tree_colored</span><span class="p">()</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">plot_best_policy</span><span class="p">()</span>
+<span class="n">forest</span><span class="o">.</span><span class="n">master</span><span class="o">.</span><span class="n">plot_hist_best_policy</span><span class="p">(</span><span class="n">interactive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

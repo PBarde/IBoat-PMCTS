@@ -77,9 +77,6 @@ class Forest:
         for w_th in worker_process.values():
             w_th.join()
 
-        for worker in self.workers.values():
-            print("Number of iterations for worker " + str(worker.id) + ": " + str(worker.ite))
-        print(id(Master_nodes))
         return Master_nodes
 
 
@@ -348,7 +345,6 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
             sim.plotTraj(meantrajs[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
 
         plt.legend()
-        plt.show()
 
     else:
         timemin = min(arrivaltimes)

@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 from math import log, sin, cos, pi
 from matplotlib import animation
 import pickle
-from utils import Hist
+from utils import Hist, Player
 from worker import UCT_COEFF
 from master_node import MasterNode
 
@@ -144,7 +144,10 @@ class MasterTree:
                                               self.probability)
             else:
                 num_node += sum(node.rewards[idscenario, j].h)
-                num_parent += sum(node.parentNode.rewards[idscenario, j].h)
+                if node.parentNode is None: # means we are on the rootnode
+                    num_parent = num_node
+                else:
+                    num_parent += sum(node.parentNode.rewards[idscenario, j].h)
                 reward_per_action[j] = node.rewards[idscenario, j].get_mean()
 
         value = np.max(reward_per_action)
@@ -183,11 +186,11 @@ class MasterTree:
                                      objective=objective)
         return points
 
-    def plot_tree(self, idscenario=-1, number_subplots=1):
+    def plot_tree(self, idscenario=-1, number_subplots=1, gray = True):
         """
         Plot a 2D representation of a tree.
 
-        :param boolean grey: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
+        :param boolean gray: if True, each node/branch are plot with a color (grey scale) depending of the depth of the node
         :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
         :return: A tuple (fig, ax) of the current plot
         """
@@ -200,18 +203,29 @@ class MasterTree:
         # Plots
         fig = plt.figure()
         ax = fig.add_subplot(1, number_subplots, 1)
-        self.draw_points(ax, coordinates, depth)
-        ax.set_title("Depth")
+        self.draw_points(ax, coordinates, depth, gray)
+
+        if idscenario == -1:
+            title = "Global Search Tree and best policy"
+        else :
+            title = "Search Tree and best policy for scenario {}".format(idscenario)
+
+        ax.set_title(title)
         fig.show()
         return fig, ax
 
-    def draw_points(self, ax, coordinates, values):
+    def draw_points(self, ax, coordinates, values, gray):
         for i in range(len(values)):
             ax.plot([coordinates[0][i], coordinates[2][i]], [coordinates[1][i], coordinates[3][i]], color="grey",
                     linewidth=0.5, zorder=1)
+        if gray:
+            color_map = "gray"
+        else:
+            color_map = "Reds"
+
         sc = ax.scatter(coordinates[2], coordinates[3], c=values,
-                        s=np.dot(np.power(values, 2), 32 / np.power(max(values), 2)), zorder=2,
-                        cmap="Reds")
+                            s=np.dot(np.power(values, 2), 32 / np.power(max(values), 2)), zorder=2,
+                            cmap=color_map)
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         plt.axis('equal')
@@ -237,15 +251,15 @@ class MasterTree:
         # Plots
         fig = plt.figure()
         ax = fig.add_subplot(1, 3, 1)
-        self.draw_points(ax, coordinates, total)
+        self.draw_points(ax, coordinates, total, False)
         ax.set_title("Total utility")
 
         ax = fig.add_subplot(1, 3, 2)
-        self.draw_points(ax, coordinates, exploitation)
+        self.draw_points(ax, coordinates, exploitation, False)
         ax.set_title("Exploitation")
 
         ax = fig.add_subplot(1, 3, 3)
-        self.draw_points(ax, coordinates, exploration)
+        self.draw_points(ax, coordinates, exploration, False)
         ax.set_title("Exploration")
 
         fig.show()
@@ -278,7 +292,7 @@ class MasterTree:
             y0 = y
         return fig, ax
 
-    def plot_hist_best_policy(self, idscenario=-1):
+    def plot_hist_best_policy(self, idscenario=-1, interactive = False):
         """
         Plot the best policy as in :py:meth:`plot_best_policy`, with the histogram of the best action at each node\
          (`Animation <https://matplotlib.org/api/animation_api.html>`_)
@@ -298,8 +312,9 @@ class MasterTree:
         fig, ax1 = self.plot_best_policy(idscenario=idscenario, number_subplots=2)
 
         ax2 = fig.add_subplot(1, 2, 2)
-        barcollection = ax2.bar(x=Hist.MEANS, height=[0 for _ in Hist.MEANS],
-                                width=Hist.THRESH[1] - Hist.THRESH[0])
+        ax2.set_title("Histogram of returns for given action")
+        barcollection = ax2.bar(Hist.MEANS, [0 for _ in Hist.MEANS],
+                                Hist.THRESH[1] - Hist.THRESH[0])
         pt, = ax1.plot(0, 0, color="green", marker='o', markersize='7')
         x0, y0 = 0, 0
         x_list = [x0]
@@ -329,8 +344,12 @@ class MasterTree:
 
             return barcollection, pt
 
-        anim = animation.FuncAnimation(fig, animate, frames=len(nodes_policy), interval=1000, blit=False)
+        if interactive:
+            anim = Player(fig, animate, maxi=len(nodes_policy) - 1)
+        else:
+            anim = animation.FuncAnimation(fig, animate, frames=len(nodes_policy), interval=1000, blit=False)
         plt.show()
+
         return fig
 
     def save_tree(self, name):
