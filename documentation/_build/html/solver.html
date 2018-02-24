@@ -375,7 +375,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <li><strong>simulator</strong> (<a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><em>Simulator</em></a>) – The simulator used to do the boat simulations (step, etc.).</li>
 <li><strong>destination</strong> (<em>list</em>) – Position [lat, lon] of the wanted destination.</li>
 <li><strong>TimeMax</strong> (<em>float</em>) – Time horizon of the search.</li>
-<li><strong>TimeMin</strong> (<em>float</em>) – Minimum time to arrive to the destination, computed on several boats which go straight     from the initial point to the destination.</li>
+<li><strong>TimeMin</strong> (<em>float</em>) – Minimum time to arrive to the destination, computed on several boats which go straight     from the initial point to the destination (default policy).</li>
 <li><strong>depth</strong> (<em>int</em>) – Maximum depth of the tree.</li>
 <li><strong>Nodes</strong> (<em>list</em>) – List of <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>, representing the tree.</li>
 <li><strong>buffer</strong> (<em>list</em>) – The buffer is a list of updates to be included in the master Tree.     One update is a list : [scenarioId, newNodeHash, parentHash, action, reward].</li>
@@ -396,11 +396,11 @@ as the lower reward such that its father node would be expanded next.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The parent node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The best <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> of the node given in parameter.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The best child (<a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>) of the parent node given in parameter.</p>
 </td>
 </tr>
 </tbody>
@@ -410,7 +410,18 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.default_policy">
 <code class="descname">default_policy</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.default_policy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Policy used to compute the reward of a node. First, the state of the node is estimated with         <a class="reference internal" href="#worker.Tree.get_sim_to_estimate_state" title="worker.Tree.get_sim_to_estimate_state"><code class="xref py py-meth docutils literal"><span class="pre">get_sim_to_estimate_state()</span></code></a>, then the default policy is applied (going straight to the destination).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The node one wants to evaluate.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body">The rewards of the node.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.expand">
@@ -438,11 +449,12 @@ as the lower reward such that its father node would be expanded next.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node_hash</strong> (<em>int</em>) – the corresponding hash node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – dictionary of MasterNode objects.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body"><p class="first last">The uct value of the corresponding node passed in parameter.</p>
+<tr class="field-even field"><th class="field-name">Return float:</th><td class="field-body"><p class="first last">The uct value of the node passed in parameter.</p>
 </td>
 </tr>
 </tbody>
@@ -452,17 +464,27 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.get_sim_to_estimate_state">
 <code class="descname">get_sim_to_estimate_state</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.get_sim_to_estimate_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="worker.Tree.integrate_buffer">
-<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Integrates the buffer of update from this scenario. The buffer is a list of updates coming from the worker.         One update is a list : [scenarioId, newNodeHash, parentHash, action, reward]</p>
+<dd><p>Brings the simulator to an estimate state (time, lat, lon) of a node. Since the dynamic is not deterministic,         the state is an estimation.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Master_nodes</strong> (<em>dict</em>) – dictionary of MasterNode objects.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The nodes one wants to estimate.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="worker.Tree.integrate_buffer">
+<code class="descname">integrate_buffer</code><span class="sig-paren">(</span><em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.integrate_buffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integrates the buffer of update from this scenario (the buffer is an attribute of the <a class="reference internal" href="#worker.Tree" title="worker.Tree"><code class="xref py py-class docutils literal"><span class="pre">Tree</span></code></a>)         . The buffer is a list of updates coming from the worker.         One update is a list : [scenarioId, newNodeHash, parentHash, action, reward]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -471,17 +493,61 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.is_node_terminal">
 <code class="descname">is_node_terminal</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_node_terminal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Checks if the corresponding time of a node is equal to the time horizon of the simulation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The node that is checked</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if the node is terminal, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="worker.Tree.is_state_at_dest">
 <em class="property">static </em><code class="descname">is_state_at_dest</code><span class="sig-paren">(</span><em>destination</em>, <em>stateA</em>, <em>stateB</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_state_at_dest" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines if the boat has gone beyond the destination. In this case, computes how much the boat         has overshot.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>destination</strong> – Destination state (goal).</li>
+<li><strong>stateA</strong> – Previous state of the simulator.</li>
+<li><strong>stateB</strong> – Current state of the simulator.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[True, frac] if the boat has reached the destination (frac is the last iteration proportion         corresponding to the part stateA–destination). Returns [False, None] otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="staticmethod">
 <dt id="worker.Tree.is_state_terminal">
 <em class="property">static </em><code class="descname">is_state_terminal</code><span class="sig-paren">(</span><em>simulator</em>, <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.is_state_terminal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Determines if a state is considered as terminal (time is equal or larger than the time horizon, or if the boat is         out of the zone of interest).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>simulator</strong> (<a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><em>Simulator</em></a>) – Simulator of the scenario.</li>
+<li><strong>state</strong> (<em>list</em>) – State one wants to test [time, lat, lon]</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">True if the state is considered as terminal, False otherwise.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.tree_policy">
@@ -493,7 +559,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> – starting node of the tree policy, usually the root node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</p>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
 </li>
 </ul>
 </td>
@@ -516,7 +582,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>rootState</strong> (<em>list</em>) – Initial state [time, lat, lon].</li>
 <li><strong>frequency</strong> (<em>int</em>) – Length of the buffer: number of iterations between each buffer integrations.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</p>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
 </li>
 </ul>
 </td>

@@ -35,6 +35,7 @@ class Node:
     :ivar int depth: Depth of the node in the Tree.
 
     """
+
     def __init__(self, state=None, parent=None, origins=[], children=[], depth=0):
         # the list() enables to copy the state in a new list and not just copy the reference
         if state is not None:
@@ -109,7 +110,7 @@ class Tree:
     :ivar list destination: Position [lat, lon] of the wanted destination.
     :ivar float TimeMax: Time horizon of the search.
     :ivar float TimeMin: Minimum time to arrive to the destination, computed on several boats which go straight \
-    from the initial point to the destination.
+    from the initial point to the destination (default policy).
     :ivar int depth: Maximum depth of the tree.
     :ivar list Nodes: List of :class:`worker.Node`, representing the tree.
     :ivar list buffer: The buffer is a list of updates to be included in the master Tree. \
@@ -117,6 +118,7 @@ class Tree:
     :ivar int numScenarios: Number total of scenarios used during the MCT parallel search.
     :ivar numpy.array probability: array containing the probability of each scenario.
     """
+
     def __init__(self, workerid, nscenario, probability=[], ite=0, budget=1000,
                  simulator=None, destination=[], TimeMin=0, buffer=[]):
         self.id = workerid
@@ -142,7 +144,7 @@ class Tree:
         :param list rootState: Initial state [time, lat, lon].
         :param int frequency: Length of the buffer: number of iterations between each buffer integrations.
         :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
-        between-processes>`_ which saves the nodes of every scenario.
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
         """
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
@@ -182,7 +184,7 @@ class Tree:
 
         :param node: starting node of the tree policy, usually the root node.
         :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
-        between-processes>`_ which saves the nodes of every scenario.
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
         :return: The expanded :class:`worker.Node`.
         """
         while not self.is_node_terminal(node):
@@ -216,9 +218,9 @@ class Tree:
 
         :param `worker.Node` node: The parent node.
         :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
-        between-processes>`_ which saves the nodes of every scenario.
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
 
-        :return: The best :class:`worker.Node` of the node given in parameter.
+        :return: The best child (:class:`worker.Node`) of the parent node given in parameter.
         """
 
         max_ucts_of_children = -1
@@ -241,6 +243,13 @@ class Tree:
         return node.children[id_of_best_child]
 
     def default_policy(self, node):
+        """
+        Policy used to compute the reward of a node. First, the state of the node is estimated with \
+        :meth:`get_sim_to_estimate_state`, then the default policy is applied (going straight to the destination).
+
+        :param worker.Node node: The node one wants to evaluate.
+        :return float: The rewards of the node.
+        """
         self.get_sim_to_estimate_state(node)
         dist, action = self.Simulator.getDistAndBearing(self.Simulator.state[1:], self.destination)
         atDest, frac = Tree.is_state_at_dest(self.destination, self.Simulator.prevState, self.Simulator.state)
@@ -262,6 +271,12 @@ class Tree:
         return reward
 
     def get_sim_to_estimate_state(self, node):
+        """
+        Brings the simulator to an estimate state (time, lat, lon) of a node. Since the dynamic is not deterministic, \
+        the state is an estimation.
+
+        :param worker.Node node: The nodes one wants to estimate.
+        """
         listOfActions = list(node.origins)
         listOfActions.reverse()
         self.Simulator.reset(self.rootNode.state)
@@ -279,8 +294,9 @@ class Tree:
         Compute the uct value seen by the master tree.
 
         :param int node_hash: the corresponding hash node.
-        :param dict Master_nodes: dictionary of MasterNode objects.
-        :return float: The uct value of the corresponding node passed in parameter.
+        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
+        :return float: The uct value of the node passed in parameter.
         """
         master_node = Master_nodes.get(node_hash, 0)
         idx_scenarios = []
@@ -321,10 +337,12 @@ class Tree:
 
     def integrate_buffer(self, Master_nodes):
         """
-        Integrates the buffer of update from this scenario. The buffer is a list of updates coming from the worker. \
+        Integrates the buffer of update from this scenario (the buffer is an attribute of the :class:`Tree`) \
+        . The buffer is a list of updates coming from the worker. \
         One update is a list : [scenarioId, newNodeHash, parentHash, action, reward]
 
-        :param dict Master_nodes: dictionary of MasterNode objects.
+        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
         """
 
         for update in self.buffer:
@@ -351,6 +369,17 @@ class Tree:
 
     @staticmethod
     def is_state_at_dest(destination, stateA, stateB):
+        """
+        Determines if the boat has gone beyond the destination. In this case, computes how much the boat \
+        has overshot.
+
+        :param destination: Destination state (goal).
+        :param stateA: Previous state of the simulator.
+        :param stateB: Current state of the simulator.
+
+        :return: [True, frac] if the boat has reached the destination (frac is the last iteration proportion \
+        corresponding to the part stateA--destination). Returns [False, None] otherwise.
+        """
         [xa, ya, za] = SimC.Simulator.fromGeoToCartesian(stateA[1:])
         [xb, yb, zb] = SimC.Simulator.fromGeoToCartesian(stateB[1:])
         [xd, yd, zd] = SimC.Simulator.fromGeoToCartesian(destination)
@@ -377,6 +406,14 @@ class Tree:
 
     @staticmethod
     def is_state_terminal(simulator, state):
+        """
+        Determines if a state is considered as terminal (time is equal or larger than the time horizon, or if the boat is \
+        out of the zone of interest).
+
+        :param Simulator simulator: Simulator of the scenario.
+        :param list state: State one wants to test [time, lat, lon]
+        :return: True if the state is considered as terminal, False otherwise.
+        """
         if simulator.times[state[0]] == simulator.times[-1]:
             return True
 
@@ -389,4 +426,10 @@ class Tree:
             return False
 
     def is_node_terminal(self, node):
+        """
+        Checks if the corresponding time of a node is equal to the time horizon of the simulation.
+
+        :param worker.Node node: The node that is checked
+        :return: True if the node is terminal, False otherwise.
+        """
         return self.Simulator.times[node.depth] == self.TimeMax
