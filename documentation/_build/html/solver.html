@@ -363,10 +363,49 @@ as the lower reward such that its father node would be expanded next.</p>
 <dt id="worker.Tree">
 <em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Tree</code><span class="sig-paren">(</span><em>workerid</em>, <em>nscenario</em>, <em>probability=[]</em>, <em>ite=0</em>, <em>budget=1000</em>, <em>simulator=None</em>, <em>destination=[]</em>, <em>TimeMin=0</em>, <em>buffer=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A tree which represents a MCTS on one scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>id</strong> (<em>int</em>) – Id of the tree, corresponding to the id scenario.</li>
+<li><strong>ite</strong> (<em>int</em>) – Current number of iterations done.</li>
+<li><strong>budget</strong> (<em>int</em>) – Max. number of iterations</li>
+<li><strong>simulator</strong> (<a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><em>Simulator</em></a>) – The simulator used to do the boat simulations (step, etc.).</li>
+<li><strong>destination</strong> (<em>list</em>) – Position [lat, lon] of the wanted destination.</li>
+<li><strong>TimeMax</strong> (<em>float</em>) – Time horizon of the search.</li>
+<li><strong>TimeMin</strong> (<em>float</em>) – Minimum time to arrive to the destination, computed on several boats which go straight     from the initial point to the destination.</li>
+<li><strong>depth</strong> (<em>int</em>) – Maximum depth of the tree.</li>
+<li><strong>Nodes</strong> (<em>list</em>) – List of <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>, representing the tree.</li>
+<li><strong>buffer</strong> (<em>list</em>) – The buffer is a list of updates to be included in the master Tree.     One update is a list : [scenarioId, newNodeHash, parentHash, action, reward].</li>
+<li><strong>numScenarios</strong> (<em>int</em>) – Number total of scenarios used during the MCT parallel search.</li>
+<li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="worker.Tree.best_child">
 <code class="descname">best_child</code><span class="sig-paren">(</span><em>node</em>, <em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.best_child" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Select the best child of a node, by comparing their uct values. The comparison is based on the value of the         child in this tree, but also in the master tree, if it exists there.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The parent node.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The best <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> of the node given in parameter.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.default_policy">
@@ -376,7 +415,18 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.expand">
 <code class="descname">expand</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.expand" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> from a node (its parent). The new node is selected randomly         between the available actions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The parent node.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The new <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.get_master_uct">
@@ -436,12 +486,44 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.tree_policy">
 <code class="descname">tree_policy</code><span class="sig-paren">(</span><em>node</em>, <em>master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.tree_policy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Defines the policy to know from which node will be expanded during the next iteration,         the policy starts from a specific node.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node</strong> – starting node of the tree policy, usually the root node.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</p>
+</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The expanded <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="worker.Tree.uct_search">
 <code class="descname">uct_search</code><span class="sig-paren">(</span><em>rootState</em>, <em>frequency</em>, <em>Master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.uct_search" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Launches the MCTS for the scenario.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>rootState</strong> (<em>list</em>) – Initial state [time, lat, lon].</li>
+<li><strong>frequency</strong> (<em>int</em>) – Length of the buffer: number of iterations between each buffer integrations.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> which saves the nodes of every scenario.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 

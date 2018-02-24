@@ -99,6 +99,24 @@ class Node:
 
 
 class Tree:
+    """
+    A tree which represents a MCTS on one scenario.
+
+    :ivar int id: Id of the tree, corresponding to the id scenario.
+    :ivar int ite: Current number of iterations done.
+    :ivar int budget: Max. number of iterations
+    :ivar Simulator simulator: The simulator used to do the boat simulations (step, etc.).
+    :ivar list destination: Position [lat, lon] of the wanted destination.
+    :ivar float TimeMax: Time horizon of the search.
+    :ivar float TimeMin: Minimum time to arrive to the destination, computed on several boats which go straight \
+    from the initial point to the destination.
+    :ivar int depth: Maximum depth of the tree.
+    :ivar list Nodes: List of :class:`worker.Node`, representing the tree.
+    :ivar list buffer: The buffer is a list of updates to be included in the master Tree. \
+    One update is a list : [scenarioId, newNodeHash, parentHash, action, reward].
+    :ivar int numScenarios: Number total of scenarios used during the MCT parallel search.
+    :ivar numpy.array probability: array containing the probability of each scenario.
+    """
     def __init__(self, workerid, nscenario, probability=[], ite=0, budget=1000,
                  simulator=None, destination=[], TimeMin=0, buffer=[]):
         self.id = workerid
@@ -118,6 +136,14 @@ class Tree:
             self.probability = probability
 
     def uct_search(self, rootState, frequency, Master_nodes):
+        """
+        Launches the MCTS for the scenario.
+
+        :param list rootState: Initial state [time, lat, lon].
+        :param int frequency: Length of the buffer: number of iterations between each buffer integrations.
+        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ which saves the nodes of every scenario.
+        """
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
         self.rootNode = rootNode
@@ -150,6 +176,15 @@ class Tree:
                 self.buffer = []
 
     def tree_policy(self, node, master_nodes):
+        """
+        Defines the policy to know from which node will be expanded during the next iteration, \
+        the policy starts from a specific node.
+
+        :param node: starting node of the tree policy, usually the root node.
+        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ which saves the nodes of every scenario.
+        :return: The expanded :class:`worker.Node`.
+        """
         while not self.is_node_terminal(node):
             # if (random.random() < 0.5) and node.children:
             # node = self.best_child(node, master_nodes)
@@ -160,6 +195,13 @@ class Tree:
         return node
 
     def expand(self, node):
+        """
+        Creates a new :class:`worker.Node` from a node (its parent). The new node is selected randomly \
+        between the available actions.
+
+        :param worker.Node node: The parent node.
+        :return: The new :class:`worker.Node`.
+        """
         action = node.actions.pop()
         newNode = Node(parent=node, origins=node.origins + [action], depth=node.depth + 1)
         self.depth = max(self.depth, newNode.depth)
@@ -168,6 +210,17 @@ class Tree:
         return newNode
 
     def best_child(self, node, Master_nodes):
+        """
+        Select the best child of a node, by comparing their uct values. The comparison is based on the value of the \
+        child in this tree, but also in the master tree, if it exists there.
+
+        :param `worker.Node` node: The parent node.
+        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ which saves the nodes of every scenario.
+
+        :return: The best :class:`worker.Node` of the node given in parameter.
+        """
+
         max_ucts_of_children = -1
         id_of_best_child = -1
         num_node = 0
