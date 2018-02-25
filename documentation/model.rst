@@ -20,6 +20,3 @@ simulatorTLKT
 	:undoc-members:
 	:show-inheritance: 
 
-
-
-.. note:: Pour mettre une jolie note.
