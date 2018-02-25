@@ -45,8 +45,10 @@ class Forest:
 
     def launch_search(self, root_state, frequency):
         """
-        Launches a parallel MCTS search. It uses multiprocessing class. Each worker is a :class:`multiprocessing.Process`
-        object. The master is a :class:`multiprocessing.Manager` hosting a dict() (called Master_nodes)
+        Launches a parallel MCTS search. It uses multiprocessing class. Each worker is a
+        `multiprocessing.Process <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ object. The master is a `multiprocessing.Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ hosting a dict() (called Master_nodes)
         that can be read and written into by each worker.
 
         :param root_state: [time index, lat, lon], state of the root node of the sea

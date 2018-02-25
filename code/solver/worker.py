@@ -147,7 +147,7 @@ class Tree:
 
         :param list rootState: State [t_index, lat, lon] of the root node.
         :param int frequency: Length of the buffer: number of iterations between each buffer integrations.
-        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        :param dict Master_nodes: `Manager.dict() <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
         between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
 
         """
@@ -189,7 +189,7 @@ class Tree:
         to its best child.
 
         :param node: starting node of the tree policy, usually the root node.
-        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        :param dict Master_nodes: `Manager.dict() <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
         between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
         :return: the newly expanded node
         :rtype: :class:`Node`
@@ -224,7 +224,7 @@ class Tree:
         child in this tree, but also in the master tree, if it exists there.
 
         :param `worker.Node` node: The parent node.
-        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        :param dict Master_nodes: `Manager.dict() <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
         between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
 
         :return: The best child (:class:`worker.Node`) of the parent node given in parameter.
@@ -301,8 +301,8 @@ class Tree:
         Compute the uct value seen by the master tree.
 
         :param int node_hash: the corresponding hash node.
-        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
-        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
+        :param dict Master_nodes: `Manager.dict() <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode` objects) which saves the nodes of every scenario.
         :return float: The uct value of the node passed in parameter.
         """
         master_node = Master_nodes.get(node_hash, 0)
@@ -348,8 +348,8 @@ class Tree:
         . The buffer is a list of updates coming from the worker. \
         One update is a list : [scenarioId, newNodeHash, parentHash, action, reward]
 
-        :param dict Master_nodes: `Manager <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
-        between-processes>`_ (Dictionary of :class:`master_node.MasterNode`) which saves the nodes of every scenario.
+        :param dict Master_nodes: `Manager.dict() <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ (Dictionary of :class:`master_node.MasterNode` objects) which saves the nodes of every scenario.
         """
 
         for update in self.buffer:

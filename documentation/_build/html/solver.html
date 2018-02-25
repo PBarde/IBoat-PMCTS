@@ -306,7 +306,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <li><strong>origins</strong> (<em>list</em>) – sequel of actions taken from to root node to this node.</li>
 <li><strong>children</strong> (<em>list</em>) – Child nodes of this node.</li>
 <li><strong>actions</strong> (<em>list</em>) – Remaining actions available (not expanded) from this node in random order.</li>
-<li><strong>Values</strong> (<em>numpy.array</em>) – Array of <code class="xref py py-class docutils literal"><span class="pre">utils.Hist</span></code> to save the rewards. Its size is the number of possible actions.</li>
+<li><strong>Values</strong> (<em>numpy.array</em>) – Array of <a class="reference internal" href="#utils.Hist" title="utils.Hist"><code class="xref py py-class docutils literal"><span class="pre">utils.Hist</span></code></a> to save the rewards. Its size is the number of possible actions.</li>
 <li><strong>depth</strong> (<em>int</em>) – Depth of the node in the Tree.</li>
 </ul>
 </td>
@@ -316,7 +316,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Node.back_up">
 <code class="descname">back_up</code><span class="sig-paren">(</span><em>reward</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Node.back_up" title="Permalink to this definition">¶</a></dt>
-<dd><p>Propagates the reward through the Tree, starting from this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</p>
+<dd><p>Propagates the reward through the Tree, starting from this <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>, up to the root.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -363,7 +363,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <dt id="worker.Tree">
 <em class="property">class </em><code class="descclassname">worker.</code><code class="descname">Tree</code><span class="sig-paren">(</span><em>workerid</em>, <em>nscenario</em>, <em>probability=[]</em>, <em>ite=0</em>, <em>budget=1000</em>, <em>simulator=None</em>, <em>destination=[]</em>, <em>TimeMin=0</em>, <em>buffer=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>A tree which represents a MCTS on one scenario.</p>
+<p>A tree which represents a MCTS on one weather scenario.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -380,7 +380,8 @@ as the lower reward such that its father node would be expanded next.</p>
 <li><strong>Nodes</strong> (<em>list</em>) – List of <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>, representing the tree.</li>
 <li><strong>buffer</strong> (<em>list</em>) – The buffer is a list of updates to be included in the master Tree.     One update is a list : [scenarioId, newNodeHash, parentHash, action, reward].</li>
 <li><strong>numScenarios</strong> (<em>int</em>) – Number total of scenarios used during the MCT parallel search.</li>
-<li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario.</li>
+<li><strong>probability</strong> (<em>numpy.array</em>) – array containing the probability of each scenario. Scenario id as a
+probability probability[id] to occur.</li>
 </ul>
 </td>
 </tr>
@@ -396,7 +397,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> (<a class="reference internal" href="#worker.Node" title="worker.Node"><em>worker.Node</em></a>) – The parent node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</li>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict()</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</li>
 </ul>
 </td>
 </tr>
@@ -426,7 +427,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.expand">
 <code class="descname">expand</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.expand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> from a node (its parent). The new node is selected randomly         between the available actions.</p>
+<dd><p>Creates a new <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a> from a node (its parent). The new node is expanded randomly         using an available actions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -449,7 +450,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node_hash</strong> (<em>int</em>) – the corresponding hash node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict()</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> objects) which saves the nodes of every scenario.</p>
 </li>
 </ul>
 </td>
@@ -483,7 +484,7 @@ as the lower reward such that its father node would be expanded next.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict()</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> objects) which saves the nodes of every scenario.</p>
 </td>
 </tr>
 </tbody>
@@ -552,19 +553,24 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="worker.Tree.tree_policy">
 <code class="descname">tree_policy</code><span class="sig-paren">(</span><em>node</em>, <em>master_nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#worker.Tree.tree_policy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Defines the policy to know from which node will be expanded during the next iteration,         the policy starts from a specific node.</p>
+<dd><p>Method implementing the tree policy phase in the MCTS-UCT search. Starts from the root nodes and
+iteratively selects the best child of the nodes. A node must be fully expanded before we continue down
+to its best child.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>node</strong> – starting node of the tree policy, usually the root node.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict()</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
 </li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">The expanded <a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">worker.Node</span></code></a>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the newly expanded node</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#worker.Node" title="worker.Node"><code class="xref py py-class docutils literal"><span class="pre">Node</span></code></a></p>
 </td>
 </tr>
 </tbody>
@@ -580,9 +586,9 @@ as the lower reward such that its father node would be expanded next.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>rootState</strong> (<em>list</em>) – Initial state [time, lat, lon].</li>
+<li><strong>rootState</strong> (<em>list</em>) – State [t_index, lat, lon] of the root node.</li>
 <li><strong>frequency</strong> (<em>int</em>) – Length of the buffer: number of iterations between each buffer integrations.</li>
-<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
+<li><strong>Master_nodes</strong> (<em>dict</em>) – <p><a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict()</a> (Dictionary of <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a>) which saves the nodes of every scenario.</p>
 </li>
 </ul>
 </td>
@@ -618,8 +624,8 @@ as the lower reward such that its father node would be expanded next.</p>
 <dl class="method">
 <dt id="forest.Forest.launch_search">
 <code class="descname">launch_search</code><span class="sig-paren">(</span><em>root_state</em>, <em>frequency</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest.launch_search" title="Permalink to this definition">¶</a></dt>
-<dd><p>Launches a parallel MCTS search. It uses multiprocessing class. Each worker is a <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.Process</span></code>
-object. The master is a <code class="xref py py-class docutils literal"><span class="pre">multiprocessing.Manager</span></code> hosting a dict() (called Master_nodes)
+<dd><p>Launches a parallel MCTS search. It uses multiprocessing class. Each worker is a
+<a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">multiprocessing.Process</a> object. The master is a <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">multiprocessing.Manager</a> hosting a dict() (called Master_nodes)
 that can be read and written into by each worker.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -926,6 +932,117 @@ This method is called after the search before saving the result.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-utils">
+<span id="utils"></span><h2>utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="utils.Hist">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">Hist</code><span class="sig-paren">(</span><em>init=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Definition of the histogram class.</p>
+<dl class="attribute">
+<dt id="utils.Hist.MAX_REWARD">
+<code class="descname">MAX_REWARD</code><em class="property"> = 1.5</em><a class="headerlink" href="#utils.Hist.MAX_REWARD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Upper bound of histogram</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.Hist.MEANS">
+<code class="descname">MEANS</code><em class="property"> = array([ 0.0625,  0.1875,  0.3125,  0.4375,  0.5625,  0.6875,  0.8125,         0.9375,  1.0625,  1.1875,  1.3125,  1.4375])</em><a class="headerlink" href="#utils.Hist.MEANS" title="Permalink to this definition">¶</a></dt>
+<dd><p>mean value of each bin (mean between upper and lower threshold of each bin)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.Hist.MIN_REWARD">
+<code class="descname">MIN_REWARD</code><em class="property"> = 0</em><a class="headerlink" href="#utils.Hist.MIN_REWARD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lower bound of histogram</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.Hist.N_BINS">
+<code class="descname">N_BINS</code><em class="property"> = 12</em><a class="headerlink" href="#utils.Hist.N_BINS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of bins in histogram</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="utils.Hist.THRESH">
+<code class="descname">THRESH</code><em class="property"> = array([ 0.   ,  0.125,  0.25 ,  0.375,  0.5  ,  0.625,  0.75 ,  0.875,         1.   ,  1.125,  1.25 ,  1.375,  1.5  ])</em><a class="headerlink" href="#utils.Hist.THRESH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Values of the thresholds between bins (lower and upper included)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Hist.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds the value to the corresponding bin. If value is lower than lowest (resp. highest) threshold
+then the value is added to the first (resp. last) bin.
+:param int value: value to be added to the histogram</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Hist.get_mean">
+<code class="descname">get_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist.get_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the mean value of the histogram
+:return float mean: mean value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="utils.Hist.is_empty">
+<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist.is_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="utils.Player">
+<em class="property">class </em><code class="descclassname">utils.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>fig</em>, <em>func</em>, <em>frames=None</em>, <em>init_func=None</em>, <em>fargs=None</em>, <em>save_count=None</em>, <em>mini=0</em>, <em>maxi=100</em>, <em>pos=(0.125</em>, <em>0.92)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.animation.FuncAnimation</span></code></p>
+<dl class="method">
+<dt id="utils.Player.backward">
+<code class="descname">backward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.backward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.forward">
+<code class="descname">forward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.forward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.onebackward">
+<code class="descname">onebackward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.onebackward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.oneforward">
+<code class="descname">oneforward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.oneforward" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.onestep">
+<code class="descname">onestep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.onestep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.play">
+<code class="descname">play</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.play" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="utils.Player.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -944,6 +1061,7 @@ This method is called after the search before saving the result.</p>
 <li><a class="reference internal" href="#module-worker">worker</a></li>
 <li><a class="reference internal" href="#module-forest">forest</a></li>
 <li><a class="reference internal" href="#module-master_node">master_node</a></li>
+<li><a class="reference internal" href="#module-utils">utils</a></li>
 </ul>
 </li>
 </ul>
