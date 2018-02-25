@@ -11,7 +11,7 @@ class MasterNode:
     """
     Node of a MasterTree.
 
-    :ivar int hash: hash of the node (key of the dictionary :py:attr:`MasterTree.nodes`)
+    :ivar int hash: hash of the node (key of the dictionary :attr:`master.MasterTree.nodes`)
     :ivar int arm: Action taken to get to this node from its parent.
     :ivar MasterNode parentNode: parent of this node
     :ivar numpy.array rewards: Array of `Hist`. Its shape is (#scenario, #possible actions).
@@ -65,11 +65,12 @@ class MasterNode:
 
 def deepcopy_dict(nodes):
     """
-    Return a deep copy of a MasterNode dictionary.
+    Return a deep copy of a the master `Manager.dict <https://docs.python.org/2/library/multiprocessing.html#sharing-state-\
+        between-processes>`_ object.
     Add also the children, the parentNode and the depth of each node.
     This method is called after the search before saving the result.
 
-    :param dict nodes: a dictionary with MasterNode object
+    :param dict nodes: a dictionary with :class:`master_node.MasterNode` objects
     :return: the deep copy of the input dictionary
     """
     new_dict = dict()

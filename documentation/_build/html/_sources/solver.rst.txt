@@ -1,8 +1,14 @@
 Package solver
 =================
 
+This package contains all the modules required to perform a parallel Monte-Carlo Tree Search with Upper Confidence
+bounds for Tree on multiple weather scenarios.
+
 master
 ------------------------------
+
+Module implementing a master tree that incorporates the results of a parallel MCTS-UCT search. However this
+object is not directly used during the search and is created afterwards, once the search in completed.
 
 .. automodule:: master
 	:members:
@@ -11,6 +17,9 @@ master
 worker
 ------------------------------
 
+Module implementing a worker in the parallel MCTS-UCT search. It is basically a search on a fixed weather
+scenario.
+
 .. automodule:: worker
 	:members:
 	:undoc-members:
@@ -18,6 +27,9 @@ worker
 
 forest
 ------------------------------
+
+Module managing multiple workers to carry out a parallel MCTS-UCT search and incorporating the results into a
+master.
 
 .. automodule:: forest
 	:members:
@@ -84,7 +96,23 @@ Basic use example of the forest class:
 master_node
 ---------------------------------
 
+Module implementing the node class as it is represented in a master tree, a master node stores rewards from
+multiple scenarios. It is separate from the master module as this class is used in both the master one
+(the nodes in the final master tree are master node) and in the forest module. In the forest module the
+Manager.dict used to multiprocess is a dictionary of master modes. However as this Manager.dict represents
+the master tree being built it is not a MasterTree object from the master module.
+
 .. automodule:: master_node
 	:members:
 	:undoc-members:
+	:show-inheritance:
+
+utils
+--------------------------
+
+Module implementing two useful classes : the histogram that is used in each node to stored the obtained rewards.
+And an Player class that implements interactive plots to help with result visualisation.
+
+.. automodule:: utils
+	:members:
 	:show-inheritance:

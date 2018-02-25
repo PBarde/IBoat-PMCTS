@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 """
 
-.. note:
+:Autors: Paul Barde & Fabien Brulport
 
-    :Autors: Paul Barde & Fabien Brulport
-    *Module handeling weather forecasts.*
+Module encapsulating all the classes required to manipulate weather forecasts.
 
 
 """

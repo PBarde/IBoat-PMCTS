@@ -49,7 +49,8 @@ class Hist:
     def get_mean(self):
         """
         Computes the mean value of the histogram
-        :return float mean: mean value
+
+        :return float: mean value
         """
         summed = sum(self.h)
         if summed == 0:
@@ -60,7 +61,14 @@ class Hist:
     def is_empty(self):
         return all(value == 0 for value in self.h)
 
+
 class Player(FuncAnimation):
+    """
+    Class implementing interactive plot, inherits from
+    `FuncAnimation <https://matplotlib.org/api/_as_gen/matplotlib.animation.FuncAnimation.html>`_ and must be
+    used accordingly.
+    """
+
     def __init__(self, fig, func, frames=None, init_func=None, fargs=None,
                  save_count=None, mini=0, maxi=100, pos=(0.125, 0.92), **kwargs):
         self.i = 0

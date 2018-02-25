@@ -42,9 +42,13 @@
             
   <div class="section" id="package-solver">
 <h1>Package solver<a class="headerlink" href="#package-solver" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-master">
-<span id="master"></span><h2>master<a class="headerlink" href="#module-master" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<p>This package contains all the modules required to perform a parallel Monte-Carlo Tree Search with Upper Confidence
+bounds for Tree on multiple weather scenarios.</p>
+<div class="section" id="master">
+<h2>master<a class="headerlink" href="#master" title="Permalink to this headline">¶</a></h2>
+<p>Module implementing a master tree that incorporates the results of a parallel MCTS-UCT search. However this
+object is not directly used during the search and is created afterwards, once the search in completed.</p>
+<span class="target" id="module-master"></span><dl class="class">
 <dt id="master.MasterTree">
 <em class="property">class </em><code class="descclassname">master.</code><code class="descname">MasterTree</code><span class="sig-paren">(</span><em>sims</em>, <em>destination</em>, <em>nodes={}</em>, <em>proba=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master.MasterTree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
@@ -287,9 +291,11 @@ as the lower reward such that its father node would be expanded next.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-worker">
-<span id="worker"></span><h2>worker<a class="headerlink" href="#module-worker" title="Permalink to this headline">¶</a></h2>
-<p>Created on Wed May 31 10:06:46 2017</p>
+<div class="section" id="worker">
+<h2>worker<a class="headerlink" href="#worker" title="Permalink to this headline">¶</a></h2>
+<p>Module implementing a worker in the parallel MCTS-UCT search. It is basically a search on a fixed weather
+scenario.</p>
+<span class="target" id="module-worker"></span><p>Created on Wed May 31 10:06:46 2017</p>
 <p>&#64;author: paul</p>
 <dl class="class">
 <dt id="worker.Node">
@@ -600,9 +606,11 @@ to its best child.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-forest">
-<span id="forest"></span><h2>forest<a class="headerlink" href="#module-forest" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<div class="section" id="forest">
+<h2>forest<a class="headerlink" href="#forest" title="Permalink to this headline">¶</a></h2>
+<p>Module managing multiple workers to carry out a parallel MCTS-UCT search and incorporating the results into a
+master.</p>
+<span class="target" id="module-forest"></span><dl class="class">
 <dt id="forest.Forest">
 <em class="property">class </em><code class="descclassname">forest.</code><code class="descname">Forest</code><span class="sig-paren">(</span><em>listsimulators=[]</em>, <em>destination=[]</em>, <em>timemin=0</em>, <em>budget=100</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.Forest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
@@ -835,9 +843,14 @@ Returns stored object otherwise</li>
 </pre></div>
 </div>
 </div>
-<div class="section" id="module-master_node">
-<span id="master-node"></span><h2>master_node<a class="headerlink" href="#module-master_node" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<div class="section" id="master-node">
+<h2>master_node<a class="headerlink" href="#master-node" title="Permalink to this headline">¶</a></h2>
+<p>Module implementing the node class as it is represented in a master tree, a master node stores rewards from
+multiple scenarios. It is separate from the master module as this class is used in both the master one
+(the nodes in the final master tree are master node) and in the forest module. In the forest module the
+Manager.dict used to multiprocess is a dictionary of master modes. However as this Manager.dict represents
+the master tree being built it is not a MasterTree object from the master module.</p>
+<span class="target" id="module-master_node"></span><dl class="class">
 <dt id="master_node.MasterNode">
 <em class="property">class </em><code class="descclassname">master_node.</code><code class="descname">MasterNode</code><span class="sig-paren">(</span><em>numscenarios</em>, <em>nodehash=None</em>, <em>parentNode=None</em>, <em>action=None</em>, <em>rewards=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.MasterNode" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
@@ -847,7 +860,7 @@ Returns stored object otherwise</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>hash</strong> (<em>int</em>) – hash of the node (key of the dictionary <code class="xref py py-attr docutils literal"><span class="pre">MasterTree.nodes</span></code>)</li>
+<li><strong>hash</strong> (<em>int</em>) – hash of the node (key of the dictionary <code class="xref py py-attr docutils literal"><span class="pre">master.MasterTree.nodes</span></code>)</li>
 <li><strong>arm</strong> (<em>int</em>) – Action taken to get to this node from its parent.</li>
 <li><strong>parentNode</strong> (<a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><em>MasterNode</em></a>) – parent of this node</li>
 <li><strong>rewards</strong> (<em>numpy.array</em>) – Array of <cite>Hist</cite>. Its shape is (#scenario, #possible actions).</li>
@@ -916,14 +929,14 @@ Returns stored object otherwise</li>
 <dl class="function">
 <dt id="master_node.deepcopy_dict">
 <code class="descclassname">master_node.</code><code class="descname">deepcopy_dict</code><span class="sig-paren">(</span><em>nodes</em><span class="sig-paren">)</span><a class="headerlink" href="#master_node.deepcopy_dict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a deep copy of a MasterNode dictionary.
+<dd><p>Return a deep copy of a the master <a class="reference external" href="https://docs.python.org/2/library/multiprocessing.html#sharing-state-between-processes">Manager.dict</a> object.
 Add also the children, the parentNode and the depth of each node.
 This method is called after the search before saving the result.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodes</strong> (<em>dict</em>) – a dictionary with MasterNode object</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nodes</strong> (<em>dict</em>) – a dictionary with <a class="reference internal" href="#master_node.MasterNode" title="master_node.MasterNode"><code class="xref py py-class docutils literal"><span class="pre">master_node.MasterNode</span></code></a> objects</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the deep copy of the input dictionary</td>
 </tr>
@@ -932,9 +945,11 @@ This method is called after the search before saving the result.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-utils">
-<span id="utils"></span><h2>utils<a class="headerlink" href="#module-utils" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<div class="section" id="utils">
+<h2>utils<a class="headerlink" href="#utils" title="Permalink to this headline">¶</a></h2>
+<p>Module implementing two useful classes : the histogram that is used in each node to stored the obtained rewards.
+And an Player class that implements interactive plots to help with result visualisation.</p>
+<span class="target" id="module-utils"></span><dl class="class">
 <dt id="utils.Hist">
 <em class="property">class </em><code class="descclassname">utils.</code><code class="descname">Hist</code><span class="sig-paren">(</span><em>init=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
@@ -980,14 +995,16 @@ then the value is added to the first (resp. last) bin.
 <dl class="method">
 <dt id="utils.Hist.get_mean">
 <code class="descname">get_mean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist.get_mean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the mean value of the histogram
-:return float mean: mean value</p>
+<dd><p>Computes the mean value of the histogram</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return float:</th><td class="field-body">mean value</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
-
-<dl class="method">
-<dt id="utils.Hist.is_empty">
-<code class="descname">is_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Hist.is_empty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -995,51 +1012,9 @@ then the value is added to the first (resp. last) bin.
 <dt id="utils.Player">
 <em class="property">class </em><code class="descclassname">utils.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>fig</em>, <em>func</em>, <em>frames=None</em>, <em>init_func=None</em>, <em>fargs=None</em>, <em>save_count=None</em>, <em>mini=0</em>, <em>maxi=100</em>, <em>pos=(0.125</em>, <em>0.92)</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.animation.FuncAnimation</span></code></p>
-<dl class="method">
-<dt id="utils.Player.backward">
-<code class="descname">backward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.backward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.forward">
-<code class="descname">forward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.forward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.onebackward">
-<code class="descname">onebackward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.onebackward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.oneforward">
-<code class="descname">oneforward</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.oneforward" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.onestep">
-<code class="descname">onestep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.onestep" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.play">
-<code class="descname">play</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.play" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.setup">
-<code class="descname">setup</code><span class="sig-paren">(</span><em>pos</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.setup" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="utils.Player.stop">
-<code class="descname">stop</code><span class="sig-paren">(</span><em>event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#utils.Player.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<p>Class implementing interactive plot, inherits from
+<a class="reference external" href="https://matplotlib.org/api/_as_gen/matplotlib.animation.FuncAnimation.html">FuncAnimation</a> and must be
+used accordingly.</p>
 </dd></dl>
 
 </div>
@@ -1057,11 +1032,11 @@ then the value is added to the first (resp. last) bin.
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Package solver</a><ul>
-<li><a class="reference internal" href="#module-master">master</a></li>
-<li><a class="reference internal" href="#module-worker">worker</a></li>
-<li><a class="reference internal" href="#module-forest">forest</a></li>
-<li><a class="reference internal" href="#module-master_node">master_node</a></li>
-<li><a class="reference internal" href="#module-utils">utils</a></li>
+<li><a class="reference internal" href="#master">master</a></li>
+<li><a class="reference internal" href="#worker">worker</a></li>
+<li><a class="reference internal" href="#forest">forest</a></li>
+<li><a class="reference internal" href="#master-node">master_node</a></li>
+<li><a class="reference internal" href="#utils">utils</a></li>
 </ul>
 </li>
 </ul>
