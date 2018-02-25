@@ -7,7 +7,6 @@ Created on Wed May 31 10:06:46 2017
 """
 import sys
 import math
-import random
 from math import exp, sqrt, asin, log
 import random as rand
 import numpy as np
@@ -23,6 +22,25 @@ RHO = 0.5
 
 
 class Node:
+    """
+    Node object as stored in worker trees.
+
+    :ivar tuple state: only for the root node, the initial state of the search (t_index, lat, lon)
+
+    :ivar ref parent: reference toward parent node
+
+    :ivar list origins: list of the action taken from the root node to get to the current node
+
+    :ivar list children: list of the reference towards the children nodes of the current node
+
+    :ivar list actions: list of the available action to use from the current node
+
+    :ivar numpy.array Values: array of :class:`utils.Hist` corresonding to the rewards from taking the
+                                corresponding action
+    :ivar int depth: depth of the current node
+
+    """
+
     def __init__(self, state=None, parent=None, origins=[], children=[], depth=0):
         # the list() enables to copy the state in a new list and not just copy the reference
         if state is not None:
@@ -38,6 +56,11 @@ class Node:
         self.depth = depth
 
     def back_up(self, reward):
+        """
+        MCTS back-propagation of the reward from the current node up to the root
+
+        :param float reward: value to be back-propagated
+        """
         # the first reward of a node is put in a random action
         action = np.random.randint(len(ACTIONS))
         self.Values[action].add(reward)
@@ -50,9 +73,19 @@ class Node:
             node = node.parent
 
     def is_fully_expanded(self):
+        """
+        Returns True if the node has no more available actions
+        """
         return len(self.actions) == 0
 
     def get_uct(self, num_parent):
+        """
+        Compute the uct utility of a node given the number of time the parent node has been visited
+
+        :param int num_parent: number of visits to the parent node
+        :return: node utility
+        :rtype: float
+        """
         uct_max_on_actions = 0
         num_node = 0
         for val in self.Values:
@@ -70,6 +103,33 @@ class Node:
 
 
 class Tree:
+    """
+    A worker tree is a collection of :class:`Node` objects corresponding to a fixed weather scenario.
+
+    :ivar int workerid: the id of the worker tree, corresponds to the index of the weather scenario
+
+    :ivar int ite: current step of the MCTS search (number of nodes to already expanded)
+
+    :ivar int budget: total number of steps of the MCTS search (total number of nodes that will be expanded)
+
+    :ivar Simulator: a :class:`simulatorTLKT.Simulator` object
+
+    :ivar float TimeMax: time horizon of the search in days
+
+    :ivar float TimeMin: reference time for the reward function
+
+    :ivar int depth: current depth of the tree (depth of its deeper node)
+
+    :ivar list Nodes: list of the :class:`Node` objects already created
+
+    :ivar list buffer: list of the operation that have not been sent to the master yet
+
+    :ivar int numScenarios: number of workers in the :class:`forest.Forest`
+
+    :ivar numpy.array probability: the probability of occurence of each scenario. Scenario workerid as a
+                                    probability probability[workerid] to occur.
+
+    """
     def __init__(self, workerid, nscenario, probability=[], ite=0, budget=1000,
                  simulator=None, destination=[], TimeMin=0, buffer=[]):
         self.id = workerid
@@ -89,6 +149,14 @@ class Tree:
             self.probability = probability
 
     def uct_search(self, rootState, frequency, Master_nodes):
+        """
+        Method implementing the MCTS-UCT search.
+
+        :param list rootState: [t_index, lat, lon] state of the Tree root node
+        :param int frequency: number of search iteration between two updates from the worker to the master
+        :param Master_nodes: a reference towards the master tree which is a
+                                :class:`multiprocessing.Manager.dict` object
+        """
         # We create the root node and add it to the tree
         rootNode = Node(state=rootState)
         self.rootNode = rootNode
@@ -121,9 +189,19 @@ class Tree:
                 self.buffer = []
 
     def tree_policy(self, node, master_nodes):
+        """
+        Method implementing the tree policy phase in the MCTS-UCT search. Starts from the root nodes and
+        iteratively selects the best child of the nodes. A node must be fully expanded before we continue down
+        to its best child.
+
+        :param node: the starting node of the tree policy (usually the root)
+        :paramtype node: :class:`Node`
+        :param master_nodes: the master tree which is a :class:`multiprocessing.Manager.dict` object
+        :return: the newly expanded node
+        :rtype: :class:`Node`
+
+        """
         while not self.is_node_terminal(node):
-            # if (random.random() < 0.5) and node.children:
-            # node = self.best_child(node, master_nodes)
             if not node.is_fully_expanded():
                 return self.expand(node)
             else:
@@ -131,6 +209,14 @@ class Tree:
         return node
 
     def expand(self, node):
+        """
+        Expands a node using a random action in the available actions set
+
+        :param node: the node to expand
+        :paramtype node: :class:`Node`
+        :return: the freshly expanded node
+        :rtype: :class:`Node`
+        """
         action = node.actions.pop()
         newNode = Node(parent=node, origins=node.origins + [action], depth=node.depth + 1)
         self.depth = max(self.depth, newNode.depth)
@@ -139,6 +225,12 @@ class Tree:
         return newNode
 
     def best_child(self, node, Master_nodes):
+        """
+        Selects the best child of a node
+        :param node:
+        :param Master_nodes:
+        :return:
+        """
         max_ucts_of_children = -1
         id_of_best_child = -1
         num_node = 0
