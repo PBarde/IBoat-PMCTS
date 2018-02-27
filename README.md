@@ -1,6 +1,4 @@
 
-For documentation on the project please go to https://pbarde.github.io/IBoatPIE/ . 
-
 Welcome to the IBOAT - Parallel Monte-Carlo Tree Search Project !
 =================================================================
 
