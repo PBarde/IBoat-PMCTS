@@ -84,11 +84,14 @@ class Forest:
 
 def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],
                        website='http://nomads.ncep.noaa.gov:9090/dods/',
-                       scenario_ids=range(1, 21)):
+                       scenario_ids=range(0, 21)):
     """
-    To download the weathers scenarios for a MCTS ** /!\ : needs to be launched in the terminal**.
-    Scenarios are saved as '../data/' + mydate + '_gep_' + s_id + '00z.obj' where s_id is the scenario id. They are
-    stored as :class:`weatherTLKT.Weather` objects.
+    To download the weathers scenarios for a MCTS.
+    Scenarios are saved as '../data/' + mydate + '_' + s_id + '00z.obj' where s_id is the scenario id.
+    id = 0 corresponds to the mean scenario. They are stored as :class:`weatherTLKT.Weather` objects.
+
+
+    **Warning:** *you might need to launch it from a terminal and not your IDE*
 
     :param string mydate: 'yyyymmdd' date of the day starting the weather forecast in US format
     :param list(float,float) latBound: [latmin, latmax], latitude boundaries of the domain on which the forecast is desired
@@ -98,20 +101,22 @@ def download_scenarios(mydate, latBound=[43, 50], lonBound=[-10 + 360, 360],
     """
     pathToSaveObj = []
     for ii in scenario_ids:
-
         if ii < 10:
             s_id = '0' + str(ii)
         else:
             s_id = str(ii)
-
-        url = (website + 'gens/gens' + mydate + '/gep' + s_id + '_00z')
-        pathToSaveObj.append(('../data/' + mydate + '_gep_' + s_id + '00z.obj'))
-
-        Weather.download(url, pathToSaveObj[ii - 1], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64],
+        if ii == 0:
+            url = (website + 'gens/gens' + mydate + '/gec' + s_id + '_00z')
+        else :
+            url = (website + 'gens/gens' + mydate + '/gep' + s_id + '_00z')
+        print("Downloading from : " + url)
+        pathToSaveObj.append(('../data/' + mydate + '_' + s_id + '00z.obj'))
+        Weather.download(url, pathToSaveObj[ii], latBound=latBound, lonBound=lonBound, timeSteps=[0, 64],
                          ens=True)
+        print("Saved into : " + pathToSaveObj[-1])
 
 
-def load_scenarios(mydate, scenario_ids=range(1, 21), latBound=[-90, 90],
+def load_scenarios(mydate, scenario_ids=range(0, 21), latBound=[-90, 90],
                    lonBound=[0, 360], timeSteps=[0, 64]):
     """
     Loads previously downloaded scenarios and returns the corresponding list of :class:`weatherTLKT.Weather` objects.
@@ -140,9 +145,9 @@ def load_scenarios(mydate, scenario_ids=range(1, 21), latBound=[-90, 90],
         else:
             s_id = str(ii)
 
-        pathToSaveObj.append(('../data/' + mydate + '_gep_' + s_id + '00z.obj'))
-
-        weather_scen.append(Weather.load(pathToSaveObj[ii - 1], latBound, lonBound, timeSteps))
+        pathToSaveObj.append(('../data/' + mydate + '_' + s_id + '00z.obj'))
+        weather_scen.append(Weather.load(pathToSaveObj[ii], latBound, lonBound, timeSteps))
+        print("Loaded : " + pathToSaveObj[-1])
 
     return weather_scen
 
@@ -217,71 +222,61 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
     :rtype: list(list(float,float), float)
     """
 
-    meanarrivaldistances = []
+################# Distance estimation #############################
 
-    if plot:
-        meantrajs_dest = []
-        trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
-        traj = []
+    meanarrivaldistances = [] # mean distance covered by each scenario
+    meantrajs_dest = [] # mean trajectory of each scenario
 
     for sim in sims:
-        arrivaldistances = []
+
+        trajsofsim = np.zeros((ntra, len(sims[0].times), 3))  # all the trajectories of a scenario
+        arrivaldistances = [] # all the arrival distances of a scenario
 
         for ii in range(ntra):
+            traj = []  # current trajectory
             sim.reset(stateinit)
-
-            if plot:
-                traj.append(list(sim.state))
+            traj.append(list(sim.state))
 
             for t in sim.times[0:-1]:
 
                 if not mt.Tree.is_state_terminal(sim, sim.state):
                     sim.doStep(missionheading)
-                else: break
+                else:
+                    break
 
-                if plot:
-                    traj.append(list(sim.state))
+                traj.append(list(sim.state))
 
-            if plot:
-                trajsofsim[ii][:len(traj)] = traj
-                buff = traj[-1]
-                fillstates = [[kk] + buff[1:] for kk in range(len(traj), len(sim.times))]
-                if fillstates:
-                    trajsofsim[ii][len(traj):] = fillstates
-                traj = []
-
+            trajsofsim[ii, :, :] = traj[-1]
+            trajsofsim[ii, :, 0] = [i for i in range(len(sim.times))]
+            trajsofsim[ii, :len(traj), :] = traj
             dist, dump = sim.getDistAndBearing(stateinit[1:], (sim.state[1:]))
             arrivaldistances.append(dist)
 
         meanarrivaldistances.append(np.mean(arrivaldistances))
-        if plot:
-            meantrajs_dest.append(np.mean(trajsofsim, 0))
-            trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
+        meantrajs_dest.append(np.mean(trajsofsim, 0))
 
     mindist = np.min(meanarrivaldistances)
     destination = sim.getDestination(mindist, missionheading, stateinit[1:])
 
-    if plot:
-        minarrivaltimes = []
-        meantrajs = []
-        trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
 
-    arrivaltimes = []
+################### Arrival Time #############################
+
+    meantrajs_time = []
+    min_arrival_times = []
 
     for ii, sim in enumerate(sims):
+        arrivaltimes = []
+        trajsofsim = np.zeros((ntra, len(sims[0].times), 3))
 
-        for jj in range(ntra):
+        for ii in range(ntra):
+
+            traj = []
             sim.reset(stateinit)
-
-            if plot:
-                traj = []
-                traj.append(list(sim.state))
+            traj.append(list(sim.state))
 
             dist, action = sim.getDistAndBearing(sim.state[1:], destination)
             sim.doStep(action)
-
-            if plot:
-                traj.append(list(sim.state))
+            traj.append(list(sim.state))
 
             atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
 
@@ -289,10 +284,7 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
                     and (not mt.Tree.is_state_terminal(sim, sim.state)):
                 dist, action = sim.getDistAndBearing(sim.state[1:], destination)
                 sim.doStep(action)
-
-                if plot:
-                    traj.append(list(sim.state))
-
+                traj.append(list(sim.state))
                 atDest, frac = mt.Tree.is_state_at_dest(destination, sim.prevState, sim.state)
 
             if atDest:
@@ -300,27 +292,21 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
                             (1 - frac)*(sim.times[sim.state[0]] - sim.times[sim.state[0] - 1])
                 arrivaltimes.append(finalTime)
 
-            if plot:
-                trajsofsim[jj][:len(traj)] = traj
-                buff = traj[-1]
-                fillstates = [[kk] + buff[1:] for kk in range(len(traj), len(sim.times))]
-                if fillstates:
-                    trajsofsim[jj][len(traj):] = fillstates
-                traj = []
+            trajsofsim[ii, :, :] = traj[-1]
+            trajsofsim[ii, :, 0] = [i for i in range(len(sim.times))]
+            trajsofsim[ii, :len(traj), :] = traj
+        if arrivaltimes:
+            min_arrival_times.append(min(arrivaltimes))
+        else:
+            print("Scenario num : " + str(ii) + " did not reach destination")
 
-        if plot:
-            if arrivaltimes:
-                minarrivaltimes.append(min(arrivaltimes))
-            else:
-                print("Scenario num : " + str(ii) + " did not reach destination")
+        meantrajs_time.append(np.mean(trajsofsim, 0))
 
-            meantrajs.append(np.mean(trajsofsim, 0))
-            trajsofsim = np.full((ntra, len(sims[0].times), 3), stateinit)
-            arrivaltimes = []
+    timemin = min(min_arrival_times)
 
     if plot:
-        timemin = min(minarrivaltimes)
-        basemap_dest = sims[0].prepareBaseMap()
+
+        basemap_dest = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
         plt.title('Mean initialization trajectory for distance estimation')
         colors = plt.get_cmap("tab20")
         colors = colors.colors[:len(sims)]
@@ -336,7 +322,7 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
             sim.plotTraj(meantrajs_dest[ii], basemap_dest, color=colors[ii], label="Scen. num : " + str(ii))
         plt.legend()
 
-        basemap_time = sims[0].prepareBaseMap()
+        basemap_time = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
         plt.title('Mean trajectory for minimal travel time estimation')
         basemap_time.scatter(xd, yd, zorder=0, c="red", s=100)
         plt.annotate("destination", (xd, yd))
@@ -344,12 +330,9 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
         plt.annotate("start", (xs, ys))
 
         for ii, sim in enumerate(sims):
-            sim.plotTraj(meantrajs[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
+            sim.plotTraj(meantrajs_time[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
 
         plt.legend()
-
-    else:
-        timemin = min(arrivaltimes)
 
     return [destination, timemin]
 
