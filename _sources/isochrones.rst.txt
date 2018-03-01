@@ -7,9 +7,7 @@ This package contains the implementation of the isochrones routing method.
 isochrones
 ------------------------------
 
-.. automodule:: IsochroneClass
+.. automodule:: isochrones
 	:members:
 	:undoc-members:
 	:show-inheritance:
-
-.. note:: Pour mettre une jolie note.

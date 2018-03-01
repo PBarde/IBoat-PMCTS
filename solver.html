@@ -690,10 +690,11 @@ are created by chronologically browsing the weathers list</li>
 
 <dl class="function">
 <dt id="forest.download_scenarios">
-<code class="descclassname">forest.</code><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', scenario_ids=range(1, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
-<dd><p>To download the weathers scenarios for a MCTS ** /!: needs to be launched in the terminal**.
-Scenarios are saved as ‘../data/’ + mydate + ‘_gep_’ + s_id + ‘00z.obj’ where s_id is the scenario id. They are
-stored as <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects.</p>
+<code class="descclassname">forest.</code><code class="descname">download_scenarios</code><span class="sig-paren">(</span><em>mydate, latBound=[43, 50], lonBound=[350, 360], website='http://nomads.ncep.noaa.gov:9090/dods/', scenario_ids=range(0, 21)</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.download_scenarios" title="Permalink to this definition">¶</a></dt>
+<dd><p>To download the weathers scenarios for a MCTS.
+Scenarios are saved as ‘../data/’ + mydate + ‘_’ + s_id + ‘00z.obj’ where s_id is the scenario id.
+id = 0 corresponds to the mean scenario. They are stored as <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects.</p>
+<p><strong>Warning:</strong> <em>you might need to launch it from a terminal and not your IDE</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -741,7 +742,7 @@ to carry out a MCTS parallel search.</p>
 
 <dl class="function">
 <dt id="forest.load_scenarios">
-<code class="descclassname">forest.</code><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, scenario_ids=range(1, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">forest.</code><code class="descname">load_scenarios</code><span class="sig-paren">(</span><em>mydate, scenario_ids=range(0, 21), latBound=[-90, 90], lonBound=[0, 360], timeSteps=[0, 64]</em><span class="sig-paren">)</span><a class="headerlink" href="#forest.load_scenarios" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads previously downloaded scenarios and returns the corresponding list of <a class="reference internal" href="model.html#weatherTLKT.Weather" title="weatherTLKT.Weather"><code class="xref py py-class docutils literal"><span class="pre">weatherTLKT.Weather</span></code></a> objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

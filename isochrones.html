@@ -42,13 +42,13 @@
   <div class="section" id="package-isochrones">
 <h1>Package isochrones<a class="headerlink" href="#package-isochrones" title="Permalink to this headline">¶</a></h1>
 <p>This package contains the implementation of the isochrones routing method.</p>
-<div class="section" id="module-IsochroneClass">
-<span id="isochrones"></span><h2>isochrones<a class="headerlink" href="#module-IsochroneClass" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-isochrones">
+<span id="isochrones"></span><h2>isochrones<a class="headerlink" href="#module-isochrones" title="Permalink to this headline">¶</a></h2>
 <p>Created on Wed Dec 20 13:48:13 2017</p>
 <p>&#64;author: j.belley</p>
 <dl class="class">
-<dt id="IsochroneClass.Isochrone">
-<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Isochrone</code><span class="sig-paren">(</span><em>simulateur</em>, <em>coord_depart</em>, <em>coord_arrivee</em>, <em>delta_cap=10</em>, <em>increment_cap=9</em>, <em>nb_secteur=10</em>, <em>resolution=200</em>, <em>temps=0</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Isochrone">
+<em class="property">class </em><code class="descclassname">isochrones.</code><code class="descname">Isochrone</code><span class="sig-paren">(</span><em>simulateur</em>, <em>coord_depart</em>, <em>coord_arrivee</em>, <em>delta_cap=10</em>, <em>increment_cap=9</em>, <em>nb_secteur=10</em>, <em>resolution=200</em>, <em>temps=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Class making the determinist isochrone method described by Hideki Hagiwara.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -56,7 +56,7 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>simulateur</strong> (<em>sim</em>) – Object Simulator which have to be initialized         with the geographic position of the problem and the weather forcast desired.</li>
+<li><strong>sim</strong> (<a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><em>Simulator</em></a>) – Object Simulator which have to be initialized         with the geographic position of the problem and the weather forcast desired.</li>
 <li><strong>dep</strong> (<em>list</em>) – Latitude and longitude in degree of the starting         point. For instance, [47.5, 356.5].</li>
 <li><strong>arr</strong> (<em>list</em>) – Latitude and longitude in degree of the destination         point. For instance, [47.8, 352.3].</li>
 <li><strong>isochrone_actuelle</strong> (<em>list</em>) – List of the nodes which constitute the         current isochrone shape.</li>
@@ -81,53 +81,58 @@
 <li><strong>liste_positions</strong> (<em>list</em>) – List of the positions (lat,lon) where the ship         goes and changes its bearing in order to reach the destination.</li>
 <li><strong>temps_transit</strong> (<em>float</em>) – Time spend during the trip in days.</li>
 <li><strong>C0</strong> (<em>float</em>) – Bearing between the departure and the arrival in degree.</li>
+<li><strong>temps_dep</strong> (<em>int</em>) – time indice used in the ship Simulator. Chose another value than 0         if you want to start your isochrone research at a precise temps (different from forcast         initial hour).</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.aller_point_arrivee">
-<code class="descname">aller_point_arrivee</code><span class="sig-paren">(</span><em>Top_noeud</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.aller_point_arrivee" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Isochrone.aller_point_arrivee">
+<code class="descname">aller_point_arrivee</code><span class="sig-paren">(</span><em>Top_noeud</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.aller_point_arrivee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method which takes all the nodes close from the arrival and make them arrive         by going straight ahead. Then it returns the node which joins earlier the destination,         the time spend during all the journey between the starting point and the destination and         the list of the heandings followed during the last 20 km</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.associer_xij_a_S">
-<code class="descname">associer_xij_a_S</code><span class="sig-paren">(</span><em>liste_S</em>, <em>delta_S</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.associer_xij_a_S" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Isochrone.associer_xij_a_S">
+<code class="descname">associer_xij_a_S</code><span class="sig-paren">(</span><em>liste_S</em>, <em>delta_S</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.associer_xij_a_S" title="Permalink to this definition">¶</a></dt>
 <dd><p>Associates to all the nodes reachable from the current isochrone an         angular sector and returns the list of those sectors.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.isochrone_brouillon">
-<code class="descname">isochrone_brouillon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_brouillon" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Isochrone.isochrone_brouillon">
+<code class="descname">isochrone_brouillon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.isochrone_brouillon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates all the future nodes reachable from the current isochrone by         doing the different actions allowed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.isochrone_methode">
-<code class="descname">isochrone_methode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_methode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Isochrone.isochrone_methode">
+<code class="descname">isochrone_methode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.isochrone_methode" title="Permalink to this definition">¶</a></dt>
+<dd><p>If it can, it finds the ship routing solution which minimises the travel         time between two points with determinist ship dynamic and weather forcast.         It returns the minimum time of trip, the list of heading used during the journey,         the list of the final headings and the list of the nodes positions.</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.isochrone_proche_arrivee">
-<code class="descname">isochrone_proche_arrivee</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.isochrone_proche_arrivee" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Isochrone.isochrone_proche_arrivee">
+<code class="descname">isochrone_proche_arrivee</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.isochrone_proche_arrivee" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method which tests if the nodes of the current isochrone are close from         the arrival point (under 20 km). If they are, it returns a boolean True and the         list of the node which are almost arrived</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.nouvelle_isochrone_propre">
-<code class="descname">nouvelle_isochrone_propre</code><span class="sig-paren">(</span><em>liste_S</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.nouvelle_isochrone_propre" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Isochrone.nouvelle_isochrone_propre">
+<code class="descname">nouvelle_isochrone_propre</code><span class="sig-paren">(</span><em>liste_S</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.nouvelle_isochrone_propre" title="Permalink to this definition">¶</a></dt>
 <dd><p>Keep, for each sector, only the farthest node reachable from the current         isochrone and so create the new current isochrone.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.positions_to_states">
-<code class="descname">positions_to_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.positions_to_states" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Isochrone.positions_to_states">
+<code class="descname">positions_to_states</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.positions_to_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the list of nodes’ position in a list of states.</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.recentrage_cap">
-<code class="descname">recentrage_cap</code><span class="sig-paren">(</span><em>cap</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.recentrage_cap" title="Permalink to this definition">¶</a></dt>
-<dd><p>Keep the bearing in degree between 0 and 360.</p>
+<dt id="isochrones.Isochrone.recentrage_cap">
+<code class="descname">recentrage_cap</code><span class="sig-paren">(</span><em>cap</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.recentrage_cap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Keep the heading in degree between 0 and 360.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -139,8 +144,8 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><em>coord_depart=None</em>, <em>coord_arrivee=None</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Isochrone.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><em>coord_depart=None</em>, <em>coord_arrivee=None</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the problem to slove with a different departure and arrival but         the same weather forcast. To change the weather forcast, change self.sim         and reset the Isochrone.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -157,39 +162,70 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="IsochroneClass.Isochrone.secteur_liste">
-<code class="descname">secteur_liste</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Isochrone.secteur_liste" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates all the angular sectors used to select the nodes of the future         isochrone and return a list of them. Returns also the width of a sector.</p>
+<dt id="isochrones.Isochrone.secteur_liste">
+<code class="descname">secteur_liste</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Isochrone.secteur_liste" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates all the angular sectors used to select the nodes of the future         isochrone and return a list of them. Returns also the width of a sector         at the average distance of the future isochrone.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="IsochroneClass.Node">
-<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>time</em>, <em>lat</em>, <em>lon</em>, <em>parent=None</em>, <em>action=None</em>, <em>C=None</em>, <em>D=None</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Node" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Node">
+<em class="property">class </em><code class="descclassname">isochrones.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>time</em>, <em>lat</em>, <em>lon</em>, <em>parent=None</em>, <em>action=None</em>, <em>C=None</em>, <em>D=None</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class which is used to make the points of the isochrone curves.     It is based on a node structure of a linked list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>time</strong> (<em>int</em>) – time indice used by the ship simulator to define a state.</li>
+<li><strong>lat</strong> (<em>float</em>) – latitude used by the ship simulator to define a state.</li>
+<li><strong>lon</strong> (<em>float</em>) – longitude used by the ship simulator to define a state.</li>
+<li><strong>pere</strong> (<a class="reference internal" href="#isochrones.Node" title="isochrones.Node"><em>isochrones.Node</em></a>) – parent node from the previous isochrone curve.</li>
+<li><strong>act</strong> (<em>float</em>) – heading follow from the parent node to the actual node.</li>
+<li><strong>C</strong> (<em>float</em>) – heading between the starting point and the node position.</li>
+<li><strong>D</strong> (<em>float</em>) – distance between the starting point and the node position.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
-<dt id="IsochroneClass.Node.give_state">
-<code class="descname">give_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Node.give_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Node.give_state">
+<code class="descname">give_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Node.give_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method which returns the state of a node.         The definition of a state is given in simulatorTLKT documentation</p>
+</dd></dl>
 
 </dd></dl>
 
 <dl class="class">
-<dt id="IsochroneClass.Secteur">
-<em class="property">class </em><code class="descclassname">IsochroneClass.</code><code class="descname">Secteur</code><span class="sig-paren">(</span><em>cap_sup</em>, <em>cap_inf</em><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Secteur" title="Permalink to this definition">¶</a></dt>
+<dt id="isochrones.Secteur">
+<em class="property">class </em><code class="descclassname">isochrones.</code><code class="descname">Secteur</code><span class="sig-paren">(</span><em>cap_sup</em>, <em>cap_inf</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Secteur" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Class used to partition the space in order to apply Hagiwara’s isochrone method.     
+:ivar float cap_sup: upper bond of the angular sector which start from the beginning point.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cap_inf</strong> (<em>float</em>) – lower bond of the angular sector which start from the beginning point.</li>
+<li><strong>liste_noeud</strong> (<em>list</em>) – list of the nodes which belong to the angular sector.</li>
+<li><strong>liste_distance</strong> (<em>list</em>) – list of the distances between the starting point and the nodes in liste_noeud.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
-<dt id="IsochroneClass.Secteur.recherche_meilleur_noeud">
-<code class="descname">recherche_meilleur_noeud</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#IsochroneClass.Secteur.recherche_meilleur_noeud" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="isochrones.Secteur.recherche_meilleur_noeud">
+<code class="descname">recherche_meilleur_noeud</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.Secteur.recherche_meilleur_noeud" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method which returns the farthest node of liste_noeud according to the data in liste_distance</p>
+</dd></dl>
 
 </dd></dl>
 
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Pour mettre une jolie note.</p>
-</div>
 </div>
 </div>
 
@@ -205,7 +241,7 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Package isochrones</a><ul>
-<li><a class="reference internal" href="#module-IsochroneClass">isochrones</a></li>
+<li><a class="reference internal" href="#module-isochrones">isochrones</a></li>
 </ul>
 </li>
 </ul>
