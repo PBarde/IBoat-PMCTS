@@ -18,7 +18,7 @@ Prerequisites and code documentation
 ------------------------------------
 
 This project is using Python 3.*. The documentation as well as the prerequisites can be found here:
-https://pbarde.github.io/IBoatPIE/
+https://pbarde.github.io/IBoat_PMCTS/
 
 ![Alt text](documentation/IBOAT_logo.png?raw=true "https://pbarde.github.io/IBoatPIE/")
 
