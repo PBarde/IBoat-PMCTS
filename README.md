@@ -67,7 +67,10 @@ Gallery
 
 ![reward global](gallery/scenar_global.gif "Reward Global Scenario")
 ![reward scenario](gallery/scenar_o.gif "Reward un Scenario")
-![uct global](gallery/1000_10_03_global.png "UCT Global Scenario")
-![uct scenario](gallery/1000_10_03_scenar1.png "UCT un Scenario")
 ![wind](gallery/wind.gif "Wind Scenario")
 ![traj](gallery/traj.gif "A boat trajectory")
+![uct global](gallery/1000_10_03_global.png "UCT Global Scenario")
+![uct scenario](gallery/1000_10_03_scenar1.png "UCT un Scenario")
+![traj](gallery/StrategyTraj.pdf "Evaluation trajectory")
+![uct scenario](gallery/MeanStrategyTraj.pdf "Mean Evaluation trajectory and corresponding wind")
+
