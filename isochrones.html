@@ -61,17 +61,7 @@
 <li><strong>arr</strong> (<em>list</em>) – Latitude and longitude in degree of the destination         point. For instance, [47.8, 352.3].</li>
 <li><strong>isochrone_actuelle</strong> (<em>list</em>) – List of the nodes which constitute the         current isochrone shape.</li>
 <li><strong>isochrone_future</strong> (<em>list</em>) – List of the nodes which are made in order         to find the shape of the next isochrone.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>:ivar list isochrone_stock : List of used isochrone (list of list of states)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>isochrone_stock</strong> (<em>list</em>) – List of used isochrone (list of list of states)</li>
 <li><strong>distance_moy_iso</strong> (<em>float</em>) – Average distance of the current isochrone from         the starting point in meters.</li>
 <li><strong>reso</strong> (<em>float</em>) – Resolution of the current isochrone (average distance         between nodes of the isochrone shape in meters).</li>
 <li><strong>p</strong> (<em>int</em>) – Half of the number of sectors used by the ischrone algorithm         (half of the maximal number of nodes of the current isochrone).</li>
