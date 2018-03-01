@@ -70,4 +70,4 @@ Gallery
 ![uct global](gallery/1000_10_03_global.png "UCT Global Scenario")
 ![uct scenario](gallery/1000_10_03_scenar1.png "UCT un Scenario")
 ![wind](gallery/wind.gif "Wind Scenario")
-![traj](gallery/traj.git "A boat trajectory")
+![traj](gallery/traj.gif "A boat trajectory")
