@@ -173,7 +173,7 @@ class MasterTree:
                                               self.probability)
             else:
                 num_node += sum(node.rewards[idscenario, j].h)
-                if node.parentNode is None: # means we are on the rootnode
+                if node.parentNode is None:  # means we are on the rootnode
                     num_parent = num_node
                 else:
                     num_parent += sum(node.parentNode.rewards[idscenario, j].h)
@@ -219,7 +219,7 @@ class MasterTree:
                                      objective=objective)
         return points
 
-    def plot_tree(self, idscenario=-1, number_subplots=1, gray = True):
+    def plot_tree(self, idscenario=-1, number_subplots=1, gray=True):
         """
         Plot a 2D representation of a tree.
 
@@ -240,7 +240,7 @@ class MasterTree:
 
         if idscenario == -1:
             title = "Global Search Tree and best policy"
-        else :
+        else:
             title = "Search Tree and best policy for scenario {}".format(idscenario)
 
         ax.set_title(title)
@@ -257,8 +257,8 @@ class MasterTree:
             color_map = "Reds"
 
         sc = ax.scatter(coordinates[2], coordinates[3], c=values,
-                            s=np.dot(np.power(values, 2), 32 / np.power(max(values), 2)), zorder=2,
-                            cmap=color_map)
+                        s=np.dot(np.power(values, 2), 32 / np.power(max(values), 2)), zorder=2,
+                        cmap=color_map)
         plt.colorbar(sc)
         ax.plot(0, 0, color="blue", marker='o', markersize='10')
         plt.axis('equal')
@@ -325,14 +325,14 @@ class MasterTree:
             y0 = y
         return fig, ax
 
-    def plot_hist_best_policy(self, idscenario=-1, interactive = False):
+    def plot_hist_best_policy(self, idscenario=-1, interactive=False):
         """
         Plot the best policy as in :py:meth:`plot_best_policy`, with the histogram of the best action at each node\
          (`Animation <https://matplotlib.org/api/animation_api.html>`_)
 
         :param int idscenario: id of the corresponding worker tree to be plot. If -1 (default), the global tree is plotted.
         :param bool interactive: if True the plot is not an animation but can be browsed step by step
-        :return: the `figure <https://matplotlib.org/api/figure_api.html>`_ of the current plot
+        :return: `Animation <https://matplotlib.org/api/animation_api.html>`_
         """
         # check if the best_policy has been computed
         if len(self.best_policy) == 0:

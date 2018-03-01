@@ -464,7 +464,7 @@ class Boat:
     POLAR_MIN_POFSAIL = 35
     #: Maximal point of sail where the boat can sail without tacking.
     POLAR_MAX_POFSAIL = 160
-    #: Characterizes the uncertainty on the boat's dynamics.
+    #: Characterizes the uncertainty on the boat's dynamics, proportion coefficient between the mean velocity and its variance.
     UNCERTAINTY_COEFF = 0.2
 
     @staticmethod
