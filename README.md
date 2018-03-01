@@ -63,7 +63,7 @@ The tools that are provided are the following :
 - Processing of real weather forecast data
 - A Parallel Monte-Carlo Tree Search algorithm
 - A Isochrones algorithm as reference and performance validation
-_ Results visualisation and decision support
+- Results visualisation and decision support
 
 ## Getting started
 
@@ -88,7 +88,7 @@ Before doing anything you should have a look at the [Jupyter](http://jupyter.rea
 This project falls under the IBOAT project and is related to the repo: 
 
 <p align="center">
-  <a href="(https://github.com/tristan-ka/IBOAT_RL">
+  <a href="https://github.com/tristan-ka/IBOAT_RL">
     <img src="https://img.shields.io/website-up-down-green-red/https/naereen.github.io.svg">
   </a>
 </p>
