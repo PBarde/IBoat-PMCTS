@@ -37,7 +37,7 @@ _ Results visualisation and decision support
 Getting started
 ---------------
 
-Before doing anything you should have a look at the [Jupyter](http://jupyter.readthedocs.io/en/latest/install.html) notebook tutorial [Tutorial.ipynb](Tutorial.ipynb) and its `.py` version [Tutorial.py](Tutorial.py).
+Before doing anything you should have a look at the [Jupyter](http://jupyter.readthedocs.io/en/latest/install.html) notebook tutorial [Tutorial.ipynb](code/Tutorial.ipynb) and its `.py` version [Tutorial.py](code/Tutorial.py).
 
 Built With
 ----------
