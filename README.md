@@ -102,7 +102,7 @@ This project has been carried out with the help of:
 * [Yves Brière](https://personnel.isae-supaero.fr/yves-briere/) - Professor of automatic at ISAE-Supaero.
 * [Emmanuel Rachelson](https://github.com/erachelson) - Professor in reinforcement learning at ISAE-Supaero.
 * [Valentin Guillet](https://github.com/Val95240/RL-Agents) - ISAE-Supaero student, for advices on multiprocessing.
-* [Tristan Karch](https://github.com/tristan-ka) - ISAE-Supaero student, for this sweet README layout.
+* [Tristan Karch](https://github.com/tristan-ka) - ISAE-Supaero student, for advices on sweet README layouts.
 
 ## Authors
 
