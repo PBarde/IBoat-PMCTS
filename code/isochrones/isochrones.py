@@ -13,6 +13,7 @@ sys.path.append("../solver")
 from worker import Tree
 import numpy as np
 from math import atan2
+import matplotlib.pyplot as plt
 
 
 # Simulator.Boat.Uncertainitycoeff=0
@@ -158,7 +159,7 @@ class Isochrone():
         """
 
         self.sim = simulateur
-        self.dep = coord_depart  # liste des coord de départ (lat,lon)
+        self.dep = coord_depart[1:]  # liste des coord de départ (lat,lon)
         self.arr = coord_arrivee  # liste des coord d'arrivée (lat,lon)
         self.temps_dep = temps
         noeuddep = Node(temps, coord_depart[0], coord_depart[
@@ -452,3 +453,110 @@ class Isochrone():
         return liste_states
 
         # condition arret temps depasse, recalculer heading finale, nombre de pas temps tout droit, faire visu de la trajectoire
+
+
+def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=False, verbose=True):
+    """
+    Estimates the performances of two plans and compares them on two scenarios.
+
+    :param list() sims: List of :class:`simulatorTLKT.Simulator`
+    :param int ntra: Number of trajectories used to estimate the performances on each scenarios
+    :param list(int,float,float) stateinit: [t_index, lat, lon], starting point of the plans
+    :param list(int,float,float) destination: [t_index, lat, lon], destination point of the plans
+    :param list plan: list of actions to apply
+    :param bool plot: if True displays the mean trajectories per scenario
+    :param bool verbose: if True verbose results
+    :return: mean_arrival_times, var_arrival_times, global_mean_time, variance_globale with length : len(list) = len(sims)
+    :rtype: list(float), list(float), float, float
+    """
+
+    ################### Arrival Time #############################
+
+    meantrajs = []
+    mean_arrival_times = []
+    var_arrival_times = []
+    all_arrival_times = []
+
+    for ii, sim in enumerate(sims):
+        arrivaltimes = []
+        trajsofsim = np.zeros((ntra, len(sims[0].times), 3))
+
+        for ii in range(ntra):
+
+            traj = []
+            sim.reset(stateinit)
+            traj.append(list(sim.state))
+
+            while plan:
+                action = plan.pop(0)
+                sim.doStep(action)
+                traj.append(list(sim.state))
+
+            atDest, frac = Tree.is_state_at_dest(destination, sim.prevState, sim.state)
+
+            while (not atDest) \
+                    and (not Tree.is_state_terminal(sim, sim.state)):
+                dist, action = sim.getDistAndBearing(sim.state[1:], destination)
+                sim.doStep(action)
+                traj.append(list(sim.state))
+                atDest, frac = Tree.is_state_at_dest(destination, sim.prevState, sim.state)
+
+            if atDest:
+                finalTime = sim.times[sim.state[0]] - \
+                            (1 - frac) * (sim.times[sim.state[0]] - sim.times[sim.state[0] - 1])
+                arrivaltimes.append(finalTime)
+                all_arrival_times.append(finalTime)
+            else:
+                finalTime = sim.times[-1]
+                arrivaltimes.append(finalTime)
+                all_arrival_times.append(finalTime)
+
+            trajsofsim[ii, :, :] = traj[-1]
+            trajsofsim[ii, :, 0] = [i for i in range(len(sim.times))]
+            trajsofsim[ii, :len(traj), :] = traj
+
+        meantrajs.append(np.mean(trajsofsim, 0))
+        average_scenario = np.mean(arrivaltimes)
+        mean_arrival_times.append(average_scenario)
+
+        variance_scenario = 0
+        for value in arrivaltimes:
+            variance_scenario += (average_scenario - value) ** 2
+        variance_scenario = variance_scenario / ntra
+        var_arrival_times.append(variance_scenario)
+
+    global_mean_time = np.mean(all_arrival_times)
+    variance_globale = 0
+    for value in all_arrival_times:
+        variance_globale += (global_mean_time - value) ** 2
+    variance_globale = variance_globale / len(all_arrival_times)
+
+    if plot:
+
+        basemap_time = sims[0].prepareBaseMap(proj='aeqd', centerOfMap=stateinit[1:])
+        plt.title('Mean trajectory for minimal travel time estimation')
+
+        colors = plt.get_cmap("tab20")
+        colors = colors.colors[:len(sims)]
+        xd, yd = basemap_time(destination[1], destination[0])
+        xs, ys = basemap_time(stateinit[2], stateinit[1])
+
+        basemap_time.scatter(xd, yd, zorder=0, c="red", s=100)
+        plt.annotate("destination", (xd, yd))
+        basemap_time.scatter(xs, ys, zorder=0, c="green", s=100)
+        plt.annotate("start", (xs, ys))
+
+        for ii, sim in enumerate(sims):
+            sim.plotTraj(meantrajs[ii], basemap_time, color=colors[ii], label="Scen. num : " + str(ii))
+
+        plt.legend()
+
+    if verbose:
+        for nb in range(len(sims)):
+            print("temps scénario isochrones ", nb, " = ", mean_arrival_times[nb])
+            print("variance scénario isochrones   = ", var_arrival_times[nb])
+            print()
+        print("moyenne des temps isochrones                   = ", global_mean_time)
+        print("variance globale des isochrones                = ", variance_globale)
+
+    return mean_arrival_times, var_arrival_times, global_mean_time, variance_globale
