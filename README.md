@@ -25,7 +25,7 @@ https://pbarde.github.io/IBoatPIE/
 Usage
 -----
 
-This repository is intended to be a *source of information* for future work on the problem of
+This repository is intended to be a **tool** for future work on the problem of
 **long-term path planning under uncertainty** for offshore sailing.
 The tools that are provided are the following :
 
@@ -34,10 +34,17 @@ The tools that are provided are the following :
 - A Isochrones algorithm as reference and performance validation
 _ Results visualisation and decision support
 
+Getting started
+---------------
+
+Before doing anything you should have a look at the [Jupyter](http://jupyter.readthedocs.io/en/latest/install.html) notebook tutorial [Tutorial.ipynb](code/Tutorial.ipynb) and its `.py` version [Tutorial.py](code/Tutorial.py).
+
 Built With
 ----------
 
 * [Sphinx](http://www.sphinx-doc.org/en/master/) - The documentation tool
+* [Jupyter](http://jupyter.readthedocs.io/en/latest/install.html) - The demonstrator tool.
+
 
 Acknowledgments
 ---------------
@@ -47,3 +54,9 @@ This project has been carried out with the help of:
 * [Yves Brière](https://personnel.isae-supaero.fr/yves-briere/) - Professor of automatic at ISAE-Supaero.
 * [Emmanuel Rachelson](https://github.com/erachelson) - Professor in reinforcement learning at ISAE-Supaero.
 * [Valentin Guillet](https://github.com/Val95240/RL-Agents) - ISAE-Supaero student which has implemented various RL algorithms.
+
+## Authors
+
+* **Paul Barde** - *Initiator of the project* - Developement of the weather tools and simulators, proof of concept on non-parallel MCTS. Implementation of the parallel version of MCTS, results visualisation and documentation.
+* **Fabien Brulport** - Implementation of the parallel version of MCTS, results visualisation and documentation.
+* **Jean-Michel Bellay** - Implementation of the isochrones method.
