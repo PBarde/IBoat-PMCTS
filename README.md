@@ -55,8 +55,18 @@ This project has been carried out with the help of:
 * [Emmanuel Rachelson](https://github.com/erachelson) - Professor in reinforcement learning at ISAE-Supaero.
 * [Valentin Guillet](https://github.com/Val95240/RL-Agents) - ISAE-Supaero student which has implemented various RL algorithms.
 
-## Authors
+Authors
+---------
 
 * **Paul Barde** - *Initiator of the project* - Developement of the weather tools and simulators, proof of concept on non-parallel MCTS. Implementation of the parallel version of MCTS, results visualisation and documentation.
 * **Fabien Brulport** - Implementation of the parallel version of MCTS, results visualisation and documentation.
 * **Jean-Michel Bellay** - Implementation of the isochrones method.
+
+Gallery
+--------
+
+![reward global](gallery/scenar_global.gif "Reward Global Scenario")
+![reward scenario](gallery/scenar_o.gif "Reward un Scenario")
+![uct global](gallery/1000_10_03_global.png "UCT Global Scenario")
+![uct scenario](gallery/1000_10_03_scenar1.png "UCT un Scenario")
+
