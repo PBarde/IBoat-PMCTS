@@ -384,7 +384,7 @@ class MasterTree:
             anim = animation.FuncAnimation(fig, animate, frames=len(nodes_policy), interval=1000, blit=False)
         plt.show()
 
-        return fig
+        return anim
 
     def save_tree(self, name):
         """
@@ -392,7 +392,7 @@ class MasterTree:
 
         :param name: Name of the file.
         """
-        filehandler = open("../data/" + name + '.pickle', 'wb')
+        filehandler = open("../results/" + name + '.pickle', 'wb')
         pickle.dump(self, filehandler)
         filehandler.close()
 
@@ -403,7 +403,7 @@ class MasterTree:
 
         :param name: Name of the file.
         """
-        filehandler = open("../data/" + name + '.pickle', 'rb')
+        filehandler = open("../results/" + name + '.pickle', 'rb')
         loaded_tree = pickle.load(filehandler)
         filehandler.close()
         return loaded_tree

@@ -3,9 +3,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as plt
 from copy import deepcopy
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 from master_node import MasterNode
-from multiprocessing import Manager
 
 sys.path.append('../model/')
 from weatherTLKT import Weather
