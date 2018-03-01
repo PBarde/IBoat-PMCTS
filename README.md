@@ -65,12 +65,20 @@ Authors
 Gallery
 --------
 
-![reward global](gallery/scenar_global.gif "Reward Global Scenario")
-![reward scenario](gallery/scenar_o.gif "Reward un Scenario")
-![wind](gallery/wind.gif "Wind Scenario")
-![traj](gallery/traj.gif "A boat trajectory")
-![uct global](gallery/1000_10_03_global.png "UCT Global Scenario")
-![uct scenario](gallery/1000_10_03_scenar1.png "UCT un Scenario")
-![traj](gallery/StrategyTraj.pdf "Evaluation trajectory")
-![uct scenario](gallery/MeanStrategyTraj.pdf "Mean Evaluation trajectory and corresponding wind")
+<p align="center">
+  <img src="gallery/wind.gif" width="400" title="A weather scenario">
+   <img src="gallery/traj.gif" width="400" title="A sailboat trajectory">
+</p>
 
+![reward global](gallery/scenar_global.gif "Reward global scenario")
+![reward scenario](gallery/scenar_o.gif "Reward un scenario")
+
+<p align="center">
+  <img src="gallery/1000_10_03_global.png" width="600" title="A global UCT tree">
+   <img src="gallery/1000_10_03_scenar1.png" width="600" title="A single scenario UCT tree">
+</p>
+
+<p align="center">
+  <img src="gallery/StrategyTraj.png" width="300" title="Evaluation trajectories">
+   <img src="gallery/MeanStrategyTraj.png" width="300" title="Mean evaluation trajectories with enconterned wind">
+</p>
