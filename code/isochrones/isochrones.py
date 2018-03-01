@@ -118,7 +118,7 @@ class Isochrone():
     :ivar list isochrone_future: List of the nodes which are made in order \
         to find the shape of the next isochrone.
         
-    :ivar list isochrone_stock : List of used isochrone (list of list of states)
+    :ivar list isochrone_stock: List of used isochrone (list of list of states)
         
     :ivar float distance_moy_iso: Average distance of the current isochrone from \
         the starting point in meters.
