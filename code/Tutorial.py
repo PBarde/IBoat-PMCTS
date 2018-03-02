@@ -10,25 +10,35 @@ os.chdir(os.getcwd() + '/solver/')  # just to make sure you're working in the pr
 import forest as ft
 from master_node import deepcopy_dict
 from master import MasterTree
+import time
+from simulatorTLKT import Boat
+import worker
+import sys
+import numpy as np
+import matplotlib.pyplot as plt
+
+sys.path.append('../isochrones/')
+sys.path.append('../model/')
+import isochrones as IC
 
 # The starting day of the forecast. If it's too ancient, the forecast might not be available anymore
-mydate = '20180228'  # for February 2, 2018
+mydate = time.strftime("%Y%m%d")  # mydate = '20180228'# for February 2, 2018
 
 # We will download the mean scenario (id=0) and the first 2 perturbed scenarios
 scenario_ids = range(3)
-ft.download_scenarios(mydate, latBound=[40, 50], lonBound=[-15 + 360, 360], scenario_ids=scenario_ids)
+# ft.download_scenarios(mydate, latBound=[40, 50], lonBound=[-15 + 360, 360], scenario_ids=scenario_ids)
 
 """ Loading weather objects """
 
 # We will download the mean scenario (id=0) and the first 2 perturbed scenarios
-scenario_ids = range(3)
 Weathers = ft.load_scenarios(mydate, latBound=[40, 50], lonBound=[-15 + 360, 360], scenario_ids=scenario_ids)
 
 """ Create simulators and displaying wind conditions """
 
+Boat.UNCERTAINTY_COEFF = 0.2  # Characterizes the uncertainty on the boat's dynamics
 NUMBER_OF_SIM = 3  # <=20
 SIM_TIME_STEP = 6  # in hours
-STATE_INIT = [0, 44, 355]
+STATE_INIT = [0, 44., 355.]
 N_DAYS_SIM = 3  # time horizon in days
 
 Sims = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
@@ -46,6 +56,10 @@ print("destination : {} & timemin : {}".format(destination, timemin))
 
 """ Create a Forest and launch a PMCTS """
 
+##Exploration Parameters##
+worker.RHO = 0.5  # Exploration coefficient in the UCT formula.
+worker.UCT_COEFF = 1 / 2 ** 0.5  # Proportion between master utility and worker utility of node utility.
+
 budget = 100  # number of nodes we want to expand in each worker
 frequency = 10  # number of steps performed by worker before writing the results into the master
 forest = ft.Forest(listsimulators=Sims, destination=destination, timemin=timemin, budget=budget)
@@ -57,3 +71,33 @@ forest.master.plot_tree_uct()
 forest.master.plot_tree_uct(1)
 forest.master.plot_hist_best_policy(interactive=True)
 forest.master.save_tree("my_tuto_results")
+
+""""""" Isochrones """""""
+
+""" Launch a search """
+
+Boat.UNCERTAINTY_COEFF = 0
+NUMBER_OF_SIM = 3  # <=20
+SIM_TIME_STEP = 6  # in hours
+STATE_INIT = [0, 44., 355.]
+
+Sims = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
+                            stateinit=STATE_INIT, ndaysim=4)
+sim = Sims[0]
+
+solver_iso = IC.Isochrone(sim, STATE_INIT, destination, delta_cap=10, increment_cap=9, nb_secteur=200,
+                          resolution=300)
+temps_estime, plan_iso, plan_iso_ligne_droite, trajectoire = solver_iso.isochrone_methode()
+
+IC.plot_trajectory(sim, trajectoire, quiv=True)
+
+""" Comparision """
+plan_PMCTS = forest.master.best_policy[-1]
+
+Boat.UNCERTAINTY_COEFF = 0.2
+
+mean_PMCTS, var_PMCTS = IC.estimate_perfomance_plan(Sims, ntra, STATE_INIT, destination, plan_PMCTS, plot=True, verbose=False)
+
+mean_iso, var_iso = IC.estimate_perfomance_plan(Sims, ntra, STATE_INIT, destination, plan_iso, plot=True, verbose=False)
+
+IC.plot_comparision(mean_PMCTS, var_PMCTS, mean_iso, var_iso, ["PCMTS", "Isochrones"])

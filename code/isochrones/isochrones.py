@@ -162,8 +162,8 @@ class Isochrone():
         self.dep = coord_depart[1:]  # liste des coord de départ (lat,lon)
         self.arr = coord_arrivee  # liste des coord d'arrivée (lat,lon)
         self.temps_dep = temps
-        noeuddep = Node(temps, coord_depart[0], coord_depart[
-            1])  # attention si référence par parentée n'empêche pas le rammase miette de le supprimer
+        noeuddep = Node(temps, coord_depart[1], coord_depart[
+            2])  # attention si référence par parentée n'empêche pas le rammase miette de le supprimer
         self.isochrone_actuelle = [noeuddep]
         self.isochrone_future = []
         self.distance_moy_iso = 0
@@ -435,7 +435,7 @@ class Isochrone():
 
         except IndexError:
 
-            print('Pas de solution trouvée dans le temps imparti.\nVeuillez raffiner vous paramètres de recherche.')
+            print('Pas de solution trouvée dans le temps imparti.\nVeuillez raffiner vos paramètres de recherche.')
             self.temps_transit = None
             self.liste_actions = None
             liste_caps_fin = None
@@ -476,8 +476,8 @@ def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=Fals
     mean_arrival_times = []
     var_arrival_times = []
     all_arrival_times = []
-
-    for ii, sim in enumerate(sims):
+    nb_actions = len(plan)
+    for _, sim in enumerate(sims):
         arrivaltimes = []
         trajsofsim = np.zeros((ntra, len(sims[0].times), 3))
 
@@ -486,9 +486,11 @@ def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=Fals
             traj = []
             sim.reset(stateinit)
             traj.append(list(sim.state))
+            compte_action = 0
 
-            while plan:
-                action = plan.pop(0)
+            while (compte_action < nb_actions):
+                action = plan[compte_action]
+                compte_action += 1
                 sim.doStep(action)
                 traj.append(list(sim.state))
 
@@ -559,4 +561,57 @@ def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=Fals
         print("moyenne des temps isochrones                   = ", global_mean_time)
         print("variance globale des isochrones                = ", variance_globale)
 
-    return mean_arrival_times, var_arrival_times, global_mean_time, variance_globale
+    return [global_mean_time] + mean_arrival_times, [variance_globale] + var_arrival_times
+
+
+def plot_trajectory(sim, trajectoire, quiv=True, scatter=False):
+    if len(trajectoire[0]) == 2:
+        for i, el in enumerate(trajectoire):
+            trajectoire[i] = [i] + el
+
+    m = sim.prepareBaseMap(centerOfMap=trajectoire[0][1:], proj='aeqd')
+    if len(trajectoire[0]) == 2:
+        for i, el in enumerate(trajectoire):
+            trajectoire[i] = [i] + el
+
+    sim.plotTraj(trajectoire, m, quiv=quiv, scatter=scatter)
+    plt.show()
+
+
+def plot_comparision(means1, var1, means2, var2, titles):
+    N = len(means1)
+    std1 = np.sqrt(var1)
+    std2 = np.sqrt(var2)
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.35  # the width of the bar
+    groups = ["Global"]
+    for i in range(N - 1):
+        groups.append("Sc {}".format(i))
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, means1, width, color='r', yerr=std1)
+
+    rects2 = ax.bar(ind + width, means2, width, color='b', yerr=std2)
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Mean times of arrivals')
+    ax.set_title('Means times of arrivals by scenario and strategy')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(groups)
+
+    ax.legend((rects1[0], rects2[0]), titles)
+
+    def autolabel(rects):
+        """
+        Attach a text label above each bar displaying its height
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., 1.01 * height,
+                    '%.2f' % height,
+                    ha='center', va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)
+
+    plt.show()
