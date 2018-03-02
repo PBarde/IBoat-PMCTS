@@ -21,7 +21,7 @@ from simulatorTLKT import A_DICT, ACTIONS
 UCT_COEFF = 1 / 5 * 1 / 2 ** 0.5
 
 #:Proportion between master utility and worker utility of node utility.
-RHO = 0.5
+RHO = 0.3
 
 
 class Node:

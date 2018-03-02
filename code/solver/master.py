@@ -234,7 +234,7 @@ class MasterTree:
         depth = [i[4] for i in points]
 
         # Plots
-        fig = plt.figure()
+        fig = plt.figure(figsize=(18,5))
         ax = fig.add_subplot(1, number_subplots, 1)
         self.draw_points(ax, coordinates, depth, gray)
 
@@ -346,7 +346,7 @@ class MasterTree:
         fig, ax1 = self.plot_best_policy(idscenario=idscenario, number_subplots=2)
 
         ax2 = fig.add_subplot(1, 2, 2)
-        ax2.set_title("Histogram of returns for given action")
+        ax2.set_title("Histogram of reward for next action")
         barcollection = ax2.bar(Hist.MEANS, [0 for _ in Hist.MEANS],
                                 Hist.THRESH[1] - Hist.THRESH[0])
         pt, = ax1.plot(0, 0, color="green", marker='o', markersize='7')
@@ -382,6 +382,7 @@ class MasterTree:
             anim = Player(fig, animate, maxi=len(nodes_policy) - 1)
         else:
             anim = animation.FuncAnimation(fig, animate, frames=len(nodes_policy), interval=1000, blit=False)
+            # anim.save('scenar_global.mp4', fps = 1)
         plt.show()
 
         return anim
