@@ -216,6 +216,45 @@
 
 </dd></dl>
 
+<dl class="function">
+<dt id="isochrones.estimate_perfomance_plan">
+<code class="descclassname">isochrones.</code><code class="descname">estimate_perfomance_plan</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>destination</em>, <em>plan</em>, <em>plot=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.estimate_perfomance_plan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the performances of two plans and compares them on two scenarios.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>sims</strong> (<em>list</em><em>(</em><em>)</em>) – List of <a class="reference internal" href="model.html#simulatorTLKT.Simulator" title="simulatorTLKT.Simulator"><code class="xref py py-class docutils literal"><span class="pre">simulatorTLKT.Simulator</span></code></a></li>
+<li><strong>ntra</strong> (<em>int</em>) – Number of trajectories used to estimate the performances on each scenarios</li>
+<li><strong>stateinit</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [t_index, lat, lon], starting point of the plans</li>
+<li><strong>destination</strong> (<em>list</em><em>(</em><em>int</em><em>,</em><em>float</em><em>,</em><em>float</em><em>)</em>) – [t_index, lat, lon], destination point of the plans</li>
+<li><strong>plan</strong> (<em>list</em>) – list of actions to apply</li>
+<li><strong>plot</strong> (<em>bool</em>) – if True displays the mean trajectories per scenario</li>
+<li><strong>verbose</strong> (<em>bool</em>) – if True verbose results</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">mean_arrival_times, var_arrival_times, global_mean_time, variance_globale with length : len(list) = len(sims)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">list(float), list(float), float, float</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="isochrones.plot_comparision">
+<code class="descclassname">isochrones.</code><code class="descname">plot_comparision</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_comparision" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="isochrones.plot_trajectory">
+<code class="descclassname">isochrones.</code><code class="descname">plot_trajectory</code><span class="sig-paren">(</span><em>sim</em>, <em>trajectoire</em>, <em>quiv=True</em>, <em>scatter=False</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_trajectory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
