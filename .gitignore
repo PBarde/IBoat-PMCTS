@@ -1,7 +1,7 @@
 __pycache__
 .idea
 .spyproject
-code/data/tree*
+code/data/*
 code/solver/test*
 paper
-script_rainman.pbs
+code/script_rainman.pbs

@@ -17,7 +17,10 @@ sys.path.append("../model/")
 import simulatorTLKT as SimC
 from simulatorTLKT import A_DICT, ACTIONS
 
+#:Exploration coefficient in the UCT formula.
 UCT_COEFF = 1 / 5 * 1 / 2 ** 0.5
+
+#:Proportion between master utility and worker utility of node utility.
 RHO = 0.3
 
 
@@ -174,8 +177,8 @@ class Tree:
             self.ite = self.ite + 1
 
             # Print every 50 ite
-            if self.ite % 50 == 0: print(
-                '\n Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + ' : \n')
+            if self.ite % 50 == 0:
+                print('Iteration ' + str(self.ite) + ' on ' + str(self.budget) + ' for workers ' + str(self.id) + '\n')
 
             # Notify the master that the buffer is ready
             if self.ite % frequency == 0:
