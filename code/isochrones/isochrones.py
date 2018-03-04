@@ -127,7 +127,7 @@ class Isochrone():
     :ivar float reso: Resolution of the current isochrone (average distance \
         between nodes of the isochrone shape in meters).
     
-    :ivar int p: Half of the number of sectors used by the ischrone algorithm \
+    :ivar int p: Half of the number of sectors used by the isochrone algorithm \
         (half of the maximal number of nodes of the current isochrone).
         
     :ivar float constante: Used to change units.
@@ -156,6 +156,8 @@ class Isochrone():
 
         """
         Class constructor
+        delta_cap is the number of degree between two possible actions
+        increment_cap is the number of actions allowed on the right of last heading and on the left too.
         """
 
         self.sim = simulateur
@@ -163,7 +165,7 @@ class Isochrone():
         self.arr = coord_arrivee  # liste des coord d'arrivée (lat,lon)
         self.temps_dep = temps
         noeuddep = Node(temps, coord_depart[1], coord_depart[
-            2])  # attention si référence par parentée n'empêche pas le rammase miette de le supprimer
+            2])
         self.isochrone_actuelle = [noeuddep]
         self.isochrone_future = []
         self.distance_moy_iso = 0
@@ -369,6 +371,7 @@ class Isochrone():
 
         Top_time = []
         Top_finish_caps = []
+        solution = False
         for i in range(len(Top_noeud)):
             atDest = False
             frac = 0
@@ -376,19 +379,26 @@ class Isochrone():
             cap_a_suivre = 0
             finish_caps = []
             self.sim.reset([noeud_final.time, noeud_final.lat, noeud_final.lon])
-            while (not atDest):
-                Ddest, cap_a_suivre = self.sim.getDistAndBearing(self.sim.state[1:3], self.arr)
-                finish_caps.append(cap_a_suivre)
-                self.sim.doStep(cap_a_suivre)
-                atDest, frac = Tree.is_state_at_dest(self.arr, self.sim.prevState, self.sim.state)
-            temps_total = self.sim.times[self.sim.state[0]] - (1 - frac) * self.delta_t - self.sim.times[self.temps_dep]
-            Top_time.append(temps_total)
-            Top_finish_caps.append(finish_caps)
-        indice_solution = Top_time.index(min(Top_time))
-        meilleur_noeud_final = Top_noeud[indice_solution]
-        temps_total = Top_time[indice_solution]
-        liste_caps_fin = Top_finish_caps[indice_solution]
-        return meilleur_noeud_final, temps_total, liste_caps_fin
+            try:
+                while (not atDest):
+                    Ddest, cap_a_suivre = self.sim.getDistAndBearing(self.sim.state[1:3], self.arr)
+                    finish_caps.append(cap_a_suivre)
+                    self.sim.doStep(cap_a_suivre)
+                    atDest, frac = Tree.is_state_at_dest(self.arr, self.sim.prevState, self.sim.state)
+                temps_total = self.sim.times[self.sim.state[0]] - (1 - frac) * self.delta_t - self.sim.times[self.temps_dep]
+                Top_time.append(temps_total)
+                Top_finish_caps.append(finish_caps)
+                solution = True
+            except IndexError:
+                pass
+        if solution:
+            indice_solution = Top_time.index(min(Top_time))
+            meilleur_noeud_final = Top_noeud[indice_solution]
+            temps_total = Top_time[indice_solution]
+            liste_caps_fin = Top_finish_caps[indice_solution]
+            return meilleur_noeud_final, temps_total, liste_caps_fin
+        else:
+            raise IndexError
 
     def isochrone_methode(self):
 
@@ -565,6 +575,7 @@ def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=Fals
 
 
 def plot_trajectory(sim, trajectoire, quiv=True, scatter=False):
+    """ plot the trajectory on the map of the simulator with the wind forcast associated """
     if len(trajectoire[0]) == 2:
         for i, el in enumerate(trajectoire):
             trajectoire[i] = [i] + el
@@ -579,6 +590,9 @@ def plot_trajectory(sim, trajectoire, quiv=True, scatter=False):
 
 
 def plot_comparision(means1, var1, means2, var2, titles):
+    """ plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+    for all the weather forcast scenarios. In addition it plots also the standard deviation 
+    of each mean time"""
     N = len(means1)
     std1 = np.sqrt(var1)
     std2 = np.sqrt(var2)

@@ -81,8 +81,6 @@ NUMBER_OF_SIM = 3  # <=20
 SIM_TIME_STEP = 6  # in hours
 STATE_INIT = [0, 44., 355.]
 
-Sims = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
-                            stateinit=STATE_INIT, ndaysim=4)
 sim = Sims[0]
 
 solver_iso = IC.Isochrone(sim, STATE_INIT, destination, delta_cap=10, increment_cap=9, nb_secteur=200,
