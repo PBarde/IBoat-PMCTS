@@ -64,7 +64,7 @@
 <li><strong>isochrone_stock</strong> (<em>list</em>) – List of used isochrone (list of list of states)</li>
 <li><strong>distance_moy_iso</strong> (<em>float</em>) – Average distance of the current isochrone from         the starting point in meters.</li>
 <li><strong>reso</strong> (<em>float</em>) – Resolution of the current isochrone (average distance         between nodes of the isochrone shape in meters).</li>
-<li><strong>p</strong> (<em>int</em>) – Half of the number of sectors used by the ischrone algorithm         (half of the maximal number of nodes of the current isochrone).</li>
+<li><strong>p</strong> (<em>int</em>) – Half of the number of sectors used by the isochrone algorithm         (half of the maximal number of nodes of the current isochrone).</li>
 <li><strong>constante</strong> (<em>float</em>) – Used to change units.</li>
 <li><strong>delta_t</strong> (<em>float</em>) – Time step of the simulator in days.</li>
 <li><strong>liste_actions</strong> (<em>list</em>) – List of the bearings in degree that the ship can         use to join its destination. After solving the problem, it become the         policy to follow to reach the destination.</li>
@@ -248,12 +248,16 @@
 <dl class="function">
 <dt id="isochrones.plot_comparision">
 <code class="descclassname">isochrones.</code><code class="descname">plot_comparision</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_comparision" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+for all the weather forcast scenarios. In addition it plots also the standard deviation 
+of each mean time</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="isochrones.plot_trajectory">
 <code class="descclassname">isochrones.</code><code class="descname">plot_trajectory</code><span class="sig-paren">(</span><em>sim</em>, <em>trajectoire</em>, <em>quiv=True</em>, <em>scatter=False</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_trajectory" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>plot the trajectory on the map of the simulator with the wind forcast associated</p>
+</dd></dl>
 
 </div>
 </div>
