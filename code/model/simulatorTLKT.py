@@ -322,64 +322,67 @@ class Simulator:
         if quiv:
             return u, v
 
-    def animateTraj(self, windAvg, states, trajSteps=1, proj='mill', res='i', instant=0, Dline=1, density=1):
+    def animateTraj(self, states):
         """
         Animates the trajectory corresponding to the list of states.
 
-        :param Weather windAvg: The weather object corresponding to the trajectory.
         :param list states: List of boat states along its trajectory.
-        :param int trajSteps: State step for the animation (a plot update corresponds to trajSteps covered states)
-        :param str proj: Projection to be used. Refer to `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
-        :param str res: Plot resolution. Refer to `Basemap <https://matplotlib.org/basemap/api/basemap_api.html#module-mpl_toolkits.basemap>`_
-        :param int instant: Initial instant of the animation.
-        :param int Dline: Lat and lon steps to plot parallels and meridians.
-        :param int density: Lat and lon steps to plot quiver.
         :return: Animation function.
         :rtype: `FuncAnimation <https://matplotlib.org/api/_as_gen/matplotlib.animation.FuncAnimation.html>`_
 
         """
-        # to plot whole earth params should be close to res='c',Dline=100,density=10
-        # Plot the field using Basemap.  Start with setting the map
-        # projection using the limits of the lat/lon data itself:
+        interp_u = np.zeros((len(self.times), len(self.lats), len(self.lons)))
+        interp_v = np.zeros((len(self.times), len(self.lats), len(self.lons)))
+
+        for t, time in enumerate(self.times):
+            for ii, lat in enumerate(self.lats):
+                for j, lon in enumerate(self.lons):
+                    query_pt = [time, lat, lon]
+                    interp_u[t][ii][j] = self.uWindAvg(query_pt)
+                    interp_v[t][ii][j] = self.vWindAvg(query_pt)
+
+        # %% PLOT
+        font = {'family': 'normal',
+                'weight': 'bold',
+                'size': 22}
+        proj = 'mill'
+        res = 'i'
+        Dline = 5
+        density = 1
+        matplotlib.rc('font', **font)
         fig = plt.figure(figsize=(8, 5))
-        m = Basemap(projection=proj, lat_ts=10, llcrnrlon=windAvg.lon.min(), \
-                    urcrnrlon=windAvg.lon.max(), llcrnrlat=windAvg.lat.min(), urcrnrlat=windAvg.lat.max(), \
+
+        m = Basemap(projection=proj, lat_ts=10, llcrnrlon=self.lons.min(), \
+                    urcrnrlon=self.lons.max(), llcrnrlat=self.lats.min(), urcrnrlat=self.lats.max(), \
                     resolution=res)
-
-        xquiv, yquiv = m(*np.meshgrid(windAvg.lon, windAvg.lat))
-
-        Q = m.quiver(xquiv[0::density, 0::density], yquiv[0::density, 0::density],
-                     windAvg.u[instant, 0::density, 0::density], windAvg.v[instant, 0::density, 0::density])
 
         states = np.array(states)
         posLat = states[:, 1]
         posLon = states[:, 2]
-        x, y = m(posLon, posLat)
+        xt, yt = m(posLon, posLat)
 
-        T = m.plot(x[0:instant * 3], y[0:instant * 3], linewidth=4)[0]
+        x, y = m(*np.meshgrid(self.lons, self.lats))
+        quiv = m.quiver(x, y, interp_u[0], interp_v[0], color='black')
 
+        T = m.plot(xt[0], yt[0], linewidth=4)[0]
         m.drawcoastlines()
         m.fillcontinents()
         m.drawmapboundary()
-        m.drawparallels(windAvg.lat[0::Dline], labels=[1, 0, 0, 0])
-        m.drawmeridians(windAvg.lon[0::2 * Dline], labels=[0, 0, 0, 1])
+        m.drawparallels(self.lats[0::Dline], labels=[1, 0, 0, 0])
+        m.drawmeridians(self.lons[0::Dline], labels=[0, 0, 0, 1])
+        tit = plt.title('Boat trajectory at time : ' + str(self.times[0]) + ' days')
 
-        def update_quiver(t, Q, T, windAvg):
-            """method required to animate quiver and contour plot
-            A FAIRE
-            """
-            Q.set_UVC(windAvg.u[instant + t, 0::density, 0::density * 2],
-                      windAvg.v[instant + t, 0::density, 0::density * 2])
-            T.set_data(x[0:instant + t * 3], y[0:instant + t * 3])
-            plt.title('time : ' + str(windAvg.time[instant + t] - windAvg.time[0]) + ' days')
-            return plt
+        ### using this class is as easy as using FuncAnimation:
 
-        anim = animation.FuncAnimation(fig, update_quiver, frames=range(int(len(states) / trajSteps)),
-                                       fargs=(Q, T, windAvg))
+        def update(i):
+            quiv.set_UVC(interp_u[i], interp_v[i])
+            tit.set_text('Boat trajectory at time : ' + str(self.times[i]) + ' days')
+            T.set_data(xt[:i+1], yt[:i+1])
 
+
+        ani = animation.FuncAnimation(fig, update, frames=len(interp_v), interval=600)
         plt.show()
-
-        return anim
+        return ani
 
     def play_scenario(self, idsc=0, interactive=True):
         interp_u = np.zeros((len(self.times), len(self.lats), len(self.lons)))
