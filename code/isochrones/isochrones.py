@@ -581,9 +581,6 @@ def plot_trajectory(sim, trajectoire, quiv=True, scatter=False):
             trajectoire[i] = [i] + el
 
     m = sim.prepareBaseMap(centerOfMap=trajectoire[0][1:], proj='aeqd')
-    if len(trajectoire[0]) == 2:
-        for i, el in enumerate(trajectoire):
-            trajectoire[i] = [i] + el
 
     sim.plotTraj(trajectoire, m, quiv=quiv, scatter=scatter)
     plt.show()

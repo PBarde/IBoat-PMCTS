@@ -179,7 +179,7 @@ def create_simulators(weathers, numberofsim, simtimestep=6, stateinit=(0, 47.5, 
         weathers[jj].time = weathers[jj].time - weathers[jj].time[0]
 
         # We set up the parameters of the simulation
-        times = np.arange(0, ndaysim, simtimestep * HOURS_TO_DAY)
+        times = np.arange(0, ndaysim + simtimestep * HOURS_TO_DAY, simtimestep * HOURS_TO_DAY)
         lats = np.arange(weathers[jj].lat[0], weathers[jj].lat[-1], deltalatlon)
         lons = np.arange(weathers[jj].lon[0], weathers[jj].lon[-1], deltalatlon)
         sims.append(Simulator(times, lats, lons, weathers[jj], list(stateinit)))

@@ -11,22 +11,23 @@ import forest as ft
 from master_node import deepcopy_dict
 from master import MasterTree
 import time
-from simulatorTLKT import Boat
 import worker
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
 
+import sys
 sys.path.append('../isochrones/')
 sys.path.append('../model/')
 import isochrones as IC
+from simulatorTLKT import Boat
 
 # The starting day of the forecast. If it's too ancient, the forecast might not be available anymore
 mydate = time.strftime("%Y%m%d")  # mydate = '20180228'# for February 2, 2018
 
 # We will download the mean scenario (id=0) and the first 2 perturbed scenarios
 scenario_ids = range(3)
-# ft.download_scenarios(mydate, latBound=[40, 50], lonBound=[-15 + 360, 360], scenario_ids=scenario_ids)
+ft.download_scenarios(mydate, latBound=[40, 50], lonBound=[-15 + 360, 360], scenario_ids=scenario_ids)
 
 """ Loading weather objects """
 

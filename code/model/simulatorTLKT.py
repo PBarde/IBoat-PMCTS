@@ -322,7 +322,7 @@ class Simulator:
         if quiv:
             return u, v
 
-    def animateTraj(self, windAvg, states, trajSteps=3, proj='mill', res='i', instant=0, Dline=5, density=1):
+    def animateTraj(self, windAvg, states, trajSteps=1, proj='mill', res='i', instant=0, Dline=1, density=1):
         """
         Animates the trajectory corresponding to the list of states.
 
@@ -341,7 +341,7 @@ class Simulator:
         # to plot whole earth params should be close to res='c',Dline=100,density=10
         # Plot the field using Basemap.  Start with setting the map
         # projection using the limits of the lat/lon data itself:
-        fig = plt.figure()
+        fig = plt.figure(figsize=(8, 5))
         m = Basemap(projection=proj, lat_ts=10, llcrnrlon=windAvg.lon.min(), \
                     urcrnrlon=windAvg.lon.max(), llcrnrlat=windAvg.lat.min(), urcrnrlat=windAvg.lat.max(), \
                     resolution=res)
@@ -403,7 +403,7 @@ class Simulator:
         Dline = 5
         density = 1
         matplotlib.rc('font', **font)
-        fig = plt.figure()
+        fig = plt.figure(figsize=(8, 5))
 
         m = Basemap(projection=proj, lat_ts=10, llcrnrlon=self.lons.min(), \
                     urcrnrlon=self.lons.max(), llcrnrlat=self.lats.min(), urcrnrlat=self.lats.max(), \
@@ -436,7 +436,7 @@ class Simulator:
         if interactive:
             ani = Player(fig, update, maxi=len(interp_v) - 1)
         else:
-            ani = animation.FuncAnimation(fig, update, frames=len(interp_v))
+            ani = animation.FuncAnimation(fig, update, frames=len(interp_v), interval=600)
         plt.show()
         return ani
 
