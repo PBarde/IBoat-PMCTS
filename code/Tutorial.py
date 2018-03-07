@@ -58,8 +58,9 @@ print("destination : {} & timemin : {}".format(destination, timemin))
 """ Create a Forest and launch a PMCTS """
 
 ##Exploration Parameters##
-worker.RHO = 0.5  # Exploration coefficient in the UCT formula.
-worker.UCT_COEFF = 1 / 2 ** 0.5  # Proportion between master utility and worker utility of node utility.
+worker.RHO = 0.5  # Proportion between master utility and worker utility of node utility.
+worker.UCT_COEFF = 1 / 2 ** 0.5  # Exploration coefficient in the UCT formula.
+
 
 budget = 100  # number of nodes we want to expand in each worker
 frequency = 10  # number of steps performed by worker before writing the results into the master
@@ -81,13 +82,16 @@ Boat.UNCERTAINTY_COEFF = 0
 NUMBER_OF_SIM = 3  # <=20
 SIM_TIME_STEP = 6  # in hours
 STATE_INIT = [0, 44., 355.]
+N_DAYS_SIM = 3
 
-sim = Sims[0]
+sim = ft.create_simulators(Weathers, numberofsim=NUMBER_OF_SIM, simtimestep=SIM_TIME_STEP,
+                            stateinit=STATE_INIT, ndaysim=N_DAYS_SIM)[0]
 
-solver_iso = IC.Isochrone(sim, STATE_INIT, destination, delta_cap=10, increment_cap=9, nb_secteur=200,
-                          resolution=300)
+solver_iso = IC.Isochrone(sim, STATE_INIT, destination, delta_cap=5, increment_cap=9, nb_secteur=300,
+                          resolution=100)
 temps_estime, plan_iso, plan_iso_ligne_droite, trajectoire = solver_iso.isochrone_methode()
 
+print(temps_estime)
 IC.plot_trajectory(sim, trajectoire, quiv=True)
 
 """ Comparision """

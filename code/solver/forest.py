@@ -236,13 +236,8 @@ def initialize_simulators(sims, ntra, stateinit, missionheading, plot=False):
             sim.reset(stateinit)
             traj.append(list(sim.state))
 
-            for t in sim.times[0:-1]:
-
-                if not mt.Tree.is_state_terminal(sim, sim.state):
-                    sim.doStep(missionheading)
-                else:
-                    break
-
+            while not mt.Tree.is_state_terminal(sim, [sim.state[0]+1]+sim.state[1:]):
+                sim.doStep(missionheading)
                 traj.append(list(sim.state))
 
             trajsofsim[ii, :, :] = traj[-1]

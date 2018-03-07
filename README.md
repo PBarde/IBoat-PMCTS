@@ -113,8 +113,8 @@ This project has been carried out with the help of:
 ## Gallery
 
 <p align="center">
-  <img src="gallery/wind.gif" width="400" title="A weather scenario">
-   <img src="gallery/traj.gif" width="400" title="A sailboat trajectory">
+  <img src="gallery/W1.gif" width="400" title="A weather scenario">
+   <img src="gallery/traj_iso.gif" width="400" title="A sailboat trajectory">
 </p>
 
 ![reward global](gallery/scenar_global.gif "Reward global scenario")
@@ -126,6 +126,11 @@ This project has been carried out with the help of:
 </p>
 
 <p align="center">
-  <img src="gallery/StrategyTraj.png" width="300" title="Evaluation trajectories">
-   <img src="gallery/MeanStrategyTraj.png" width="300" title="Mean evaluation trajectories with enconterned wind">
+  <img src="gallery/traj_iso_quiv.png" width="300" title="A deterministic isochrones trajectory">
+   <img src="gallery/traj_eval_iso.png" width="300" title="Same isochrones strategy on different weather scenarios">
+</p>
+
+<p align="center">
+  <img src="gallery/traj_eval_pmcts.png" width="300" title="PMCTS sstrategy on different weather scenarios">
+   <img src="gallery/comp.png" width="300" title="PMCTS outperforms the isochrones">
 </p>
