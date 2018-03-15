@@ -14,6 +14,7 @@ from worker import Tree
 import numpy as np
 from math import atan2
 import matplotlib.pyplot as plt
+from scipy.special import erf
 
 
 # Simulator.Boat.Uncertainitycoeff=0
@@ -465,7 +466,7 @@ class Isochrone():
         # condition arret temps depasse, recalculer heading finale, nombre de pas temps tout droit, faire visu de la trajectoire
 
 
-def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=False, verbose=True):
+def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan=list(), plot=False, verbose=True):
     """
     Estimates the performances of two plans and compares them on two scenarios.
 
@@ -501,6 +502,11 @@ def estimate_perfomance_plan(sims, ntra, stateinit, destination, plan, plot=Fals
             while (compte_action < nb_actions):
                 action = plan[compte_action]
                 compte_action += 1
+                sim.doStep(action)
+                traj.append(list(sim.state))
+                
+            if nb_actions == 0:
+                dist, action = sim.getDistAndBearing(sim.state[1:], destination)
                 sim.doStep(action)
                 traj.append(list(sim.state))
 
@@ -581,20 +587,26 @@ def plot_trajectory(sim, trajectoire, quiv=True, scatter=False):
             trajectoire[i] = [i] + el
 
     m = sim.prepareBaseMap(centerOfMap=trajectoire[0][1:], proj='aeqd')
+    if len(trajectoire[0]) == 2:
+        for i, el in enumerate(trajectoire):
+            trajectoire[i] = [i] + el
 
     sim.plotTraj(trajectoire, m, quiv=quiv, scatter=scatter)
     plt.show()
 
 
-def plot_comparision(means1, var1, means2, var2, titles):
-    """ plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+def plot_comparision(means1, var1, means2, var2, mean_straight_line, var_straight_line, titles):
+    """ plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans and straight line strategy
     for all the weather forcast scenarios. In addition it plots also the standard deviation 
-    of each mean time"""
+    of each mean time.
+    Attention lenght(titles) = 3 """
     N = len(means1)
+    
     std1 = np.sqrt(var1)
     std2 = np.sqrt(var2)
+    std_straight_line = np.sqrt(var_straight_line)
     ind = np.arange(N)  # the x locations for the groups
-    width = 0.35  # the width of the bar
+    width = 0.15  # the width of the bar
     groups = ["Global"]
     for i in range(N - 1):
         groups.append("Sc {}".format(i))
@@ -603,10 +615,191 @@ def plot_comparision(means1, var1, means2, var2, titles):
     rects1 = ax.bar(ind, means1, width, color='r', yerr=std1)
 
     rects2 = ax.bar(ind + width, means2, width, color='b', yerr=std2)
+    
+    rects3 = ax.bar(ind + 2*width, mean_straight_line, width, color='g', yerr=std_straight_line)
 
     # add some text for labels, title and axes ticks
     ax.set_ylabel('Mean times of arrivals')
     ax.set_title('Means times of arrivals by scenario and strategy')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(groups)
+
+    ax.legend((rects1[0], rects2[0], rects3[0]), titles)
+
+    def autolabel(rects):
+        """
+        Attach a text label above each bar displaying its height
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., 1.01 * height,
+                    '%.2f' % height,
+                    ha='center', va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)
+    autolabel(rects3)
+
+    plt.show()
+
+
+def plot_comparision_percent(means1, var1, means2, var2, mean_straight_line, var_straight_line, titles):
+    """ plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+    for all the weather forcast scenarios. In addition it plots also the variance 
+    of each mean time. Means and variances of the travelling times obtained by the optimal plans
+    are normalised by the ones of the straight line plan (in percent).
+    Attention lenght(titles) = 2 """
+    N = len(means1)
+    
+    means1 = np.array(means1)
+    means2 = np.array(means2)
+    mean_straight_line = np.array(mean_straight_line)
+    var1 = np.array(var1)
+    var2 = np.array(var2)
+    var_straight_line = np.array(var_straight_line)
+    
+    means1_percent = np.divide(means1,mean_straight_line) * 100
+    means2_percent = np.divide(means2,mean_straight_line) * 100
+    var1_percent = np.divide(var1,var_straight_line) * 100
+    var2_percent = np.divide(var2,var_straight_line) * 100
+    
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.35  # the width of the bar
+    groups = ["Global"]
+    for i in range(N - 1):
+        groups.append("Sc {}".format(i))
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, means1_percent, width, color='r')
+
+    rects2 = ax.bar(ind + width, means2_percent, width, color='b')
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Mean times of arrivals')
+    ax.set_title('Means times of arrivals by scenario and strategy')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(groups)
+
+    ax.legend((rects1[0], rects2[0]), titles)
+
+    def autolabel(rects):
+        """
+        Attach a text label above each bar displaying its height
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., 1.01 * height,
+                    '%.2f' % height,
+                    ha='center', va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)
+
+    plt.show()
+    
+    fig, ax = plt.subplots()
+    rects3 = ax.bar(ind, var1_percent, width, color='r')
+
+    rects4 = ax.bar(ind + width, var2_percent, width, color='b')
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Variances of times of arrivals')
+    ax.set_title('Variances of times of arrivals by scenario and strategy')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(groups)
+
+    ax.legend((rects3[0], rects4[0]), titles)
+
+    autolabel(rects3)
+    autolabel(rects4)
+
+    plt.show()
+    
+def plot_mean_squared_error(means1, var1, means2, var2, mean_straight_line, var_straight_line, titles):
+    """ plot the histograms of the mean squared error on times obtained by PMCTS and Isochrones optimal plans
+    and straight line strategy for all the weather forcast scenarios.
+    Attention lenght(titles) = 3 """
+    N = len(means1)
+    err1 = []
+    err2 = []
+    err_sl = []
+    
+    for j in range(N):
+        t_optim = min([means1[j], means2[j], mean_straight_line[j]])
+        err1.append((t_optim-means1[j])**2 + var1[j])
+        err2.append((t_optim-means2[j])**2 + var2[j])
+        err_sl.append((t_optim-mean_straight_line[j])**2 + var_straight_line[j])
+        
+    
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.15  # the width of the bar
+    groups = ["Global"]
+    for i in range(N - 1):
+        groups.append("Sc {}".format(i))
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, err1, width, color='r')
+
+    rects2 = ax.bar(ind + width, err2, width, color='b')
+    
+    rects3 = ax.bar(ind + 2*width, err_sl, width, color='g')
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Mean squared error on times of arrivals')
+    ax.set_title('Mean squared errors on times of arrivals by scenario and strategy')
+    ax.set_xticks(ind + width / 2)
+    ax.set_xticklabels(groups)
+
+    ax.legend((rects1[0], rects2[0], rects3[0]), titles)
+
+    def autolabel(rects):
+        """
+        Attach a text label above each bar displaying its height
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.text(rect.get_x() + rect.get_width() / 2., 1.01 * height,
+                    '%.2f' % height,
+                    ha='center', va='bottom')
+
+    autolabel(rects1)
+    autolabel(rects2)
+    autolabel(rects3)
+
+    plt.show()
+    
+def plot_risk_probability(means1, var1, means2, var2, titles, t_lim = 0):
+    """ plot the histograms of the probability of times obtained by PMCTS and Isochrones optimal plans
+    to be over t_lim for all the weather forcast scenarios.
+    Attention lenght(titles) = 2 """
+    N = len(means1)
+    risk1 = []
+    risk2 = []
+    
+    for j in range(N):
+        if t_lim == 0:
+            t_bad = max([means1[j], means2[j]])
+        else:
+            t_bad = t_lim
+        u1 = (t_bad - means1[j])/var1[j]
+        risk1.append(1-((1/2)*(1 + erf(u1/np.sqrt(2)))))
+        u2 = (t_bad - means2[j])/var2[j]
+        risk2.append(1-((1/2)*(1 + erf(u2/np.sqrt(2)))))
+    
+    ind = np.arange(N)  # the x locations for the groups
+    width = 0.35  # the width of the bar
+    groups = ["Global"]
+    for i in range(N - 1):
+        groups.append("Sc {}".format(i))
+
+    fig, ax = plt.subplots()
+    rects1 = ax.bar(ind, risk1, width, color='r')
+
+    rects2 = ax.bar(ind + width, risk2, width, color='b')
+
+    # add some text for labels, title and axes ticks
+    ax.set_ylabel('Probability of times of arrivals to be over t_lim')
+    ax.set_title('Probability of times of arrivals to be over t_lim by scenario and strategy')
     ax.set_xticks(ind + width / 2)
     ax.set_xticklabels(groups)
 
