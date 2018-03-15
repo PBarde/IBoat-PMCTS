@@ -218,7 +218,7 @@
 
 <dl class="function">
 <dt id="isochrones.estimate_perfomance_plan">
-<code class="descclassname">isochrones.</code><code class="descname">estimate_perfomance_plan</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>destination</em>, <em>plan</em>, <em>plot=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.estimate_perfomance_plan" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">isochrones.</code><code class="descname">estimate_perfomance_plan</code><span class="sig-paren">(</span><em>sims</em>, <em>ntra</em>, <em>stateinit</em>, <em>destination</em>, <em>plan=[]</em>, <em>plot=False</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.estimate_perfomance_plan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the performances of two plans and compares them on two scenarios.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -247,10 +247,37 @@
 
 <dl class="function">
 <dt id="isochrones.plot_comparision">
-<code class="descclassname">isochrones.</code><code class="descname">plot_comparision</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_comparision" title="Permalink to this definition">¶</a></dt>
-<dd><p>plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+<code class="descclassname">isochrones.</code><code class="descname">plot_comparision</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>mean_straight_line</em>, <em>var_straight_line</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_comparision" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans and straight line strategy
 for all the weather forcast scenarios. In addition it plots also the standard deviation 
-of each mean time</p>
+of each mean time.
+Attention lenght(titles) = 3</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="isochrones.plot_comparision_percent">
+<code class="descclassname">isochrones.</code><code class="descname">plot_comparision_percent</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>mean_straight_line</em>, <em>var_straight_line</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_comparision_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the histograms of the mean times obtained by PMCTS and Isochrones optimal plans
+for all the weather forcast scenarios. In addition it plots also the variance 
+of each mean time. Means and variances of the travelling times obtained by the optimal plans
+are normalised by the ones of the straight line plan (in percent).
+Attention lenght(titles) = 2</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="isochrones.plot_mean_squared_error">
+<code class="descclassname">isochrones.</code><code class="descname">plot_mean_squared_error</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>mean_straight_line</em>, <em>var_straight_line</em>, <em>titles</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_mean_squared_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the histograms of the mean squared error on times obtained by PMCTS and Isochrones optimal plans
+and straight line strategy for all the weather forcast scenarios.
+Attention lenght(titles) = 3</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="isochrones.plot_risk_probability">
+<code class="descclassname">isochrones.</code><code class="descname">plot_risk_probability</code><span class="sig-paren">(</span><em>means1</em>, <em>var1</em>, <em>means2</em>, <em>var2</em>, <em>titles</em>, <em>t_lim=0</em><span class="sig-paren">)</span><a class="headerlink" href="#isochrones.plot_risk_probability" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot the histograms of the probability of times obtained by PMCTS and Isochrones optimal plans
+to be over t_lim for all the weather forcast scenarios.
+Attention lenght(titles) = 2</p>
 </dd></dl>
 
 <dl class="function">
